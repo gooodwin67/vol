@@ -7,10 +7,5 @@ export class Ball {
   this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
   this.ball.position.y = 3;
 
-  this.ballFree = true;
-
-  this.ballOnPlayer = false;
-
-  this.ballGoToPoint = false;
  }
 }

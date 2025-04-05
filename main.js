@@ -70,61 +70,15 @@ function initScenes() {
   scene.add(worldClass.plane);
   scene.add(ballClass.ball);
   scene.add(playerClass.player);
-  scene.add(playerClass.player2);
 }
 
 initClases();
 initScenes();
 
-let speed = 0.01; // Скорость движения объекта
-let t = 0; // Параметр для движения по линии
-const gravity = -0.002; // Ускорение свободного падения
-const maxSpeed = 0.02; // Максимальная скорость
-let isGoingUp = true; // Флаг для определения направления движения
-
-function ballMoving() {
-  if (
-    !detectCollisionCubes(
-      ballClass.ball,
-      playerClass.playerMas[playerClass.currentPlayer]
-    ) &&
-    ballClass.ballFree
-  ) {
-    if (ballClass.ball.position.y > 0.5) ballClass.ball.position.y -= speed;
-    ballClass.ballFree = true;
-    ballClass.ballOnPlayer = false;
-  } else {
-    ballClass.ballFree = false;
-    ballClass.ballOnPlayer = true;
-  }
-
-  if (playerClass.playerNowPas && ballClass.ballOnPlayer) {
-    if (t <= 1) {
-      const index = Math.floor(t * (playerClass.points.length - 1));
-      const nextIndex = (index + 1) % playerClass.points.length;
-
-      const point1 = playerClass.points[index];
-      const point2 = playerClass.points[nextIndex];
-      const localT = (t * (playerClass.points.length - 1)) % 1; // Нормализуем t для интерполяции между двумя точками
-
-      ballClass.ball.position.set(
-        THREE.MathUtils.lerp(point1.x, point2.x, localT),
-        THREE.MathUtils.lerp(point1.y, point2.y, localT),
-        THREE.MathUtils.lerp(point1.z, point2.z, localT)
-      );
-
-      t += speed;
-    } else {
-      playerClass.playerNowPas = false;
-      ballClass.ballFree = true;
-      t = 0;
-    }
-  }
-}
 
 function animate() {
-  playerClass.movePlayer(playerClass.playerMas[playerClass.currentPlayer]);
-  ballMoving();
+  playerClass.movePlayer(playerClass.player);
+
 
   stats.update();
   renderer.render(scene, camera);
