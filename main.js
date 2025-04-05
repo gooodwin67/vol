@@ -53,15 +53,29 @@ controls.target.set(0, 0, 0);
 let ambientLight;
 let dirLight;
 
+let dataLoaded = false;
+
+let world;
+let dynamicBodies = [];
+
 let worldClass;
 let playerClass;
 let ballClass;
+
+let playerTop;
+
+let powerBlock = document.querySelector('.power_block');
+let powerWrap = document.querySelector('.power_wrap');
+
+
 
 function initClases() {
   worldClass = new World();
   ballClass = new Ball(scene);
   playerClass = new Player(scene, ballClass.ball);
 }
+
+
 
 function initScenes() {
   scene.add(worldClass.ambientLight);
@@ -70,19 +84,119 @@ function initScenes() {
   scene.add(worldClass.plane);
   scene.add(ballClass.ball);
   scene.add(playerClass.player);
+  scene.add(playerClass.playerTop);
 }
 
-initClases();
-initScenes();
+
+
+async function loadWorld() {
+  await RAPIER.init();
+  world = new RAPIER.World(new RAPIER.Vector3(0, -9.81, 0));
+
+  addPhysicsToObject(playerClass.playerTop, 'player');
+  addPhysicsToObject(ballClass.ball, 'ball');
+  addPhysicsToObject(worldClass.plane, 'plane');
+}
+
+
+
+async function init() {
+  initClases();
+  initScenes();
+  await loadWorld();
+
+  dataLoaded = true;
+}
+
+init();
+
+
+function playerTapPas() {
+
+
+  if (worldClass.powerBlockWidth < powerWrap.offsetWidth) {
+    worldClass.powerBlockWidth += 4;
+    powerBlock.style.width = worldClass.powerBlockWidth + '%'
+  }
+  else {
+    playerClass.playerTapPass = false;
+    playerClass.playerNowPas = true;
+  }
+}
 
 
 function animate() {
-  playerClass.movePlayer(playerClass.player);
+  //playerClass.movePlayer(playerClass.player);
 
+  if (dataLoaded) {
 
-  stats.update();
-  renderer.render(scene, camera);
+    if (playerClass.playerTapPas) {
+      playerTapPas();
+    }
+    else {
+      powerBlock.style.width = 0;
+      worldClass.powerBlockWidth = 0;
+    }
+
+    console.log(playerClass.playerNowPas);
+
+    if (playerClass.playerNowPas) {
+      playerClass.playerNowPas = false;
+    }
+
+    playerTop.setNextKinematicTranslation({ x: playerClass.player.position.x, y: playerClass.player.position.y + 0.7, z: playerClass.player.position.z }, true)
+    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
+
+    playerClass.movePlayer(playerClass.player);
+
+    for (let i = 0, n = dynamicBodies.length; i < n; i++) {
+      dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
+      dynamicBodies[i][0].quaternion.copy(dynamicBodies[i][1].rotation())
+    }
+
+    world.step();
+    stats.update();
+    renderer.render(scene, camera);
+  }
 }
 renderer.setAnimationLoop(animate);
 
 /*///////////////////////////////////////////////////////////////////*/
+
+
+function addPhysicsToObject(obj, body) {
+
+  const originalRotation = obj.rotation.clone();
+  obj.rotation.set(0, 0, 0);
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  obj.rotation.copy(originalRotation);
+
+  if (body == 'player') {
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(-1).setFriction(0);
+    playerTop = body;
+
+    let playerTopCollider = world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+  }
+
+  else if (body == 'ball') {
+    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shapeBall = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1).setFriction(0);
+
+    let ballCollider = world.createCollider(shapeBall, bodyBall)
+
+    dynamicBodies.push([obj, bodyBall, obj.id])
+  }
+
+  else if (body == 'plane') {
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0);
+
+    world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+  }
+}

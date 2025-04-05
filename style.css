@@ -8,3 +8,23 @@ canvas {
     position: absolute;
     top: 0;
 }
+
+.power_wrap {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    background-color: #fff;
+    width: 100px;
+    height: 20px;
+}
+
+.power_block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background-color: red;
+}

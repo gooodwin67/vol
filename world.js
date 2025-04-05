@@ -12,5 +12,7 @@ export class World {
   this.materialPlane = new THREE.MeshLambertMaterial({ color: 0xaaaaaa });
   this.plane = new THREE.Mesh(this.geometryPlane, this.materialPlane);
   this.plane.position.set(0, 0, 0);
+
+  this.powerBlockWidth = 0;
  }
 }
