@@ -62,7 +62,10 @@ let worldClass;
 let playerClass;
 let ballClass;
 
+let ball;
+
 let playerTop;
+let eventQueue;
 
 let powerBlock = document.querySelector('.power_block');
 let powerWrap = document.querySelector('.power_wrap');
@@ -113,6 +116,24 @@ init();
 
 function playerTapPas() {
 
+  eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+    if (handle1 == playerTop.handle && handle2 == ball.handle) {
+      console.log(12)
+    }
+
+  })
+
+  if (playerClass.left) {
+    // playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
+    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.3 })
+    //ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
+    playerClass.player.position.y += 0.1;
+  }
+  else {
+    playerClass.player.position.y = 0.5;
+    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
+  }
+
 
   if (worldClass.powerBlockWidth < powerWrap.offsetWidth) {
     worldClass.powerBlockWidth += 4;
@@ -138,14 +159,13 @@ function animate() {
       worldClass.powerBlockWidth = 0;
     }
 
-    console.log(playerClass.playerNowPas);
+    //console.log(playerClass.playerNowPas);
 
     if (playerClass.playerNowPas) {
       playerClass.playerNowPas = false;
     }
 
     playerTop.setNextKinematicTranslation({ x: playerClass.player.position.x, y: playerClass.player.position.y + 0.7, z: playerClass.player.position.z }, true)
-    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
 
     playerClass.movePlayer(playerClass.player);
 
@@ -154,7 +174,8 @@ function animate() {
       dynamicBodies[i][0].quaternion.copy(dynamicBodies[i][1].rotation())
     }
 
-    world.step();
+    eventQueue = new RAPIER.EventQueue(true);
+    world.step(eventQueue);
     stats.update();
     renderer.render(scene, camera);
   }
@@ -168,13 +189,14 @@ function addPhysicsToObject(obj, body) {
 
   const originalRotation = obj.rotation.clone();
   obj.rotation.set(0, 0, 0);
-  const box = new THREE.Box3().setFromObject(obj);
+  const box = new THREE.Box3().setFromObject(obj)
   const size = box.getSize(new THREE.Vector3());
   obj.rotation.copy(originalRotation);
 
   if (body == 'player') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(-1).setFriction(0);
+    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playerTop = body;
 
     let playerTopCollider = world.createCollider(shape, body)
@@ -184,16 +206,16 @@ function addPhysicsToObject(obj, body) {
 
   else if (body == 'ball') {
     const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shapeBall = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1).setFriction(0);
-
-    let ballCollider = world.createCollider(shapeBall, bodyBall)
+    const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
+    ball = bodyBall;
+    world.createCollider(shapeBall, bodyBall)
 
     dynamicBodies.push([obj, bodyBall, obj.id])
   }
 
   else if (body == 'plane') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0);
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1.2).setFriction(0);
 
     world.createCollider(shape, body)
 

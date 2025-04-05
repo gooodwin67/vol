@@ -73,17 +73,19 @@ export class Player {
   }
 
   movePlayer(player) {
-    if (this.forward && !this.pass) {
-      player.position.z -= this.playerSpeed;
-    }
-    if (this.backward && !this.pass) {
-      player.position.z += this.playerSpeed;
-    }
-    if (this.left && !this.pass) {
-      player.position.x -= this.playerSpeed;
-    }
-    if (this.right && !this.pass) {
-      player.position.x += this.playerSpeed;
+    if (!this.playerTapPas) {
+      if (this.forward && !this.pass) {
+        player.position.z -= this.playerSpeed;
+      }
+      if (this.backward && !this.pass) {
+        player.position.z += this.playerSpeed;
+      }
+      if (this.left && !this.pass) {
+        player.position.x -= this.playerSpeed;
+      }
+      if (this.right && !this.pass) {
+        player.position.x += this.playerSpeed;
+      }
     }
   }
 
