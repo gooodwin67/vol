@@ -7,9 +7,10 @@ export class Player {
 
     this.playerHeight = 1;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
-    this.playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00aa00 });
+    this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
     this.player.position.set(0, 0.5, 0);
+    this.player.castShadow = true;
 
     this.playerTopGeometry = new THREE.BoxGeometry(0.5, 0.1, 0.5);
     this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
@@ -21,7 +22,7 @@ export class Player {
     this.left = false;
     this.right = false;
 
-    this.playerSpeed = 0.05;
+    this.playerSpeed = 0.08;
 
     this.playerTapPas = false;
     this.playerNowPas = false;
@@ -63,9 +64,6 @@ export class Player {
           break;
         case "s":
         case "ы":
-          if (this.playerTapPas) {
-            this.playerNowPas = true;
-          }
           this.playerTapPas = false;
           break;
       }
@@ -74,16 +72,16 @@ export class Player {
 
   movePlayer(player) {
     if (!this.playerTapPas) {
-      if (this.forward && !this.pass) {
+      if (this.forward) {
         player.position.z -= this.playerSpeed;
       }
-      if (this.backward && !this.pass) {
+      if (this.backward) {
         player.position.z += this.playerSpeed;
       }
-      if (this.left && !this.pass) {
+      if (this.left) {
         player.position.x -= this.playerSpeed;
       }
-      if (this.right && !this.pass) {
+      if (this.right) {
         player.position.x += this.playerSpeed;
       }
     }

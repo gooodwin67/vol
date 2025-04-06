@@ -83,9 +83,12 @@ function initClases() {
 function initScenes() {
   scene.add(worldClass.ambientLight);
   scene.add(worldClass.dirLight);
+  //scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
+  scene.add(worldClass.plane2);
   scene.add(ballClass.ball);
+  scene.add(ballClass.ballMark);
   scene.add(playerClass.player);
   scene.add(playerClass.playerTop);
 }
@@ -95,10 +98,15 @@ function initScenes() {
 async function loadWorld() {
   await RAPIER.init();
   world = new RAPIER.World(new RAPIER.Vector3(0, -9.81, 0));
+  eventQueue = new RAPIER.EventQueue(true);
 
   addPhysicsToObject(playerClass.playerTop, 'player');
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
+  addPhysicsToObject(worldClass.plane2, 'plane2');
+  addPhysicsToObject(worldClass.plane3, 'plane3');
+  addPhysicsToObject(worldClass.plane4, 'plane4');
+  addPhysicsToObject(worldClass.plane5, 'plane5');
 }
 
 
@@ -116,33 +124,29 @@ init();
 
 function playerTapPas() {
 
-  eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-    if (handle1 == playerTop.handle && handle2 == ball.handle) {
-      console.log(12)
-    }
+  
 
-  })
-
-  if (playerClass.left) {
-    // playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
-    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.3 })
-    //ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
-    playerClass.player.position.y += 0.1;
-  }
-  else {
-    playerClass.player.position.y = 0.5;
-    playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
-  }
+  // if (playerClass.left) {
+  //   // playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
+  //   //playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.3 })
+  //   //ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
+  //   //playerClass.player.position.y += 0.1;
+  //   ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
+  // }
+  // else {
+  //   playerClass.player.position.y = 0.5;
+  //   playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
+  // }
 
 
-  if (worldClass.powerBlockWidth < powerWrap.offsetWidth) {
-    worldClass.powerBlockWidth += 4;
-    powerBlock.style.width = worldClass.powerBlockWidth + '%'
-  }
-  else {
-    playerClass.playerTapPass = false;
-    playerClass.playerNowPas = true;
-  }
+  // if (worldClass.powerBlockWidth < powerWrap.offsetWidth) {
+  //   worldClass.powerBlockWidth += 4;
+  //   powerBlock.style.width = worldClass.powerBlockWidth + '%'
+  // }
+  // else {
+  //   playerClass.playerTapPass = false;
+  //   playerClass.playerNowPas = true;
+  // }
 }
 
 
@@ -151,19 +155,74 @@ function animate() {
 
   if (dataLoaded) {
 
-    if (playerClass.playerTapPas) {
-      playerTapPas();
-    }
-    else {
-      powerBlock.style.width = 0;
-      worldClass.powerBlockWidth = 0;
-    }
+    eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+      if (handle1 == ball.handle) {
+      }
+  
+    })
 
-    //console.log(playerClass.playerNowPas);
+    
 
-    if (playerClass.playerNowPas) {
-      playerClass.playerNowPas = false;
-    }
+    // if (playerClass.playerTapPas) {
+    //   playerTapPas();
+    // }
+    // else {
+    //   powerBlock.style.width = 0;
+    //   worldClass.powerBlockWidth = 0;
+    // }
+
+    // console.log(playerClass.playerNowPas);
+
+    // if (playerClass.playerNowPas) {
+    //   playerClass.playerNowPas = false;
+    // }
+
+    //console.log(ball.linvel());
+
+    if (playerClass.playerTop.position.distanceTo(ballClass.ball.position) < 0.6) {
+
+      if (playerClass.playerTapPas && (playerClass.left || playerClass.right || playerClass.forward || playerClass.backward)) {
+        ball.applyImpulse({ x: 0.0, y: 0.9, z: 0.0 }, true);
+
+
+        const ballPosition = ball.translation();
+        const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
+
+        const gravity = -9.81; // Ускорение свободного падения
+        const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
+
+        const landingPoint = {
+          x: ballPosition.x + ballVelocity.x * timeOfFlight,
+          y: 0.1, // Предполагаем, что земля на уровне Y = 0
+          z: ballPosition.z + ballVelocity.z * timeOfFlight
+        };
+
+        //if (ball.linvel().y > -0.9) 
+        ballClass.ballMark.position.set(landingPoint.x, landingPoint.y, landingPoint.z);
+
+
+      }
+      else {
+        ball.setTranslation({ x: playerClass.player.position.x, y: playerClass.player.position.y+0.8, z: playerClass.player.position.z }, true);
+        ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+        ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+
+      }
+      
+      if (playerClass.left && playerClass.playerTapPas) {
+        ball.applyImpulse({ x: -0.4, y: 0.0, z: 0.0 }, true);
+      }
+      if (playerClass.right && playerClass.playerTapPas) {
+        ball.applyImpulse({ x: 0.4, y: 0.0, z: 0.0 }, true);
+      }
+      if (playerClass.forward && playerClass.playerTapPas) {
+        ball.applyImpulse({ x: 0.0, y: 0.0, z: -0.4 }, true);
+      }
+      if (playerClass.backward && playerClass.playerTapPas) {
+        ball.applyImpulse({ x: 0.0, y: 0.0, z: 0.4 }, true);
+      }
+      
+    };
 
     playerTop.setNextKinematicTranslation({ x: playerClass.player.position.x, y: playerClass.player.position.y + 0.7, z: playerClass.player.position.z }, true)
 
@@ -174,7 +233,7 @@ function animate() {
       dynamicBodies[i][0].quaternion.copy(dynamicBodies[i][1].rotation())
     }
 
-    eventQueue = new RAPIER.EventQueue(true);
+    
     world.step(eventQueue);
     stats.update();
     renderer.render(scene, camera);
@@ -195,7 +254,7 @@ function addPhysicsToObject(obj, body) {
 
   if (body == 'player') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(-1).setFriction(0);
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.x / 2, size.x / 2).setMass(1).setRestitution(0.5).setFriction(0);
     shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playerTop = body;
 
@@ -207,18 +266,27 @@ function addPhysicsToObject(obj, body) {
   else if (body == 'ball') {
     const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
+    shapeBall.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     ball = bodyBall;
     world.createCollider(shapeBall, bodyBall)
 
     dynamicBodies.push([obj, bodyBall, obj.id])
   }
 
-  else if (body == 'plane') {
+  else if (body.includes('plane') ) {
+    
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1.2).setFriction(0);
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1).setFriction(0);
 
     world.createCollider(shape, body)
 
     dynamicBodies.push([obj, body, obj.id])
+
+    // const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.1 });
+    // const cube = new THREE.Mesh(geometry, material);
+    // cube.position.set(obj.position.x, obj.position.y, obj.position.z)
+    // cube.rotation.copy(originalRotation);
+    // scene.add(cube);
   }
 }
