@@ -65,12 +65,9 @@ let ballClass;
 
 let ball;
 
-let playerTop;
+let playerTopBody;
 let eventQueue;
 
-let players = [];
-let activePlayerNum = 0;
-let activePlayer;
 
 let powerBlock = document.querySelector('.power_block');
 let powerWrap = document.querySelector('.power_wrap');
@@ -94,8 +91,13 @@ function initScenes() {
 
   scene.add(worldClass.plane);
   scene.add(worldClass.plane2);
+  scene.add(worldClass.plane3);
+  scene.add(worldClass.plane4);
+  scene.add(worldClass.plane5);
+  scene.add(worldClass.net);
   scene.add(ballClass.ball);
   scene.add(ballClass.ballMark);
+  scene.add(ballClass.ballMarkOnGround);
   scene.add(playerClass.player);
   scene.add(playerClass2.player);
   scene.add(playerClass.playerTop);
@@ -115,10 +117,16 @@ async function loadWorld() {
   addPhysicsToObject(worldClass.plane3, 'plane3');
   addPhysicsToObject(worldClass.plane4, 'plane4');
   addPhysicsToObject(worldClass.plane5, 'plane5');
+  addPhysicsToObject(worldClass.net, 'plane6');
 
-  players.push(playerClass.player, playerClass2.player)
+  playerClass.players.push(playerClass.player, playerClass2.player)
 
+  playerClass.player.position.x -= 2
   playerClass2.player.position.x += 2
+
+  playerClass.player.position.z += 3
+  playerClass2.player.position.z += 3
+
 }
 
 
@@ -134,31 +142,56 @@ async function init() {
 init();
 
 
-function playerTapPas() {
+function engine() {
+  if (ballClass.ball.position.z > 0) {
+    ballClass.ballSideMe = true;
+  }
+  else ballClass.ballSideMe = false;
 
 
 
-  // if (playerClass.left) {
-  //   // playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
-  //   //playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.3 })
-  //   //ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
-  //   //playerClass.player.position.y += 0.1;
-  //   ball.applyImpulse({ x: -0.2, y: 1.0, z: 0.0 }, true);
-  // }
-  // else {
-  //   playerClass.player.position.y = 0.5;
-  //   playerTop.setNextKinematicRotation({ w: 1.0, x: 0.0, y: 0.0, z: 0.0 })
-  // }
+  let ballPlayerCollision = false;
+  eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+    if (handle2 == ball.handle) {
+      ballPlayerCollision = true;
+    }
+  })
 
 
-  // if (worldClass.powerBlockWidth < powerWrap.offsetWidth) {
-  //   worldClass.powerBlockWidth += 4;
-  //   powerBlock.style.width = worldClass.powerBlockWidth + '%'
-  // }
-  // else {
-  //   playerClass.playerTapPass = false;
-  //   playerClass.playerNowPas = true;
-  // }
+
+
+
+
+  if (playerClass.playerCanPas && playerClass.activePlayer.position.distanceTo(ballClass.ball.position) < 1.2 && ballPlayerCollision) {
+    ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+
+    playerClass.activePlayerNum == 0 ? playerClass.activePlayerNum = 1 : playerClass.activePlayerNum = 0;
+
+    const ballPosition = ball.translation();
+    const landingPoint = ballClass.ballMark.position;
+    const gravity = -9.81;
+
+    const deltaX = landingPoint.x - ballPosition.x;
+    const deltaZ = landingPoint.z - ballPosition.z;
+
+    const timeOfFlight = 1.7;
+
+    const horizontalVelocityX = deltaX / timeOfFlight;
+    const horizontalVelocityZ = deltaZ / timeOfFlight;
+
+    const verticalVelocityY = (gravity * timeOfFlight) / 2 * 1.3;
+    const impulse = {
+      x: horizontalVelocityX,
+      y: verticalVelocityY,
+      z: horizontalVelocityZ
+    };
+
+    ballClass.ballMarkOnGround.position.copy(ballClass.ballMark.position)
+    ball.applyImpulse(impulse, true);
+
+  }
+
 }
 
 
@@ -167,155 +200,12 @@ function animate() {
 
   if (dataLoaded) {
 
-    activePlayer = players[activePlayerNum];
-
-    //if (!playerClass.playerTapPas) ballClass.ballMark.position.copy(activePlayer.position)
-
-    eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-      if (handle2 == ball.handle) {
-        console.log(ball.handle)
-      }
-
-    })
 
 
 
-    // if (playerClass.playerTapPas) {
-    //   playerTapPas();
-    // }
-    // else {
-    //   powerBlock.style.width = 0;
-    //   worldClass.powerBlockWidth = 0;
-    // }
+    engine();
 
-    // console.log(playerClass.playerNowPas);
-
-    // if (playerClass.playerNowPas) {
-    //   playerClass.playerNowPas = false;
-    // }
-
-    console.log(`${playerClass.playerCanPas} ---- ${playerClass.playerTapPas}`);
-    //console.log(activePlayer.position.distanceTo(ballClass.ball.position));
-    // if (playerClass.playerCanPas && playerClass.playerTapPas && activePlayer.position.distanceTo(ballClass.ball.position) < 1.2) {
-    //   ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    //   ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    //   ball.applyImpulse({ x: 0.5, y: 9.9, z: 0.0 }, true);
-    //   activePlayerNum == 0 ? activePlayerNum = 1 : activePlayerNum = 0;
-
-
-    //   const ballPosition = ball.translation();
-    //   const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
-
-    //   const gravity = -9.81; // Ускорение свободного падения
-    //   const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
-
-    //   const landingPoint = {
-    //     x: ballPosition.x + ballVelocity.x * timeOfFlight,
-    //     y: 0.1, // Предполагаем, что земля на уровне Y = 0
-    //     z: ballPosition.z + ballVelocity.z * timeOfFlight
-    //   };
-
-
-    //   ballClass.ballMark.position.set(landingPoint.x, landingPoint.y, landingPoint.z);
-
-    // }
-
-    if (playerClass.playerCanPas && playerClass.playerTapPas && activePlayer.position.distanceTo(ballClass.ball.position) < 0.5) {
-      ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-      ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-
-      activePlayerNum == 0 ? activePlayerNum = 1 : activePlayerNum = 0;
-
-      const ballPosition = ball.translation(); // Получаем текущую позицию мяча
-      const landingPoint = ballClass.ballMark.position; // Получаем позицию маркера приземления
-
-      const gravity = -9.81; // Ускорение свободного падения (в м/с²)
-
-      // Вычисляем расстояние до маркера по осям X и Z
-      const deltaX = landingPoint.x - ballPosition.x;
-      const deltaZ = landingPoint.z - ballPosition.z;
-
-      // Время полета, которое мы хотим использовать. Например, 2.5 секунды.
-      const timeOfFlight = 1.5;
-
-      // Вычисляем горизонтальные скорости
-      const horizontalVelocityX = deltaX / timeOfFlight;
-      const horizontalVelocityZ = deltaZ / timeOfFlight;
-
-      // Вычисляем необходимую вертикальную скорость
-      const verticalVelocityY = (gravity * timeOfFlight) / 2 * 1.2; // Учитываем гравитацию
-
-      // Создаем вектор импульса
-      const impulse = {
-        x: horizontalVelocityX,
-        y: verticalVelocityY,
-        z: horizontalVelocityZ
-      };
-
-      // Применяем импульс к мячу
-      ball.applyImpulse(impulse, true);
-
-      //playerClass.playerCanPas = false
-
-
-    }
-
-
-
-
-
-
-
-
-    // if (playerClass.playerTop.position.distanceTo(ballClass.ball.position) < 0.6) {
-
-    //   if (playerClass.playerTapPas && (playerClass.left || playerClass.right || playerClass.forward || playerClass.backward)) {
-    //     ball.applyImpulse({ x: 0.0, y: 0.9, z: 0.0 }, true);
-
-
-    //     const ballPosition = ball.translation();
-    //     const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
-
-    //     const gravity = -9.81; // Ускорение свободного падения
-    //     const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
-
-    //     const landingPoint = {
-    //       x: ballPosition.x + ballVelocity.x * timeOfFlight,
-    //       y: 0.1, // Предполагаем, что земля на уровне Y = 0
-    //       z: ballPosition.z + ballVelocity.z * timeOfFlight
-    //     };
-
-    //     //if (ball.linvel().y > -0.9) 
-    //     ballClass.ballMark.position.set(landingPoint.x, landingPoint.y, landingPoint.z);
-
-
-
-    //   }
-    //   else {
-    //     // ball.setTranslation({ x: playerClass.player.position.x, y: playerClass.player.position.y + 0.8, z: playerClass.player.position.z }, true);
-    //     ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    //     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-
-    //   }
-
-    //   if (playerClass.left && playerClass.playerTapPas) {
-    //     ball.applyImpulse({ x: -0.4, y: 0.0, z: 0.0 }, true);
-    //   }
-    //   if (playerClass.right && playerClass.playerTapPas) {
-    //     ball.applyImpulse({ x: 0.4, y: 0.0, z: 0.0 }, true);
-    //   }
-    //   if (playerClass.forward && playerClass.playerTapPas) {
-    //     ball.applyImpulse({ x: 0.0, y: 0.0, z: -0.4 }, true);
-    //   }
-    //   if (playerClass.backward && playerClass.playerTapPas) {
-    //     ball.applyImpulse({ x: 0.0, y: 0.0, z: 0.4 }, true);
-    //   }
-
-    // };
-
-    playerTop.setNextKinematicTranslation({ x: activePlayer.position.x, y: activePlayer.position.y + 0.7, z: activePlayer.position.z }, true)
-
-    playerClass.movePlayer(activePlayer);
+    playerClass.movePlayer(playerTopBody);
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -345,7 +235,7 @@ function addPhysicsToObject(obj, body) {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0.5).setFriction(0);
     shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
-    playerTop = body;
+    playerTopBody = body;
 
     let playerTopCollider = world.createCollider(shape, body)
 
@@ -357,6 +247,7 @@ function addPhysicsToObject(obj, body) {
     const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
     shapeBall.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     ball = bodyBall;
+    ballClass.ballBody = bodyBall;
     world.createCollider(shapeBall, bodyBall)
 
     dynamicBodies.push([obj, bodyBall, obj.id])
@@ -365,7 +256,7 @@ function addPhysicsToObject(obj, body) {
   else if (body.includes('plane')) {
 
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(1).setFriction(0);
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0);
 
     world.createCollider(shape, body)
 

@@ -5,14 +5,14 @@ export class Player {
     this.scene = scene;
     this.ballClass = ballClass;
 
-    this.playerHeight = 1;
+    this.playerHeight = 1.4;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
     this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
     this.player.position.set(0, 0.5, 0);
     this.player.castShadow = true;
 
-    this.playerTopGeometry = new THREE.BoxGeometry(0.5, 0.1, 0.5);
+    this.playerTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
     this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
@@ -29,13 +29,18 @@ export class Player {
     this.left = false;
     this.right = false;
 
-    this.playerSpeed = 0.08;
+    this.playerSpeed = 0.06;
+    this.playerThinkSpeed = 0.1;
 
     this.playerActive = true;
 
     this.playerTapPas = false;
     this.playerCanPas = true;
     this.playerNowPas = false;
+
+    this.activePlayer = this.player;
+    this.activePlayerNum = 0;
+    this.players = [];
 
 
     addEventListener("keydown", (event) => {
@@ -56,6 +61,12 @@ export class Player {
         case "ы":
           this.playerTapPas = true;
           break;
+        case "r":
+          ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+          ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+          ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: -4.0 }, true);
+          ballClass.ballBody.applyImpulse({ x: -0.5, y: 9.9, z: 3.7 }, true);
+          break;
       }
     });
     addEventListener("keyup", (event) => {
@@ -75,45 +86,50 @@ export class Player {
         case "s":
         case "ы":
           this.playerTapPas = false;
+
           break;
       }
     });
   }
 
-  movePlayer(player) {
+  movePlayer(playerTopBody) {
+
+    playerTopBody.setNextKinematicTranslation({ x: this.activePlayer.position.x, y: this.activePlayer.position.y + 0.7, z: this.activePlayer.position.z }, true)
+    this.activePlayer = this.players[this.activePlayerNum];
 
     if (this.forward) {
       if (!this.playerTapPas) {
-        player.position.z -= this.playerSpeed;
+        this.activePlayer.position.z -= this.playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.z -= this.playerSpeed;
+        this.ballClass.ballMark.position.z -= this.playerThinkSpeed;
       }
     }
     if (this.backward) {
       if (!this.playerTapPas) {
-        player.position.z += this.playerSpeed;
+        this.activePlayer.position.z += this.playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.z += this.playerSpeed;
+        this.ballClass.ballMark.position.z += this.playerThinkSpeed;
       }
     }
     if (this.left) {
       if (!this.playerTapPas) {
-        player.position.x -= this.playerSpeed;
+        this.activePlayer.position.x -= this.playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.x -= this.playerSpeed;
+        this.ballClass.ballMark.position.x -= this.playerThinkSpeed;
       }
     }
     if (this.right) {
       if (!this.playerTapPas) {
-        player.position.x += this.playerSpeed;
+        this.activePlayer.position.x += this.playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.x += this.playerSpeed;
+        this.ballClass.ballMark.position.x += this.playerThinkSpeed;
       }
     }
+
 
   }
 
