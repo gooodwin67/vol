@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
 export class Player {
-  constructor(scene, ball) {
+  constructor(scene, ballClass) {
     this.scene = scene;
-    this.ball = ball;
+    this.ballClass = ballClass;
 
     this.playerHeight = 1;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
@@ -15,7 +15,14 @@ export class Player {
     this.playerTopGeometry = new THREE.BoxGeometry(0.5, 0.1, 0.5);
     this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
-    this.playerTop.position.set(0, 2.0, 0);
+    this.playerTop.position.set(0, 0.0, 0);
+
+    this.playerMarkGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    this.playerMarkMaterial = new THREE.MeshLambertMaterial({ color: 0xaa0000 });
+    this.playerMark = new THREE.Mesh(this.playerMarkGeometry, this.playerMarkMaterial);
+    this.playerMark.position.set(0, 0.8, 0);
+
+    //this.player.add(this.playerMark)
 
     this.forward = false;
     this.backward = false;
@@ -24,7 +31,10 @@ export class Player {
 
     this.playerSpeed = 0.08;
 
+    this.playerActive = true;
+
     this.playerTapPas = false;
+    this.playerCanPas = true;
     this.playerNowPas = false;
 
 
@@ -71,20 +81,40 @@ export class Player {
   }
 
   movePlayer(player) {
-    if (!this.playerTapPas) {
-      if (this.forward) {
+
+    if (this.forward) {
+      if (!this.playerTapPas) {
         player.position.z -= this.playerSpeed;
       }
-      if (this.backward) {
-        player.position.z += this.playerSpeed;
-      }
-      if (this.left) {
-        player.position.x -= this.playerSpeed;
-      }
-      if (this.right) {
-        player.position.x += this.playerSpeed;
+      else {
+        this.ballClass.ballMark.position.z -= this.playerSpeed;
       }
     }
+    if (this.backward) {
+      if (!this.playerTapPas) {
+        player.position.z += this.playerSpeed;
+      }
+      else {
+        this.ballClass.ballMark.position.z += this.playerSpeed;
+      }
+    }
+    if (this.left) {
+      if (!this.playerTapPas) {
+        player.position.x -= this.playerSpeed;
+      }
+      else {
+        this.ballClass.ballMark.position.x -= this.playerSpeed;
+      }
+    }
+    if (this.right) {
+      if (!this.playerTapPas) {
+        player.position.x += this.playerSpeed;
+      }
+      else {
+        this.ballClass.ballMark.position.x += this.playerSpeed;
+      }
+    }
+
   }
 
 }
