@@ -22,6 +22,7 @@ import { detectCollisionCubes } from "./functions/functions";
 import { Player } from "./player";
 import { World } from "./world";
 import { Ball } from "./ball";
+import { Opponent } from './opponent';
 
 console.clear();
 
@@ -58,14 +59,20 @@ let dataLoaded = false;
 let world;
 let dynamicBodies = [];
 
+
+
 let worldClass;
 let playerClass;
 let playerClass2;
+
+let opponentClass;
+
 let ballClass;
 
 let ball;
 
 let playerTopBody;
+let opponentTopBody;
 let eventQueue;
 
 
@@ -77,8 +84,10 @@ let powerWrap = document.querySelector('.power_wrap');
 function initClases() {
   worldClass = new World();
   ballClass = new Ball(scene);
-  playerClass = new Player(scene, ballClass);
-  playerClass2 = new Player(scene, ballClass);
+  playerClass = new Player(scene, ballClass, worldClass);
+  playerClass2 = new Player(scene, ballClass, worldClass);
+  opponentClass = new Opponent(scene, ballClass, worldClass);
+
   playerClass2.playerActive = false;
 }
 
@@ -100,23 +109,28 @@ function initScenes() {
   scene.add(ballClass.ballMarkOnGround);
   scene.add(playerClass.player);
   scene.add(playerClass2.player);
+
   scene.add(playerClass.playerTop);
+
+  scene.add(opponentClass.opponent);
+  scene.add(opponentClass.opponentTop);
 }
 
 
 
 async function loadWorld() {
   await RAPIER.init();
-  world = new RAPIER.World(new RAPIER.Vector3(0, -9.81, 0));
+  world = new RAPIER.World(new RAPIER.Vector3(0, worldClass.gravity, 0));
   eventQueue = new RAPIER.EventQueue(true);
 
   addPhysicsToObject(playerClass.playerTop, 'player');
+  addPhysicsToObject(opponentClass.opponentTop, 'opponent');
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
-  addPhysicsToObject(worldClass.plane2, 'plane2');
-  addPhysicsToObject(worldClass.plane3, 'plane3');
-  addPhysicsToObject(worldClass.plane4, 'plane4');
-  addPhysicsToObject(worldClass.plane5, 'plane5');
+  // addPhysicsToObject(worldClass.plane2, 'plane2');
+  // addPhysicsToObject(worldClass.plane3, 'plane3');
+  // addPhysicsToObject(worldClass.plane4, 'plane4');
+  // addPhysicsToObject(worldClass.plane5, 'plane5');
   addPhysicsToObject(worldClass.net, 'plane6');
 
   playerClass.players.push(playerClass.player, playerClass2.player)
@@ -159,10 +173,12 @@ function engine() {
 
 
 
+  if (playerClass.playerTop.position.distanceTo(ballClass.ball.position) > 2) {
+    playerClass.playerCanPas = true;
+  }
 
 
-
-  if (playerClass.playerCanPas && playerClass.activePlayer.position.distanceTo(ballClass.ball.position) < 1.2 && ballPlayerCollision) {
+  if (playerClass.playerCanPas && playerClass.playerTop.position.distanceTo(ballClass.ball.position) < 3.5 && ballPlayerCollision) {
     ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
@@ -170,27 +186,76 @@ function engine() {
 
     const ballPosition = ball.translation();
     const landingPoint = ballClass.ballMark.position;
-    const gravity = -9.81;
 
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;
 
-    const timeOfFlight = 1.7;
+    const timeOfFlight = -worldClass.gravity / 4.7;
 
     const horizontalVelocityX = deltaX / timeOfFlight;
     const horizontalVelocityZ = deltaZ / timeOfFlight;
 
-    const verticalVelocityY = (gravity * timeOfFlight) / 2 * 1.3;
+    const verticalVelocityY = (worldClass.gravity * timeOfFlight) / 1.7;
     const impulse = {
       x: horizontalVelocityX,
       y: verticalVelocityY,
       z: horizontalVelocityZ
     };
 
-    ballClass.ballMarkOnGround.position.copy(ballClass.ballMark.position)
+    ballClass.ballMarkOnGround.position.copy(new THREE.Vector3(ballClass.ballMark.position.x, ballClass.ballMark.position.y, ballClass.ballMark.position.z))
+    //ballClass.ballMarkOnGround.position.y;
     ball.applyImpulse(impulse, true);
+    playerClass.playerCanPas = false;
 
   }
+
+
+
+
+
+
+  if (opponentClass.opponentTop.position.distanceTo(ballClass.ball.position) < 0.6) {
+    ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ball.applyImpulse({ x: 0.0, y: 6.9, z: 3.0 }, true);
+
+
+    const ballPosition = ball.translation();
+    const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
+
+    const gravity = -9.81; // Ускорение свободного падения
+    const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
+
+    const landingPoint = {
+      x: ballPosition.x + ballVelocity.x * timeOfFlight,
+      y: 0.1, // Предполагаем, что земля на уровне Y = 0
+      z: ballPosition.z + ballVelocity.z * timeOfFlight
+    };
+
+    //if (ball.linvel().y > -0.9) 
+    ballClass.ballMarkOnGround.position.set(landingPoint.x, landingPoint.y, landingPoint.z - 0.7);
+
+
+
+    if (playerClass.players[0].position.distanceTo(ballClass.ballMarkOnGround.position) < playerClass.players[1].position.distanceTo(ballClass.ballMarkOnGround.position)) {
+      playerClass.activePlayerNum = 0;
+    }
+    else {
+      playerClass.activePlayerNum = 1;
+    }
+
+    ballClass.ballMark.position.copy(playerClass.players[playerClass.activePlayerNum].position)
+    ballClass.ballMark.position.y = 0.1;
+
+  }
+  else {
+
+
+
+  }
+
+
+
 
 }
 
@@ -206,6 +271,7 @@ function animate() {
     engine();
 
     playerClass.movePlayer(playerTopBody);
+    opponentClass.moveOpponent(opponentTopBody);
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -238,6 +304,17 @@ function addPhysicsToObject(obj, body) {
     playerTopBody = body;
 
     let playerTopCollider = world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+  }
+
+  else if (body == 'opponent') {
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0.5).setFriction(0);
+    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    opponentTopBody = body;
+
+    world.createCollider(shape, body)
 
     dynamicBodies.push([obj, body, obj.id])
   }

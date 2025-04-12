@@ -17,7 +17,8 @@ export class Ball {
   this.ballMark2Geometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
   this.ballMark2Material = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
   this.ballMarkOnGround = new THREE.Mesh(this.ballMark2Geometry, this.ballMark2Material);
-  this.ballMarkOnGround.position.y = -0.1;
+  this.ballMarkOnGround.position.y = 0.1;
+  this.ballMarkOnGround.position.z = -2;
 
   this.ballBody;
 

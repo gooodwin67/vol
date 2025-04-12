@@ -39,11 +39,12 @@ export class World {
   this.plane5.rotation.y = Math.PI / 2;
 
   this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 10), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.3 }));
-  this.net.position.set(0, 1.5, 0);
+  this.net.position.set(0, 1.0, 0);
   this.net.rotation.x = Math.PI / 2;
   this.net.rotation.y = Math.PI / 2;
 
 
+  this.gravity = -9.81;
 
   this.powerBlockWidth = 0;
  }

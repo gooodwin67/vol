@@ -1,9 +1,10 @@
 import * as THREE from "three";
 
 export class Player {
-  constructor(scene, ballClass) {
+  constructor(scene, ballClass, worldClass) {
     this.scene = scene;
     this.ballClass = ballClass;
+    this.worldClass = worldClass;
 
     this.playerHeight = 1.4;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
@@ -65,7 +66,7 @@ export class Player {
           ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: -4.0 }, true);
-          ballClass.ballBody.applyImpulse({ x: -0.5, y: 9.9, z: 3.7 }, true);
+          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
           break;
       }
     });
@@ -94,8 +95,10 @@ export class Player {
 
   movePlayer(playerTopBody) {
 
-    playerTopBody.setNextKinematicTranslation({ x: this.activePlayer.position.x, y: this.activePlayer.position.y + 0.7, z: this.activePlayer.position.z }, true)
+    playerTopBody.setNextKinematicTranslation({ x: this.activePlayer.position.x, y: this.activePlayer.position.y + 1.3, z: this.activePlayer.position.z }, true)
     this.activePlayer = this.players[this.activePlayerNum];
+
+
 
     if (this.forward) {
       if (!this.playerTapPas) {
