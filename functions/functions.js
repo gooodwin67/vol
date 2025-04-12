@@ -11,3 +11,7 @@ export function detectCollisionCubes(object1, object2) {
     //if (box1.intersectsBox(box2)) $('.info').text(1);
     return box1.intersectsBox(box2);
 }
+
+export function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min
+}

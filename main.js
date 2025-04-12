@@ -17,7 +17,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 
 
-import { detectCollisionCubes } from "./functions/functions";
+import { detectCollisionCubes, getRandomNumber } from "./functions/functions";
 
 import { Player } from "./player";
 import { World } from "./world";
@@ -190,7 +190,7 @@ function engine() {
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;
 
-    const timeOfFlight = -worldClass.gravity / 4.7;
+    const timeOfFlight = -worldClass.gravity / 2.7;
 
     const horizontalVelocityX = deltaX / timeOfFlight;
     const horizontalVelocityZ = deltaZ / timeOfFlight;
@@ -214,16 +214,18 @@ function engine() {
 
 
 
-  if (opponentClass.opponentTop.position.distanceTo(ballClass.ball.position) < 0.6) {
+  if (opponentClass.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9) {
     ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ball.applyImpulse({ x: 0.0, y: 6.9, z: 3.0 }, true);
+    ball.applyImpulse({ x: getRandomNumber(-1, 1), y: 6.9, z: 2.5 }, true);
+
 
 
     const ballPosition = ball.translation();
     const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
 
-    const gravity = -9.81; // Ускорение свободного падения
+    const gravity = worldClass.gravity; // Ускорение свободного падения
+    //const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
     const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
 
     const landingPoint = {

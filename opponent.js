@@ -10,7 +10,7 @@ export class Opponent {
     this.opponentGeometry = new THREE.BoxGeometry(0.5, this.opponentHeight, 0.5);
     this.opponentMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.opponent = new THREE.Mesh(this.opponentGeometry, this.opponentMaterial);
-    this.opponent.position.set(2, 0.5, -3);
+
     this.opponent.castShadow = true;
 
     this.opponentTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
@@ -45,7 +45,7 @@ export class Opponent {
   moveOpponent(opponentTopBody) {
     opponentTopBody.setNextKinematicTranslation({ x: this.opponent.position.x, y: this.opponent.position.y + 1.3, z: this.opponent.position.z }, true)
     if (this.ballClass.ballSideMe == false && this.ballClass.ballMarkOnGround.position.z < 0) {
-      this.opponent.position.copy(new THREE.Vector3(this.ballClass.ballMarkOnGround.position.x, this.ballClass.ballMarkOnGround.position.y, this.ballClass.ballMarkOnGround.position.z + 0.4))
+      this.opponent.position.copy(new THREE.Vector3(this.ballClass.ballMarkOnGround.position.x, this.opponentHeight / 3, this.ballClass.ballMarkOnGround.position.z + 0.4))
     }
   }
 

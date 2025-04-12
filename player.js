@@ -13,7 +13,7 @@ export class Player {
     this.player.position.set(0, 0.5, 0);
     this.player.castShadow = true;
 
-    this.playerTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
+    this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 1.5);
     this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
@@ -31,7 +31,7 @@ export class Player {
     this.right = false;
 
     this.playerSpeed = 0.06;
-    this.playerThinkSpeed = 0.1;
+    this.playerThinkSpeed = 0.2;
 
     this.playerActive = true;
 
@@ -66,7 +66,8 @@ export class Player {
           ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: -4.0 }, true);
-          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
+          //ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
+          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity * 1.2, z: -worldClass.gravity / 2 }, true);
           break;
       }
     });
