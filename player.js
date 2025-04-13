@@ -14,7 +14,7 @@ export class Player {
     this.player.castShadow = true;
 
     this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 1.5);
-    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
+    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
 

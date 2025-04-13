@@ -35,7 +35,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0, 9, 9);
+camera.position.set(0, 9, 11);
 
 let stats = new Stats();
 document.body.appendChild(stats.dom);
@@ -107,6 +107,7 @@ function initScenes() {
   scene.add(ballClass.ball);
   scene.add(ballClass.ballMark);
   scene.add(ballClass.ballMarkOnGround);
+  scene.add(ballClass.ballMarkOppOnGround);
   scene.add(playerClass.player);
   scene.add(playerClass2.player);
 
@@ -191,24 +192,24 @@ function engine() {
     const deltaZ = landingPoint.z - ballPosition.z;
 
     // Константа, управляющая высотой полёта
-    const heightFactor = 4; // Меняйте это значение, чтобы регулировать высоту
+    const heightFactor = 3; // Меняйте это значение, чтобы регулировать высоту
     // Время полёта (зависит от высоты)
     const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
 
-    const speedFactor = 0.5; // уменьшите скорость на 20%
+    const speedFactor = 0.45; // уменьшите скорость на 20%
     const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
     const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
 
-  // Вертикальная скорость (зависит от высоты)
-  const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+    // Вертикальная скорость (зависит от высоты)
+    const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
 
-  // Импульс
-  const impulse = {
-    x: horizontalVelocityX,
-    y: verticalVelocityY,
-    z: horizontalVelocityZ
-  };
+    // Импульс
+    const impulse = {
+      x: horizontalVelocityX,
+      y: verticalVelocityY,
+      z: horizontalVelocityZ
+    };
 
 
     ballClass.ballMarkOnGround.position.copy(new THREE.Vector3(ballClass.ballMark.position.x, ballClass.ballMark.position.y, ballClass.ballMark.position.z))
@@ -226,29 +227,47 @@ function engine() {
   if (opponentClass.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9) {
     ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ball.applyImpulse({ x: getRandomNumber(-1, 1), y: 6.9, z: 2.5 }, true);
 
 
+
+
+
+    
 
     const ballPosition = ball.translation();
-    const ballVelocity = ball.linvel(); // Предполагаем, что у вас есть метод для получения скорости мяча
+    const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane/2, worldClass.widthPlane/2),0,getRandomNumber(4, worldClass.heightPlane/2));
 
-    const gravity = worldClass.gravity; // Ускорение свободного падения
-    //const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
-    const timeOfFlight = (2.5 * ballVelocity.y) / -gravity; // Время полета до приземления
+    const deltaX = landingPoint.x - ballPosition.x;
+    const deltaZ = landingPoint.z - ballPosition.z;
 
-    const landingPoint = {
-      x: ballPosition.x + ballVelocity.x * timeOfFlight,
-      y: 0.1, // Предполагаем, что земля на уровне Y = 0
-      z: ballPosition.z + ballVelocity.z * timeOfFlight
+    // Константа, управляющая высотой полёта
+    const heightFactor = 3; // Меняйте это значение, чтобы регулировать высоту
+    // Время полёта (зависит от высоты)
+    const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
+
+
+    const speedFactor = 0.45; // уменьшите скорость на 20%
+    const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
+    const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
+
+    // Вертикальная скорость (зависит от высоты)
+    const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+
+    // Импульс
+    const impulse = {
+      x: horizontalVelocityX,
+      y: verticalVelocityY,
+      z: horizontalVelocityZ
     };
 
-    //if (ball.linvel().y > -0.9) 
-    ballClass.ballMarkOnGround.position.set(landingPoint.x, landingPoint.y, landingPoint.z - 0.7);
+    ballClass.ballMarkOppOnGround.position.copy(landingPoint);
+    ballClass.ballMarkOppOnGround.position.y = 0.2;
+    //ballClass.ballMarkOnGround.position.y;
+    ball.applyImpulse(impulse, true);
 
 
-
-    if (playerClass.players[0].position.distanceTo(ballClass.ballMarkOnGround.position) < playerClass.players[1].position.distanceTo(ballClass.ballMarkOnGround.position)) {
+    ////////////////////////////
+    if (playerClass.players[0].position.distanceTo(ballClass.ballMarkOppOnGround.position) < playerClass.players[1].position.distanceTo(ballClass.ballMarkOppOnGround.position)) {
       playerClass.activePlayerNum = 0;
     }
     else {
