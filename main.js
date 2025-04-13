@@ -190,17 +190,26 @@ function engine() {
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;
 
-    const timeOfFlight = -worldClass.gravity / 2.7;
+    // Константа, управляющая высотой полёта
+    const heightFactor = 4; // Меняйте это значение, чтобы регулировать высоту
+    // Время полёта (зависит от высоты)
+    const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
-    const horizontalVelocityX = deltaX / timeOfFlight;
-    const horizontalVelocityZ = deltaZ / timeOfFlight;
 
-    const verticalVelocityY = (worldClass.gravity * timeOfFlight) / 1.7;
-    const impulse = {
-      x: horizontalVelocityX,
-      y: verticalVelocityY,
-      z: horizontalVelocityZ
-    };
+    const speedFactor = 0.5; // уменьшите скорость на 20%
+    const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
+    const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
+
+  // Вертикальная скорость (зависит от высоты)
+  const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+
+  // Импульс
+  const impulse = {
+    x: horizontalVelocityX,
+    y: verticalVelocityY,
+    z: horizontalVelocityZ
+  };
+
 
     ballClass.ballMarkOnGround.position.copy(new THREE.Vector3(ballClass.ballMark.position.x, ballClass.ballMark.position.y, ballClass.ballMark.position.z))
     //ballClass.ballMarkOnGround.position.y;

@@ -67,7 +67,7 @@ export class Player {
           ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: -4.0 }, true);
           //ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
-          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity * 1.2, z: -worldClass.gravity / 2 }, true);
+          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity * 1.2, z: -worldClass.gravity / 3 }, true);
           break;
       }
     });
