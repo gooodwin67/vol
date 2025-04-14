@@ -45,6 +45,12 @@ export class Player {
 
     this.playersSpeed = [0.07, 0.07];
 
+    this.playerBodies = [];
+
+    this.xx = 0;
+    this.zz = 0;
+
+
 
     addEventListener("keydown", (event) => {
       switch (event.key) {
@@ -67,9 +73,13 @@ export class Player {
         case "r":
           ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-          ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: -4.0 }, true);
+          ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: 4.0 }, true);
           //ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
-          ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity * 1.2, z: -worldClass.gravity / 3 }, true);
+          ballClass.ballBody.applyImpulse({ x: 0, y: 10, z: 0 }, true);
+          break;
+        case "й":
+        case "q":
+          this.activePlayerNum == 0 ? this.activePlayerNum = 1 : this.activePlayerNum = 0;
           break;
       }
     });
@@ -102,39 +112,49 @@ export class Player {
     this.activePlayer = this.players[this.activePlayerNum];
 
 
+    this.playerBodies[this.activePlayerNum].setNextKinematicTranslation({ x: this.playerBodies[this.activePlayerNum].translation().x + this.xx, y: this.playerBodies[this.activePlayerNum].translation().y, z: this.playerBodies[this.activePlayerNum].translation().z + this.zz }, true)
+
 
     if (this.forward) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.z -= this.playersSpeed[this.activePlayerNum];
+        this.zz = -this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.z -= this.playerThinkSpeed;
       }
     }
-    if (this.backward) {
+    else if (this.backward) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.z += this.playersSpeed[this.activePlayerNum];
+        this.zz = this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.z += this.playerThinkSpeed;
       }
     }
+    else {
+      this.zz = 0
+    }
     if (this.left) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.x -= this.playersSpeed[this.activePlayerNum];
+        this.xx = -this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.x -= this.playerThinkSpeed;
       }
     }
-    if (this.right) {
+    else if (this.right) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.x += this.playersSpeed[this.activePlayerNum];
+        this.xx = this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.x += this.playerThinkSpeed;
       }
     }
+    else {
+      this.xx = 0;
+    }
+
+
 
 
   }

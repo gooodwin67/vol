@@ -127,7 +127,18 @@ async function loadWorld() {
   world = new RAPIER.World(new RAPIER.Vector3(0, worldClass.gravity, 0));
   eventQueue = new RAPIER.EventQueue(true);
 
+  playerClass.players.push(playerClass.player, playerClass2.player)
+  opponentClass.opponents.push(opponentClass.opponent, opponentClass2.opponent)
+
+  playerClass.player.position.x -= 2
+  playerClass2.player.position.x += 2
+
+  opponentClass.opponent.position.x -= 2
+  opponentClass2.opponent.position.x += 2
+
   addPhysicsToObject(playerClass.playerTop, 'player');
+  addPhysicsToObject(playerClass.player, 'playerMain');
+  addPhysicsToObject(playerClass2.player, 'playerMain');
   addPhysicsToObject(opponentClass.opponentTop, 'opponent');
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
@@ -137,14 +148,7 @@ async function loadWorld() {
   // addPhysicsToObject(worldClass.plane5, 'plane5');
   addPhysicsToObject(worldClass.net, 'plane6');
 
-  playerClass.players.push(playerClass.player, playerClass2.player)
-  opponentClass.opponents.push(opponentClass.opponent, opponentClass2.opponent)
 
-  playerClass.player.position.x -= 2
-  playerClass2.player.position.x += 2
-
-  opponentClass.opponent.position.x -= 2
-  opponentClass2.opponent.position.x += 2
 
 
 
@@ -180,7 +184,7 @@ function engine() {
 
   let ballPlayerCollision = false;
   eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-    if (handle2 == ball.handle) {
+    if (handle2 == ball.handle && handle1 == 0) {
       ballPlayerCollision = true;
     }
   })
@@ -342,6 +346,16 @@ function addPhysicsToObject(obj, body) {
     playerTopBody = body;
 
     let playerTopCollider = world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+  }
+
+  if (body == 'playerMain') {
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0.5).setFriction(0);
+    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    playerClass.playerBodies.push(body);
+    world.createCollider(shape, body)
 
     dynamicBodies.push([obj, body, obj.id])
   }
