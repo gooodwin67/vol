@@ -66,6 +66,7 @@ let playerClass;
 let playerClass2;
 
 let opponentClass;
+let opponentClass2;
 
 let ballClass;
 
@@ -87,8 +88,10 @@ function initClases() {
   playerClass = new Player(scene, ballClass, worldClass);
   playerClass2 = new Player(scene, ballClass, worldClass);
   opponentClass = new Opponent(scene, ballClass, worldClass);
+  opponentClass2 = new Opponent(scene, ballClass, worldClass);
 
   playerClass2.playerActive = false;
+  opponentClass2.opponentActive = false;
 }
 
 
@@ -99,10 +102,7 @@ function initScenes() {
   //scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
-  scene.add(worldClass.plane2);
-  scene.add(worldClass.plane3);
-  scene.add(worldClass.plane4);
-  scene.add(worldClass.plane5);
+
   scene.add(worldClass.net);
   scene.add(ballClass.ball);
   scene.add(ballClass.ballMark);
@@ -113,7 +113,10 @@ function initScenes() {
 
   scene.add(playerClass.playerTop);
 
+  scene.add(playerClass.playerMark);
+
   scene.add(opponentClass.opponent);
+  scene.add(opponentClass2.opponent);
   scene.add(opponentClass.opponentTop);
 }
 
@@ -135,12 +138,15 @@ async function loadWorld() {
   addPhysicsToObject(worldClass.net, 'plane6');
 
   playerClass.players.push(playerClass.player, playerClass2.player)
+  opponentClass.opponents.push(opponentClass.opponent, opponentClass2.opponent)
 
   playerClass.player.position.x -= 2
   playerClass2.player.position.x += 2
 
-  playerClass.player.position.z += 3
-  playerClass2.player.position.z += 3
+  opponentClass.opponent.position.x -= 2
+  opponentClass2.opponent.position.x += 2
+
+
 
 }
 
@@ -156,12 +162,19 @@ async function init() {
 
 init();
 
-
+//let tempSpeed = 0;
 function engine() {
+  // if (Math.abs(ballClass.ballBody.linvel().y) > tempSpeed) {
+  //   tempSpeed = Math.abs(ballClass.ballBody.linvel().y);
+  //   console.log(tempSpeed);
+  // }
   if (ballClass.ball.position.z > 0) {
     ballClass.ballSideMe = true;
   }
   else ballClass.ballSideMe = false;
+
+  playerClass.playerMark.position.x = playerClass.players[playerClass.activePlayerNum].position.x;
+  playerClass.playerMark.position.z = playerClass.players[playerClass.activePlayerNum].position.z;
 
 
 
@@ -174,12 +187,12 @@ function engine() {
 
 
 
-  if (playerClass.playerTop.position.distanceTo(ballClass.ball.position) > 2) {
+  if (playerClass.playerTop.position.distanceTo(ballClass.ball.position) > 1) {
     playerClass.playerCanPas = true;
   }
 
 
-  if (playerClass.playerCanPas && playerClass.playerTop.position.distanceTo(ballClass.ball.position) < 3.5 && ballPlayerCollision) {
+  if (playerClass.playerCanPas && ballPlayerCollision) {
     ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
@@ -212,16 +225,21 @@ function engine() {
     };
 
 
-    ballClass.ballMarkOnGround.position.copy(new THREE.Vector3(ballClass.ballMark.position.x, ballClass.ballMark.position.y, ballClass.ballMark.position.z))
-    //ballClass.ballMarkOnGround.position.y;
+    ballClass.ballMarkOnGround.position.copy(new THREE.Vector3(ballClass.ballMark.position.x, ballClass.ballMark.position.y, ballClass.ballMark.position.z + 0.4))
+    ball.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ball.applyImpulse(impulse, true);
+
+    if (opponentClass.opponents[0].position.distanceTo(ballClass.ballMarkOnGround.position) < opponentClass.opponents[1].position.distanceTo(ballClass.ballMarkOnGround.position)) {
+      opponentClass.activeOpponentNum = 0;
+    }
+    else {
+      opponentClass.activeOpponentNum = 1;
+    }
+
     playerClass.playerCanPas = false;
 
   }
-
-
-
-
 
 
   if (opponentClass.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9) {
@@ -229,13 +247,8 @@ function engine() {
     ball.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
 
-
-
-
-    
-
     const ballPosition = ball.translation();
-    const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane/2, worldClass.widthPlane/2),0,getRandomNumber(4, worldClass.heightPlane/2));
+    const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
 
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;
@@ -276,11 +289,6 @@ function engine() {
 
     ballClass.ballMark.position.copy(playerClass.players[playerClass.activePlayerNum].position)
     ballClass.ballMark.position.y = 0.1;
-
-  }
-  else {
-
-
 
   }
 

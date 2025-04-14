@@ -10,6 +10,7 @@ export class Opponent {
     this.opponentGeometry = new THREE.BoxGeometry(0.5, this.opponentHeight, 0.5);
     this.opponentMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.opponent = new THREE.Mesh(this.opponentGeometry, this.opponentMaterial);
+    this.opponent.position.set(0, 0.5, -5);
 
     this.opponent.castShadow = true;
 
@@ -31,21 +32,35 @@ export class Opponent {
     this.opponentSpeed = 0.06;
     this.opponentThinkSpeed = 0.1;
 
-    // this.playerActive = true;
+    this.opponentActive = true;
 
-    // this.playerTapPas = false;
-    // this.playerCanPas = true;
-    // this.playerNowPas = false;
 
-    // this.activePlayer = this.player;
-    // this.activePlayerNum = 0;
-    // this.players = [];
+    this.activeopponent = this.opponent;
+    this.activeOpponentNum = 0;
+    this.opponents = [];
+
+    this.opponentsSpeed = [0.05, 0.1];
   }
 
   moveOpponent(opponentTopBody) {
-    opponentTopBody.setNextKinematicTranslation({ x: this.opponent.position.x, y: this.opponent.position.y + 1.3, z: this.opponent.position.z }, true)
-    if (this.ballClass.ballSideMe == false && this.ballClass.ballMarkOnGround.position.z < 0) {
-      this.opponent.position.copy(new THREE.Vector3(this.ballClass.ballMarkOnGround.position.x, this.opponentHeight / 3, this.ballClass.ballMarkOnGround.position.z + 0.4))
+    opponentTopBody.setNextKinematicTranslation({ x: this.activeopponent.position.x, y: this.activeopponent.position.y + 1.3, z: this.activeopponent.position.z }, true)
+    this.activeopponent = this.opponents[this.activeOpponentNum];
+
+    if (this.ballClass.ballMarkOnGround.position.z < 0) {
+
+      const direction = new THREE.Vector3();
+      direction.subVectors(new THREE.Vector3(this.ballClass.ballMarkOnGround.position.x, this.activeopponent.position.y, this.ballClass.ballMarkOnGround.position.z + 0.4), this.activeopponent.position).normalize();
+
+      const distance = Math.sqrt(
+        Math.pow(this.activeopponent.position.x - this.ballClass.ballMarkOnGround.position.x, 2) +
+        Math.pow(this.activeopponent.position.z - this.ballClass.ballMarkOnGround.position.z, 2)
+      );
+
+      if (distance > 0.5) {
+        this.activeopponent.position.add(direction.multiplyScalar(this.opponentsSpeed[this.activeOpponentNum]));
+      }
+
+
     }
   }
 

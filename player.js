@@ -10,7 +10,7 @@ export class Player {
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
     this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
-    this.player.position.set(0, 0.5, 0);
+    this.player.position.set(0, 0.5, 5);
     this.player.castShadow = true;
 
     this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 1.5);
@@ -18,10 +18,10 @@ export class Player {
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
 
-    this.playerMarkGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-    this.playerMarkMaterial = new THREE.MeshLambertMaterial({ color: 0xaa0000 });
+    this.playerMarkGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.3);
+    this.playerMarkMaterial = new THREE.MeshLambertMaterial({ color: 0x0055aa });
     this.playerMark = new THREE.Mesh(this.playerMarkGeometry, this.playerMarkMaterial);
-    this.playerMark.position.set(0, 0.8, 0);
+    this.playerMark.position.set(0, this.playerHeight / 2 + .5, 0);
 
     //this.player.add(this.playerMark)
 
@@ -42,6 +42,8 @@ export class Player {
     this.activePlayer = this.player;
     this.activePlayerNum = 0;
     this.players = [];
+
+    this.playersSpeed = [0.05, 0.05];
 
 
     addEventListener("keydown", (event) => {
@@ -103,7 +105,7 @@ export class Player {
 
     if (this.forward) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.z -= this.playerSpeed;
+        this.activePlayer.position.z -= this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.z -= this.playerThinkSpeed;
@@ -111,7 +113,7 @@ export class Player {
     }
     if (this.backward) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.z += this.playerSpeed;
+        this.activePlayer.position.z += this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.z += this.playerThinkSpeed;
@@ -119,7 +121,7 @@ export class Player {
     }
     if (this.left) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.x -= this.playerSpeed;
+        this.activePlayer.position.x -= this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.x -= this.playerThinkSpeed;
@@ -127,7 +129,7 @@ export class Player {
     }
     if (this.right) {
       if (!this.playerTapPas) {
-        this.activePlayer.position.x += this.playerSpeed;
+        this.activePlayer.position.x += this.playersSpeed[this.activePlayerNum];
       }
       else {
         this.ballClass.ballMark.position.x += this.playerThinkSpeed;

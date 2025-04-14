@@ -5,7 +5,7 @@ export class Ball {
   this.ballGeometry = new THREE.SphereGeometry(0.2, 16, 16);
   this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0x0000aa });
   this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
-  this.ball.position.z = -1;
+  this.ball.position.z = -2;
   this.ball.position.y = 8.4;
   this.ball.castShadow = true;
 
@@ -13,6 +13,7 @@ export class Ball {
   this.ballMarkMaterial = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
   this.ballMark = new THREE.Mesh(this.ballMarkGeometry, this.ballMarkMaterial);
   this.ballMark.position.y = 0.1;
+  this.ballMark.position.z = 1;
 
   this.ballMark2Geometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
   this.ballMark2Material = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
@@ -24,7 +25,7 @@ export class Ball {
   this.ballMarkOppMaterial = new THREE.MeshPhongMaterial({ color: 0x006600, transparent: true, opacity: 0.6 });
   this.ballMarkOppOnGround = new THREE.Mesh(this.ballMarkOppGeometry, this.ballMarkOppMaterial);
   this.ballMarkOppOnGround.position.y = 0.1;
-  this.ballMarkOppOnGround.position.z = -2;
+  this.ballMarkOppOnGround.position.z = 2;
 
   this.ballBody;
 
