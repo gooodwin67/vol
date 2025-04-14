@@ -43,7 +43,7 @@ export class Player {
     this.activePlayerNum = 0;
     this.players = [];
 
-    this.playersSpeed = [0.05, 0.05];
+    this.playersSpeed = [0.07, 0.07];
 
 
     addEventListener("keydown", (event) => {

@@ -39,7 +39,7 @@ export class Opponent {
     this.activeOpponentNum = 0;
     this.opponents = [];
 
-    this.opponentsSpeed = [0.05, 0.1];
+    this.opponentsSpeed = [0.02, 0.02];
   }
 
   moveOpponent(opponentTopBody) {
