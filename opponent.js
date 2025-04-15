@@ -39,11 +39,15 @@ export class Opponent {
     this.activeOpponentNum = 0;
     this.opponents = [];
 
-    this.opponentsSpeed = [0.02, 0.02];
+    this.opponentsSpeed = [0.05, 0.05];
   }
 
   moveOpponent(opponentTopBody) {
-    opponentTopBody.setNextKinematicTranslation({ x: this.activeopponent.position.x, y: this.activeopponent.position.y + 1.3, z: this.activeopponent.position.z }, true)
+
+    let topPosY = this.activeopponent.position.y + 1.3;
+    if (this.ballClass.ball.position.y < topPosY) topPosY = this.ballClass.ball.position.y;
+
+    opponentTopBody.setNextKinematicTranslation({ x: this.activeopponent.position.x, y: topPosY, z: this.activeopponent.position.z }, true)
     this.activeopponent = this.opponents[this.activeOpponentNum];
 
     if (this.ballClass.ballMarkOnGround.position.z < 0) {
