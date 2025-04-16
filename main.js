@@ -245,11 +245,18 @@ function engine() {
       opponentClass.activeOpponentNum = 1;
     }
 
-    if (playerClass.playerCanPas && playerClass.activePlayerNum == 0) {
-      playerClass.activePlayerNum = 1
+    // if (playerClass.playerCanPas && playerClass.activePlayerNum == 0) {
+    //   playerClass.activePlayerNum = 1
+    // }
+    // else if (playerClass.playerCanPas && playerClass.activePlayerNum == 1) {
+    //   playerClass.activePlayerNum = 0
+    // }
+
+    if (playerClass.players[0].position.distanceTo(ballClass.ball.position) > playerClass.players[1].position.distanceTo(ballClass.ball.position)) {
+      playerClass.activePlayerNum = 0;
     }
-    else if (playerClass.playerCanPas && playerClass.activePlayerNum == 1) {
-      playerClass.activePlayerNum = 0
+    else {
+      playerClass.activePlayerNum = 1;
     }
 
     playerClass.playerCanPas = false;
@@ -286,7 +293,7 @@ function engine() {
     const deltaY = landingPoint.y - ballPosition.y;
 
     // Константа, управляющая высотой полёта
-    const heightFactor = 0.4 // Меняйте это значение, чтобы регулировать высоту
+    const heightFactor = 0.5 // Меняйте это значение, чтобы регулировать высоту
     // Время полёта (зависит от высоты)
     const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
