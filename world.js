@@ -26,23 +26,6 @@ export class World {
     this.plane.receiveShadow = true;
     this.plane.position.set(0, 0, 0);
 
-    //   this.plane2 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 10), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
-    //   this.plane2.position.set(-5, 2.5, 0);
-    //   this.plane2.rotation.z = Math.PI / 2;
-
-    //   this.plane3 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 10), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
-    //   this.plane3.position.set(5, 2.5, 0);
-    //   this.plane3.rotation.z = Math.PI / 2;
-
-    //   this.plane4 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 10), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
-    //   this.plane4.position.set(0, 2.5, -5);
-    //   this.plane4.rotation.x = Math.PI / 2;
-    //   this.plane4.rotation.y = Math.PI / 2;
-
-    //   this.plane5 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 10), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
-    //   this.plane5.position.set(0, 2.5, 5);
-    //   this.plane5.rotation.x = Math.PI / 2;
-    //   this.plane5.rotation.y = Math.PI / 2;
 
     this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.3 }));
     this.net.position.set(0, 1.0, 0);

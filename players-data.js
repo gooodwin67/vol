@@ -6,7 +6,7 @@ export class PlayersData {
     this.playerHeight = 1.4;
 
     this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 1.5);
-    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0 });
+    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 1 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
 
@@ -38,6 +38,26 @@ export class PlayersData {
     this.playersSpeed = [0.07, 0.07];
 
     this.playerThinkSpeed = 0.2;
+
+
+    this.opponentTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
+    this.opponentTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00 });
+    this.opponentTop = new THREE.Mesh(this.opponentTopGeometry, this.opponentTopMaterial);
+    this.opponentTop.position.set(0, 0.0, 0);
+
+    this.opponentTopBody = 0;
+
+    this.opponentSpeed = 0.06;
+    this.opponentThinkSpeed = 0.1;
+
+    this.opponentActive = true;
+
+
+    this.activeopponent = this.opponent;
+    this.activeOpponentNum = 0;
+    this.opponents = [];
+
+    this.opponentsSpeed = [0.05, 0.05];
 
   }
 
