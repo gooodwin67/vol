@@ -11,15 +11,7 @@ export class Opponent {
     this.opponentMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
     this.opponent = new THREE.Mesh(this.opponentGeometry, this.opponentMaterial);
     this.opponent.position.set(0, 0.5, -5);
-
     this.opponent.castShadow = true;
-
-
-
-    this.forward = false;
-    this.backward = false;
-    this.left = false;
-    this.right = false;
 
   }
 

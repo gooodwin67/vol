@@ -33,7 +33,7 @@ export class World {
     this.net.rotation.y = Math.PI / 2;
 
 
-    this.gravity = -4.81; //9.81
+    this.gravity = -6.81; //9.81
 
     this.powerBlockWidth = 0;
   }

@@ -94,18 +94,18 @@ export class Engine {
 
     if (this.forward) {
       if (!this.playersData.playerTapPas && !this.playersData.playerTapShoot) {
-        this.zz = -this.playersData.playersSpeed[this.playersData.activePlayerNum];
+        this.zz = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.z -= this.playersData.playerThinkSpeed;
+        this.ballClass.ballMark.position.z -= this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
       }
     }
     else if (this.backward) {
       if (!this.playersData.playerTapPas && !this.playersData.playerTapShoot) {
-        this.zz = this.playersData.playersSpeed[this.playersData.activePlayerNum];
+        this.zz = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.z += this.playersData.playerThinkSpeed;
+        this.ballClass.ballMark.position.z += this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
       }
     }
     else {
@@ -113,18 +113,18 @@ export class Engine {
     }
     if (this.left) {
       if (!this.playersData.playerTapPas && !this.playersData.playerTapShoot) {
-        this.xx = -this.playersData.playersSpeed[this.playersData.activePlayerNum];
+        this.xx = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.x -= this.playersData.playerThinkSpeed;
+        this.ballClass.ballMark.position.x -= this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
       }
     }
     else if (this.right) {
       if (!this.playersData.playerTapPas && !this.playersData.playerTapShoot) {
-        this.xx = this.playersData.playersSpeed[this.playersData.activePlayerNum];
+        this.xx = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
       }
       else {
-        this.ballClass.ballMark.position.x += this.playersData.playerThinkSpeed;
+        this.ballClass.ballMark.position.x += this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
       }
     }
     else {
@@ -285,6 +285,26 @@ export class Engine {
 
     }
 
+    // if (this.playersData.playerTapPas) {
+
+    //   const playerNotActiveBody = playersData.playerBodies[1 - playersData.activePlayerNum];
+    //   const playerNotActive = playersData.players[1 - playersData.activePlayerNum].player;
+
+
+    //   const direction = new THREE.Vector3();
+    //   direction.subVectors(new THREE.Vector3(ballClass.ballMark.position.x, playerNotActive.position.y, ballClass.ballMark.position.z), playerNotActive.position).normalize();
+
+    //   const distance = Math.sqrt(
+    //     Math.pow(playerNotActive.position.x - ballClass.ballMark.position.x, 2) +
+    //     Math.pow(playerNotActive.position.z - ballClass.ballMark.position.z, 2)
+    //   );
+
+
+
+    //   const movementVector = direction.clone().multiplyScalar(playersData.players[1 - playersData.activePlayerNum].playerSpeed / 1.5);
+    //   console.log(playerNotActiveBody)
+    //   playerNotActiveBody.setTranslation({ x: playerNotActive.position.x + movementVector.x, y: playerNotActive.position.y, z: playerNotActive.position.z + movementVector.z }, true)
+    // }
 
   }
 
@@ -310,7 +330,11 @@ export class Engine {
       );
 
       if (distance > 0.5) {
-        playersData.opponents[playersData.activeOpponentNum].opponent.position.add(direction.multiplyScalar(playersData.opponentsSpeed[playersData.activeOpponentNum]));
+
+        const opponentBody = playersData.opponentBodies[playersData.activeOpponentNum];
+        const movementVector = direction.clone().multiplyScalar(playersData.opponentsSpeed[playersData.activeOpponentNum]);
+        opponentBody.setTranslation({ x: opponentBody.translation().x + movementVector.x, y: opponentBody.translation().y, z: opponentBody.translation().z + movementVector.z }, true)
+
       }
 
 

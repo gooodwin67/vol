@@ -35,9 +35,7 @@ export class PlayersData {
 
     this.playerTopBody = 0;
 
-    this.playersSpeed = [0.07, 0.07];
 
-    this.playerThinkSpeed = 0.2;
 
 
     this.opponentTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
@@ -56,6 +54,8 @@ export class PlayersData {
     this.activeopponent = this.opponent;
     this.activeOpponentNum = 0;
     this.opponents = [];
+
+    this.opponentBodies = [];
 
     this.opponentsSpeed = [0.05, 0.05];
 
