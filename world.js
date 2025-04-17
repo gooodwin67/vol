@@ -18,6 +18,8 @@ export class World {
     this.widthPlane = 8;
     this.heightPlane = 16;
 
+    this.eventQueue;
+
     this.geometryPlane = new THREE.BoxGeometry(this.widthPlane, 0.2, this.heightPlane);
     this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
     this.plane = new THREE.Mesh(this.geometryPlane, this.materialPlane);
