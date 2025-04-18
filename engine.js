@@ -342,7 +342,7 @@ export class Engine {
     }
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9) {
+    if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9 && !playersData.opponentsPas) {
       ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
@@ -377,6 +377,8 @@ export class Engine {
       ballClass.ballMarkOppOnGround.position.y = 0.2;
       //ballClass.ballMarkOnGround.position.y;
       ballClass.ballBody.applyImpulse(impulse, true);
+      playersData.opponentsIter++;
+      console.log(playersData.opponentsIter)
 
 
       ////////////////////////////
@@ -390,6 +392,11 @@ export class Engine {
       ballClass.ballMark.position.copy(playersData.players[playersData.activePlayerNum].player.position)
       ballClass.ballMark.position.y = 0.1;
 
+      playersData.opponentsPas = true;
+
+    }
+    else if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) > 1.1) {
+      playersData.opponentsPas = false;
     }
   }
 

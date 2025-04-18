@@ -51,13 +51,17 @@ export class PlayersData {
     this.opponentActive = true;
 
 
-    this.activeopponent = this.opponent;
+
     this.activeOpponentNum = 0;
     this.opponents = [];
 
     this.opponentBodies = [];
 
     this.opponentsSpeed = [0.05, 0.05];
+
+    this.opponentsPas = false;
+
+    this.opponentsIter = 0;
 
   }
 
