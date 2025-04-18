@@ -178,20 +178,20 @@ export class Engine {
       const deltaX = landingPoint.x - ballPosition.x;
       const deltaZ = landingPoint.z - ballPosition.z;
 
-      // Константа, управляющая высотой полёта
-      const heightFactor = 3; // Меняйте это значение, чтобы регулировать высоту
-      // Время полёта (зависит от высоты)
+
+      const heightFactor = 3;
+
       const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
 
-      const speedFactor = 0.45; // уменьшите скорость на 20%
+      const speedFactor = 0.45;
       const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
       const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
 
-      // Вертикальная скорость (зависит от высоты)
+
       const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
 
-      // Импульс
+
       const impulse = {
         x: horizontalVelocityX,
         y: verticalVelocityY,
@@ -285,26 +285,27 @@ export class Engine {
 
     }
 
-    // if (this.playersData.playerTapPas) {
 
-    //   const playerNotActiveBody = playersData.playerBodies[1 - playersData.activePlayerNum];
-    //   const playerNotActive = playersData.players[1 - playersData.activePlayerNum].player;
+    if (this.playersData.playerTapPas && ballClass.ballMark.position.z > 0) {
 
-
-    //   const direction = new THREE.Vector3();
-    //   direction.subVectors(new THREE.Vector3(ballClass.ballMark.position.x, playerNotActive.position.y, ballClass.ballMark.position.z), playerNotActive.position).normalize();
-
-    //   const distance = Math.sqrt(
-    //     Math.pow(playerNotActive.position.x - ballClass.ballMark.position.x, 2) +
-    //     Math.pow(playerNotActive.position.z - ballClass.ballMark.position.z, 2)
-    //   );
+      const playerNotActiveBody = playersData.playerBodies[1 - playersData.activePlayerNum];
+      const playerNotActive = playersData.players[1 - playersData.activePlayerNum].player;
 
 
+      const direction = new THREE.Vector3();
+      direction.subVectors(new THREE.Vector3(ballClass.ballMark.position.x, playerNotActive.position.y, ballClass.ballMark.position.z), playerNotActive.position).normalize();
 
-    //   const movementVector = direction.clone().multiplyScalar(playersData.players[1 - playersData.activePlayerNum].playerSpeed / 1.5);
-    //   console.log(playerNotActiveBody)
-    //   playerNotActiveBody.setTranslation({ x: playerNotActive.position.x + movementVector.x, y: playerNotActive.position.y, z: playerNotActive.position.z + movementVector.z }, true)
-    // }
+      const distance = Math.sqrt(
+        Math.pow(playerNotActive.position.x - ballClass.ballMark.position.x, 2) +
+        Math.pow(playerNotActive.position.z - ballClass.ballMark.position.z, 2)
+      );
+
+
+
+      const movementVector = direction.clone().multiplyScalar(playersData.players[1 - playersData.activePlayerNum].playerSpeed / 2.5);
+      if (playerNotActive.position.z > ballClass.ballMark.position.z)
+        playerNotActiveBody.setTranslation({ x: playerNotActive.position.x + movementVector.x, y: playerNotActive.position.y, z: playerNotActive.position.z + movementVector.z }, true)
+    }
 
   }
 
