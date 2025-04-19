@@ -184,7 +184,12 @@ export class Engine {
       else {
         playersData.activeOpponentNum = 1;
       }
-      playersData.activePlayerNum = 1 - playersData.activePlayerNum;
+      if (playersData.players[0].player.position.distanceTo(ballClass.ball.position) > playersData.players[1].player.position.distanceTo(ballClass.ball.position)) {
+        playersData.activePlayerNum = 0;
+      }
+      else {
+        playersData.activePlayerNum = 1;
+      }
       playersData.playerCanPas = false;
 
     }
