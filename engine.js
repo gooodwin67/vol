@@ -39,7 +39,7 @@ export class Engine {
         case "r":
           ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
           ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-          ballClass.ballBody.setTranslation({ x: 0.0, y: 0.4, z: 4.0 }, true);
+          ballClass.ballBody.setTranslation({ x: 0.0, y: 4.4, z: 4.0 }, true);
           //ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
           ballClass.ballBody.applyImpulse({ x: 0, y: 3, z: 0 }, true);
           break;
@@ -82,6 +82,22 @@ export class Engine {
   }
 
   movePlayer() {
+
+    let ballClass = this.ballClass;
+    let playersData = this.playersData;
+    let worldClass = this.worldClass;
+
+    if (ballClass.ball.position.z > 0) {
+      ballClass.ballSideMe = true;
+    }
+    else ballClass.ballSideMe = false;
+
+    if (ballClass.ballMarkOnGround.position.z > 0) {
+      ballClass.ballMarkSideMe = true;
+    }
+    else {
+      ballClass.ballMarkSideMe = false;
+    }
 
 
     let topPosY = this.playersData.players[this.playersData.activePlayerNum].player.position.y + 1.3;
@@ -133,14 +149,7 @@ export class Engine {
 
     /*////////////////////////////////////////////////////////////////////////////////*/
 
-    let ballClass = this.ballClass;
-    let playersData = this.playersData;
-    let worldClass = this.worldClass;
 
-    if (ballClass.ball.position.z > 0) {
-      ballClass.ballSideMe = true;
-    }
-    else ballClass.ballSideMe = false;
 
     playersData.playerMark.position.x = playersData.players[playersData.activePlayerNum].player.position.x;
     playersData.playerMark.position.z = playersData.players[playersData.activePlayerNum].player.position.z;
@@ -149,14 +158,22 @@ export class Engine {
     playersData.playerShootMark.position.z = playersData.players[playersData.activePlayerNum].player.position.z;
 
 
+    playersData.ballPlayerCollision = false;
+    playersData.ballOpponentCollision = false;
 
-    let ballPlayerCollision = false;
+
     worldClass.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-
       if (handle2 == ballClass.ballBody.handle && handle1 == 0) {
-
-        ballPlayerCollision = true;
+        playersData.ballPlayerCollision = true;
       }
+      if (handle2 == ballClass.ballBody.handle && handle1 == '1.5e-323' && started) {
+        playersData.ballOpponentCollision = true;
+      }
+
+      if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323') {
+        console.log('ГОООЛ');
+      }
+
     })
 
 
@@ -166,7 +183,7 @@ export class Engine {
     }
 
 
-    if (playersData.playerCanPas && ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1) {
+    if (playersData.playerCanPas && playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1) {
       ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
@@ -179,12 +196,12 @@ export class Engine {
       const deltaZ = landingPoint.z - ballPosition.z;
 
 
-      const heightFactor = 3;
+      const heightFactor = 3; // 3
 
       const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
 
-      const speedFactor = 0.45;
+      const speedFactor = 0.45; // 0.45
       const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
       const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
 
@@ -238,7 +255,7 @@ export class Engine {
 
 
 
-    if (ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y > 1) {
+    if (playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y > 1) {
       ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
@@ -249,21 +266,19 @@ export class Engine {
       const deltaZ = landingPoint.z - ballPosition.z;
       const deltaY = landingPoint.y - ballPosition.y;
 
-      // Константа, управляющая высотой полёта
-      const heightFactor = 0.5 // Меняйте это значение, чтобы регулировать высоту
-      // Время полёта (зависит от высоты)
+      const heightFactor = 0.05; // 3
+
       const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
 
 
-      const speedFactor = 0.6; // уменьшите скорость на 20%
+      const speedFactor = 0.10; // 0.45
       const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
       const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
-      const verticalVelocityY = (deltaY / timeOfFlight) * speedFactor;
 
-      // Вертикальная скорость (зависит от высоты)
-      //const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
 
-      // Импульс
+      const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+
+
       const impulse = {
         x: horizontalVelocityX,
         y: verticalVelocityY,
@@ -275,6 +290,8 @@ export class Engine {
       ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.applyImpulse(impulse, true);
+
+
 
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
@@ -315,6 +332,10 @@ export class Engine {
     let playersData = this.playersData;
     let worldClass = this.worldClass;
 
+
+    playersData.opponentShootMark.position.x = playersData.opponents[playersData.activeOpponentNum].opponent.position.x;
+    playersData.opponentShootMark.position.z = playersData.opponents[playersData.activeOpponentNum].opponent.position.z;
+
     let topPosY = playersData.opponents[playersData.activeOpponentNum].opponent.position.y + 1.3;
     if (ballClass.ball.position.y < topPosY) topPosY = ballClass.ball.position.y;
 
@@ -323,7 +344,7 @@ export class Engine {
     if (ballClass.ballMarkOnGround.position.z < 0) {
 
       const direction = new THREE.Vector3();
-      direction.subVectors(new THREE.Vector3(ballClass.ballMarkOnGround.position.x, playersData.opponents[playersData.activeOpponentNum].opponent.position.y, ballClass.ballMarkOnGround.position.z + 0.4), playersData.opponents[playersData.activeOpponentNum].opponent.position).normalize();
+      direction.subVectors(new THREE.Vector3(ballClass.ballMarkOnGround.position.x, playersData.opponents[playersData.activeOpponentNum].opponent.position.y, ballClass.ballMarkOnGround.position.z + 0.2), playersData.opponents[playersData.activeOpponentNum].opponent.position).normalize();
 
       const distance = Math.sqrt(
         Math.pow(playersData.opponents[playersData.activeOpponentNum].opponent.position.x - ballClass.ballMarkOnGround.position.x, 2) +
@@ -342,13 +363,24 @@ export class Engine {
     }
     /*//////////////////////////////////////////////////////////////////////////*/
 
-    if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) < 0.9 && !playersData.opponentsPas) {
+
+    if (playersData.ballOpponentCollision && !playersData.opponentsPas && !playersData.opponentTapShoot) {
       ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
       ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
 
+
+
       const ballPosition = ballClass.ballBody.translation();
-      const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
+      let landingPoint;
+      playersData.opponentsIter++;
+      if (playersData.opponentsIter < 3) {
+        landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(-worldClass.heightPlane / 2, 0));
+      }
+      else {
+        landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
+        playersData.opponentsIter = 0;
+      }
 
       const deltaX = landingPoint.x - ballPosition.x;
       const deltaZ = landingPoint.z - ballPosition.z;
@@ -373,20 +405,31 @@ export class Engine {
         z: horizontalVelocityZ
       };
 
-      ballClass.ballMarkOppOnGround.position.copy(landingPoint);
-      ballClass.ballMarkOppOnGround.position.y = 0.2;
+      ballClass.ballMarkOnGround.position.copy(landingPoint);
+      ballClass.ballMarkOnGround.position.y = 0.2;
       //ballClass.ballMarkOnGround.position.y;
-      ballClass.ballBody.applyImpulse(impulse, true);
-      playersData.opponentsIter++;
-      console.log(playersData.opponentsIter)
+      if (!playersData.opponentTapShoot) ballClass.ballBody.applyImpulse(impulse, true);
 
 
-      ////////////////////////////
-      if (playersData.players[0].player.position.distanceTo(ballClass.ballMarkOppOnGround.position) < playersData.players[1].player.position.distanceTo(ballClass.ballMarkOppOnGround.position)) {
-        playersData.activePlayerNum = 0;
+      playersData.activeOpponentNum = 1 - playersData.activeOpponentNum;
+
+
+
+      if (ballClass.ballMarkOnGround.position.z > 0) {
+        ballClass.ballMarkSideMe = true;
       }
       else {
-        playersData.activePlayerNum = 1;
+        ballClass.ballMarkSideMe = false;
+      }
+
+      ////////////////////////////
+      if (ballClass.ballMarkSideMe) {
+        if (playersData.players[0].player.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.players[1].player.position.distanceTo(ballClass.ballMarkOnGround.position)) {
+          playersData.activePlayerNum = 0;
+        }
+        else {
+          playersData.activePlayerNum = 1;
+        }
       }
 
       ballClass.ballMark.position.copy(playersData.players[playersData.activePlayerNum].player.position)
@@ -398,6 +441,108 @@ export class Engine {
     else if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) > 1.1) {
       playersData.opponentsPas = false;
     }
+
+
+
+
+
+
+
+    if (playersData.opponents[playersData.activeOpponentNum].opponent.position.z > -2) {
+      playersData.opponentTapShoot = true;
+    }
+    else {
+      playersData.opponentTapShoot = false;
+    }
+
+    if (ballClass.ball.position.distanceTo(playersData.opponentShootMark.position) < 2 && playersData.opponentTapShoot && !playersData.opponentFly) {
+      playersData.opponentBodies[playersData.activeOpponentNum].applyImpulse({ x: 0, y: 5.2, z: 0 }, true)
+    }
+    if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y >= playersData.playerHeight / 1.5) {
+      playersData.opponentFly = true;
+    }
+    if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y < playersData.playerHeight / 1.5) {
+      playersData.opponentFly = false;
+    }
+
+
+    if (playersData.ballOpponentCollision && playersData.opponentFly) {
+
+
+
+
+
+      ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+      ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+
+      const ballPosition = ballClass.ballBody.translation();
+      const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
+
+      const deltaX = landingPoint.x - ballPosition.x;
+      const deltaZ = landingPoint.z - ballPosition.z;
+      const deltaY = landingPoint.y - ballPosition.y;
+
+      const heightFactor = 0.03; // 3
+
+      const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
+
+
+      const speedFactor = 0.10; // 0.45
+      const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
+      const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
+
+
+      const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+
+
+      const impulse = {
+        x: horizontalVelocityX,
+        y: verticalVelocityY,
+        z: horizontalVelocityZ
+      };
+
+      ballClass.ballMarkOnGround.position.copy(landingPoint);
+      ballClass.ballMarkOnGround.position.y = 0.2;
+
+
+
+      ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+      ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+      ballClass.ballBody.applyImpulse(impulse, true);
+      playersData.opponentsIter = 0;
+
+      if (ballClass.ballMarkOnGround.position.z > 0) {
+        ballClass.ballMarkSideMe = true;
+      }
+      else {
+        ballClass.ballMarkSideMe = false;
+      }
+
+      ////////////////////////////
+      if (ballClass.ballMarkSideMe) {
+        if (playersData.players[0].player.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.players[1].player.position.distanceTo(ballClass.ballMarkOnGround.position)) {
+          playersData.activePlayerNum = 0;
+        }
+        else {
+          playersData.activePlayerNum = 1;
+        }
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
   }
 
 }

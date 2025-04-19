@@ -119,7 +119,6 @@ async function initScenes() {
   scene.add(ballClass.ball);
   scene.add(ballClass.ballMark);
   scene.add(ballClass.ballMarkOnGround);
-  scene.add(ballClass.ballMarkOppOnGround);
 
   scene.add(playersData.players[0].player);
   scene.add(playersData.players[1].player);
@@ -133,6 +132,8 @@ async function initScenes() {
   scene.add(playersData.opponents[1].opponent);
 
   scene.add(playersData.opponentTop);
+
+  scene.add(playersData.opponentShootMark);
 }
 
 
@@ -214,7 +215,7 @@ function addPhysicsToObject(obj, body) {
   if (body == 'player') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0.5).setFriction(0).setSensor(true);
-    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    // shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playersData.playerTopBody = body;
 
     let playerTopCollider = world.createCollider(shape, body)
@@ -225,7 +226,7 @@ function addPhysicsToObject(obj, body) {
   if (body == 'playerMain') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(0.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(10).setRestitution(0.5).setFriction(5);
-    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    // shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playersData.playerBodies.push(body);
     world.createCollider(shape, body)
 
@@ -235,8 +236,10 @@ function addPhysicsToObject(obj, body) {
   else if (body == 'opponent') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0.5).setFriction(0).setSensor(true);
-    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    // shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playersData.opponentTopBody = body;
+
+    console.log(body.handle)
 
     world.createCollider(shape, body)
 
@@ -246,7 +249,7 @@ function addPhysicsToObject(obj, body) {
   if (body == 'opponentMain') {
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(0.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(10).setRestitution(0.5).setFriction(5);
-    shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    // shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playersData.opponentBodies.push(body);
     world.createCollider(shape, body)
 

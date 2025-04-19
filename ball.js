@@ -21,14 +21,10 @@ export class Ball {
   this.ballMarkOnGround.position.y = 0.1;
   this.ballMarkOnGround.position.z = -2;
 
-  this.ballMarkOppGeometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
-  this.ballMarkOppMaterial = new THREE.MeshPhongMaterial({ color: 0x006600, transparent: true, opacity: 0.6 });
-  this.ballMarkOppOnGround = new THREE.Mesh(this.ballMarkOppGeometry, this.ballMarkOppMaterial);
-  this.ballMarkOppOnGround.position.y = 0.1;
-  this.ballMarkOppOnGround.position.z = 2;
 
   this.ballBody;
 
   this.ballSideMe = false;
+  this.ballMarkSideMe = false;
  }
 }
