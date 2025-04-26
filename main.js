@@ -96,13 +96,19 @@ async function initClases() {
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
   player1.player.position.x -= 2;
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
   player2.player.position.x = 2;
   playersData.players.push(player1, player2)
 
   enginePlayers = new Engine(scene, ballClass, worldClass, playersData)
+
+  await playersData.players[0].loadPlayerModel();
+  await playersData.players[1].loadPlayerModel();
+
+
+
 
 }
 
@@ -121,7 +127,12 @@ async function initScenes() {
   scene.add(ballClass.ballMarkOnGround);
 
   scene.add(playersData.players[0].player);
+  scene.add(playersData.players[0].playerModel);
+  playersData.players[0].playerModel.userData.animMas[0].play();
+
   scene.add(playersData.players[1].player);
+  scene.add(playersData.players[1].playerModel);
+  playersData.players[1].playerModel.userData.animMas[0].play();
 
   scene.add(playersData.playerTop);
 
@@ -138,7 +149,7 @@ async function initScenes() {
 
 
 
-async function loadWorld() {
+async function loadPhysWorld() {
   await RAPIER.init();
   world = new RAPIER.World(new RAPIER.Vector3(0, worldClass.gravity, 0));
   worldClass.eventQueue = new RAPIER.EventQueue(true);
@@ -170,7 +181,7 @@ async function loadWorld() {
 async function init() {
   await initClases();
   await initScenes();
-  await loadWorld();
+  await loadPhysWorld();
 
   dataLoaded = true;
 }
@@ -186,7 +197,7 @@ function animate() {
   if (dataLoaded) {
 
     enginePlayers.movePlayer();
-    enginePlayers.moveOpponent();
+    // enginePlayers.moveOpponent();
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -239,7 +250,7 @@ function addPhysicsToObject(obj, body) {
     // shape.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     playersData.opponentTopBody = body;
 
-    console.log(body.handle)
+
 
     world.createCollider(shape, body)
 

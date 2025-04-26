@@ -16,6 +16,8 @@ export class Engine {
     this.xx = 0;
     this.zz = 0;
 
+    this.clock = new THREE.Clock();
+
     addEventListener("keydown", (event) => {
       switch (event.key) {
         case "ArrowUp":
@@ -98,6 +100,11 @@ export class Engine {
 
     this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
 
+    this.playersData.players.forEach((value, index, array) => {
+      value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
+      value.playerModel.userData.mixer.update(value.clock.getDelta());
+    })
+
     if (!this.playersData.playerTapShoot) this.playersData.playerBodies[this.playersData.activePlayerNum].setTranslation({ x: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().x + this.xx, y: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().y, z: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().z + this.zz }, true)
 
 
@@ -138,6 +145,13 @@ export class Engine {
     }
     else {
       this.xx = 0;
+    }
+
+    if (this.xx == 0 && this.zz == 0) {
+      this.playersData.players[this.playersData.activePlayerNum].animActive(0);
+    }
+    else {
+      this.playersData.players[this.playersData.activePlayerNum].animActive(1);
     }
 
     /*////////////////////////////////////////////////////////////////////////////////*/
