@@ -12,12 +12,16 @@ export class Player {
 
     this.playerHeight = 1.4;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
-    this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00, transparent: true, opacity: 0.5 });
+    this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00, transparent: true, opacity: 0.0 });
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
     this.player.position.set(0, 0.5, 5);
     this.player.castShadow = true;
 
     this.playerModel;
+
+    this.activeAction;
+
+    this.previousPosition = new THREE.Vector3(0,0,0);
 
 
     this.clock = new THREE.Clock();
@@ -52,19 +56,35 @@ export class Player {
 
       const idle = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'idle'));
       const run = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'run'));
+      const pass = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass'));
+      const shoot = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'shoot'));
 
-      this.playerModel.userData.animIdle = idle;
-      this.playerModel.userData.animRun = run;
 
-      this.playerModel.userData.animMas = [idle, run];
+      this.activeAction = idle;
+
+      this.playerModel.userData.animMas = {
+        'idle': idle, 
+        'run': run,
+        'pass': pass,
+        'shoot': shoot,
+      };
 
     });
   }
 
-  animActive(num) {
-    this.playerModel.userData.animMas.forEach((value, index, array) => {
-      if (index != num) value.stop();
-      else value.play();
-    })
+  animActive(anim, weight = 1, duration = 0.2) {
+    let previousAction = this.activeAction;
+    this.activeAction = this.playerModel.userData.animMas[anim];
+
+    if ( previousAction !== this.activeAction ) {
+      previousAction.fadeOut( duration );
+      this.activeAction
+      .reset()
+      .setEffectiveTimeScale( 1 )
+      .setEffectiveWeight( weight )
+      .fadeIn( duration )
+      .play();
+    }
+    
   }
 }

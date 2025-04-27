@@ -103,7 +103,33 @@ export class Engine {
     this.playersData.players.forEach((value, index, array) => {
       value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
       value.playerModel.userData.mixer.update(value.clock.getDelta());
+
+      
+
+      if (this.playersData.playerTapPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 0.5) {
+        this.playersData.players[this.playersData.activePlayerNum].animActive('pass');
+      }
+      else if (!this.playersData.playerFly){
+        if (value.player.position.x !== value.previousPosition.x || value.player.position.z !== value.previousPosition.z ) {
+          this.playersData.players[index].animActive('run');
+        } else {
+          this.playersData.players[index].animActive('idle');
+        }
+        value.previousPosition.copy(value.player.position);
+      }
+
+      
+      if (this.playersData.playerFly) {
+        
+        this.playersData.players[this.playersData.activePlayerNum].animActive('shoot', 5, 0.5);
+        
+      }
+      
+      
+      
     })
+
+
 
     if (!this.playersData.playerTapShoot) this.playersData.playerBodies[this.playersData.activePlayerNum].setTranslation({ x: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().x + this.xx, y: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().y, z: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().z + this.zz }, true)
 
@@ -147,12 +173,12 @@ export class Engine {
       this.xx = 0;
     }
 
-    if (this.xx == 0 && this.zz == 0) {
-      this.playersData.players[this.playersData.activePlayerNum].animActive(0);
-    }
-    else {
-      this.playersData.players[this.playersData.activePlayerNum].animActive(1);
-    }
+    // if (this.xx == 0 && this.zz == 0) {
+    //   this.playersData.players[this.playersData.activePlayerNum].animActive('idle');
+    // }
+    // else {
+    //   this.playersData.players[this.playersData.activePlayerNum].animActive('run');
+    // }
 
     /*////////////////////////////////////////////////////////////////////////////////*/
 
@@ -177,7 +203,7 @@ export class Engine {
       }
 
       if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323') {
-        console.log('ГОООЛ');
+        //console.log('ГОООЛ');
       }
 
     })
@@ -190,6 +216,7 @@ export class Engine {
 
     if (playersData.playerCanPas && playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1) {
       //пас
+      this.playersData.players[this.playersData.activePlayerNum].animActive('pass');
       const landingPoint = ballClass.ballMark.position;
       this.shootEngine(3, 0.45, landingPoint)
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
@@ -226,6 +253,7 @@ export class Engine {
       //удар
       const landingPoint = ballClass.ballMark.position;
       this.shootEngine(0.05, 0.10, landingPoint)
+      
 
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
