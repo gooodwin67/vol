@@ -21,7 +21,7 @@ export class Player {
 
     this.activeAction;
 
-    this.previousPosition = new THREE.Vector3(0,0,0);
+    this.previousPosition = new THREE.Vector3(0, 0, 0);
 
 
     this.clock = new THREE.Clock();
@@ -35,7 +35,7 @@ export class Player {
 
   async loadPlayerModel() {
     const gltfLoader = new GLTFLoader();
-    const url = 'models/players/player.glb';
+    const url = 'models/players/new/player.glb';
 
 
     await gltfLoader.loadAsync(url).then((gltf) => {
@@ -63,7 +63,7 @@ export class Player {
       this.activeAction = idle;
 
       this.playerModel.userData.animMas = {
-        'idle': idle, 
+        'idle': idle,
         'run': run,
         'pass': pass,
         'shoot': shoot,
@@ -76,15 +76,15 @@ export class Player {
     let previousAction = this.activeAction;
     this.activeAction = this.playerModel.userData.animMas[anim];
 
-    if ( previousAction !== this.activeAction ) {
-      previousAction.fadeOut( duration );
+    if (previousAction !== this.activeAction) {
+      previousAction.fadeOut(duration);
       this.activeAction
-      .reset()
-      .setEffectiveTimeScale( 1 )
-      .setEffectiveWeight( weight )
-      .fadeIn( duration )
-      .play();
+        .reset()
+        .setEffectiveTimeScale(1)
+        .setEffectiveWeight(weight)
+        .fadeIn(duration)
+        .play();
     }
-    
+
   }
 }

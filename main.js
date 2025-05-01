@@ -98,11 +98,11 @@ async function initClases() {
 
   let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
   player1.player.position.x -= 2;
-  
+
   player1.previousPosition.copy(player1.player.position);
   let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
   player2.player.position.x = 2;
-  
+
   player2.previousPosition.copy(player2.player.position);
   playersData.players.push(player1, player2)
 
@@ -135,12 +135,12 @@ async function initScenes() {
   scene.add(playersData.players[0].player);
   scene.add(playersData.players[0].playerModel);
   playersData.players[0].playerModel.userData.animMas.idle.play();
-  
+
 
   scene.add(playersData.players[1].player);
   scene.add(playersData.players[1].playerModel);
   playersData.players[1].playerModel.userData.animMas.idle.play();
-  
+
 
   scene.add(playersData.playerTop);
 
@@ -201,11 +201,11 @@ init();
 
 function animate() {
 
-  
+
   if (dataLoaded) {
-    
+
     enginePlayers.movePlayer();
-    enginePlayers.moveOpponent();
+    //enginePlayers.moveOpponent();
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
