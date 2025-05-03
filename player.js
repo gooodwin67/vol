@@ -56,6 +56,9 @@ export class Player {
 
       const idle = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'idle'));
       const run = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'run'));
+      const runBack = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runback'));
+      const runLeft = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runleft'));
+      const runRight = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runright'));
       const pass = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass'));
       const shoot = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'shoot'));
 
@@ -65,6 +68,9 @@ export class Player {
       this.playerModel.userData.animMas = {
         'idle': idle,
         'run': run,
+        'runBack': runBack,
+        'runLeft': runLeft,
+        'runRight': runRight,
         'pass': pass,
         'shoot': shoot,
       };

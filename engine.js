@@ -100,33 +100,45 @@ export class Engine {
 
     this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
 
+    console.log(this.playersData.players[0].player.position.x - this.playersData.players[0].previousPosition.x)
+
     this.playersData.players.forEach((value, index, array) => {
       value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
       value.playerModel.userData.mixer.update(value.clock.getDelta());
 
-      
+
 
       if (this.playersData.playerTapPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 0.5) {
         this.playersData.players[this.playersData.activePlayerNum].animActive('pass');
       }
-      else if (!this.playersData.playerFly){
-        if (value.player.position.x !== value.previousPosition.x || value.player.position.z !== value.previousPosition.z ) {
+      else if (!this.playersData.playerFly) {
+        if (value.player.position.z - value.previousPosition.z < 0) {
           this.playersData.players[index].animActive('run');
-        } else {
+        }
+        else if (value.player.position.z - value.previousPosition.z > 0) {
+          this.playersData.players[index].animActive('runBack');
+        }
+        else if (value.player.position.x - value.previousPosition.x < 0) {
+          this.playersData.players[index].animActive('runLeft');
+        }
+        else if (value.player.position.x - value.previousPosition.x > 0) {
+          this.playersData.players[index].animActive('runRight');
+        }
+        if (value.player.position.x - value.previousPosition.x == 0 & value.player.position.z - value.previousPosition.z == 0) {
           this.playersData.players[index].animActive('idle');
         }
         value.previousPosition.copy(value.player.position);
       }
 
-      
+
       if (this.playersData.playerFly) {
-        
+
         this.playersData.players[this.playersData.activePlayerNum].animActive('shoot', 5, 0.5);
-        
+
       }
-      
-      
-      
+
+
+
     })
 
 
@@ -253,7 +265,7 @@ export class Engine {
       //удар
       const landingPoint = ballClass.ballMark.position;
       this.shootEngine(0.05, 0.10, landingPoint)
-      
+
 
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
