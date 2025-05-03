@@ -100,7 +100,6 @@ export class Engine {
 
     this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
 
-    console.log(this.playersData.players[0].player.position.x - this.playersData.players[0].previousPosition.x)
 
     this.playersData.players.forEach((value, index, array) => {
       value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
@@ -114,9 +113,11 @@ export class Engine {
       else if (!this.playersData.playerFly) {
         if (value.player.position.z - value.previousPosition.z < 0) {
           this.playersData.players[index].animActive('run');
+          value.playerModel.rotation.y = Math.PI
         }
         else if (value.player.position.z - value.previousPosition.z > 0) {
           this.playersData.players[index].animActive('runBack');
+          value.playerModel.rotation.y = Math.PI
         }
         else if (value.player.position.x - value.previousPosition.x < 0) {
           this.playersData.players[index].animActive('runLeft');
@@ -124,8 +125,25 @@ export class Engine {
         else if (value.player.position.x - value.previousPosition.x > 0) {
           this.playersData.players[index].animActive('runRight');
         }
+
+        if (value.player.position.z - value.previousPosition.z < 0 && value.player.position.x - value.previousPosition.x > 0) {
+          value.playerModel.rotation.y = Math.PI / 1.2
+        }
+        if (value.player.position.z - value.previousPosition.z < 0 && value.player.position.x - value.previousPosition.x < 0) {
+          value.playerModel.rotation.y = -Math.PI / 1.2
+        }
+
+        if (value.player.position.z - value.previousPosition.z > 0 && value.player.position.x - value.previousPosition.x > 0) {
+          value.playerModel.rotation.y = -Math.PI / 1.2
+        }
+        if (value.player.position.z - value.previousPosition.z > 0 && value.player.position.x - value.previousPosition.x < 0) {
+          value.playerModel.rotation.y = Math.PI / 1.2
+        }
+
+
         if (value.player.position.x - value.previousPosition.x == 0 & value.player.position.z - value.previousPosition.z == 0) {
           this.playersData.players[index].animActive('idle');
+          value.playerModel.rotation.y = Math.PI
         }
         value.previousPosition.copy(value.player.position);
       }
