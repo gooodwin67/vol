@@ -100,44 +100,46 @@ export class Engine {
 
     this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
 
+    if (this.playersData.playerTapPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 0.2) {
+      this.playersData.players[this.playersData.activePlayerNum].userData.animMas['pass'].play();
+    }
 
     this.playersData.players.forEach((value, index, array) => {
       value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
       value.playerModel.userData.mixer.update(value.clock.getDelta());
 
+      //console.log(playersData.playerTop.position.distanceTo(ballClass.ball.position))
 
 
-      if (this.playersData.playerTapPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 0.5) {
-        this.playersData.players[this.playersData.activePlayerNum].animActive('pass');
-      }
-      else if (!this.playersData.playerFly) {
-        if (value.player.position.z - value.previousPosition.z < 0) {
+      if (!this.playersData.playerFly) {
+        if (value.player.position.z - value.previousPosition.z < 0 && value.player.position.x - value.previousPosition.x == 0) {
           this.playersData.players[index].animActive('run');
-          value.playerModel.rotation.y = Math.PI
+
         }
-        else if (value.player.position.z - value.previousPosition.z > 0) {
+        else if (value.player.position.z - value.previousPosition.z > 0 && value.player.position.x - value.previousPosition.x == 0) {
           this.playersData.players[index].animActive('runBack');
-          value.playerModel.rotation.y = Math.PI
+
         }
-        else if (value.player.position.x - value.previousPosition.x < 0) {
+        else if (value.player.position.x - value.previousPosition.x < 0 && value.player.position.z - value.previousPosition.z == 0) {
           this.playersData.players[index].animActive('runLeft');
         }
-        else if (value.player.position.x - value.previousPosition.x > 0) {
+        else if (value.player.position.x - value.previousPosition.x > 0 && value.player.position.z - value.previousPosition.z == 0) {
           this.playersData.players[index].animActive('runRight');
         }
 
         if (value.player.position.z - value.previousPosition.z < 0 && value.player.position.x - value.previousPosition.x > 0) {
-          value.playerModel.rotation.y = Math.PI / 1.2
+
+          this.playersData.players[index].animActive('run_forward_right');
         }
         if (value.player.position.z - value.previousPosition.z < 0 && value.player.position.x - value.previousPosition.x < 0) {
-          value.playerModel.rotation.y = -Math.PI / 1.2
+          this.playersData.players[index].animActive('run_forward_left');
         }
 
         if (value.player.position.z - value.previousPosition.z > 0 && value.player.position.x - value.previousPosition.x > 0) {
-          value.playerModel.rotation.y = -Math.PI / 1.2
+          this.playersData.players[index].animActive('runback_left');
         }
         if (value.player.position.z - value.previousPosition.z > 0 && value.player.position.x - value.previousPosition.x < 0) {
-          value.playerModel.rotation.y = Math.PI / 1.2
+          this.playersData.players[index].animActive('runback_right');
         }
 
 
