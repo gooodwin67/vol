@@ -106,7 +106,7 @@ async function initClases() {
   player2.previousPosition.copy(player2.player.position);
   playersData.players.push(player1, player2)
 
-  console.log(111)
+
 
   enginePlayers = new Engine(scene, ballClass, worldClass, playersData)
 

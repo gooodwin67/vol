@@ -26,6 +26,10 @@ export class Player {
 
     this.clock = new THREE.Clock();
 
+    this.playerTapPas = false;
+    this.playerCanPas = true;
+    this.playerNowPas = false;
+
 
 
 
@@ -64,6 +68,7 @@ export class Player {
       const runBackRight = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runback_right'));
       const runBackLeft = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runback_left'));
       const pass = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass'));
+      const passHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass_hit'));
       const shoot = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'shoot'));
 
       this.activeAction = idle;
@@ -79,6 +84,7 @@ export class Player {
         'runback_right': runBackRight,
         'runback_left': runBackLeft,
         'pass': pass,
+        'pass_hit': passHit,
         'shoot': shoot,
       };
 
@@ -86,17 +92,36 @@ export class Player {
   }
 
   animActive(anim, weight = 1, duration = 0.2) {
+
     let previousAction = this.activeAction;
     this.activeAction = this.playerModel.userData.animMas[anim];
 
     if (previousAction !== this.activeAction) {
       previousAction.fadeOut(duration);
-      this.activeAction
-        .reset()
-        .setEffectiveTimeScale(1)
-        .setEffectiveWeight(weight)
-        .fadeIn(duration)
-        .play();
+
+
+      if (anim == 'pass' || anim == 'pass_hit') {
+        //this.activeAction.clampWhenFinished = true
+        this.activeAction
+          .reset()
+          //.setLoop(THREE.LoopOnce, 1)
+          .setEffectiveTimeScale(1)
+          .fadeIn(1)
+          .setEffectiveWeight(5)
+
+          // .setEffectiveTimeScale(1)
+          // .setEffectiveWeight(weight)
+          .fadeIn(duration)
+          .play();
+      }
+      else {
+        this.activeAction
+          .reset()
+          .setEffectiveTimeScale(1)
+          .setEffectiveWeight(weight)
+          .fadeIn(duration)
+          .play();
+      }
     }
 
   }
