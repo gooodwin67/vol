@@ -101,7 +101,6 @@ export class Engine {
     this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
 
     if (this.playersData.players[this.playersData.activePlayerNum].playerNowPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 1.9) {
-      console.log(123)
       this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.1);
     }
     else if (this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
@@ -163,7 +162,7 @@ export class Engine {
 
       if (this.playersData.playerFly) {
 
-        this.playersData.players[this.playersData.activePlayerNum].animActive('shoot', 5, 0.5);
+        //this.playersData.players[this.playersData.activePlayerNum].animActive('shoot', 5, 0.5);
 
       }
 
@@ -263,7 +262,11 @@ export class Engine {
     if (playersData.playerCanPas && playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1) {
       //пас
 
-      const landingPoint = ballClass.ballMark.position;
+      let landingPoint = ballClass.ballMark.position;
+      if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
+        //landingPoint = new THREE.Vector3(getRandomNumber(ballClass.ballMark.position.x - 2, ballClass.ballMark.position.x + 2), 0, getRandomNumber(ballClass.ballMark.position.z - 2, ballClass.ballMark.position.z + 2));
+        this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.1);
+      }
       this.shootEngine(3, 0.45, landingPoint)
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
@@ -283,6 +286,7 @@ export class Engine {
       this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
 
     }
+
 
     /****************************************************/
 
@@ -442,6 +446,8 @@ export class Engine {
           playersData.activePlayerNum = 1;
         }
       }
+
+      ballClass.ballMark.position.copy(this.playersData.players[this.playersData.activePlayerNum].player.position)
 
     }
 

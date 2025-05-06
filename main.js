@@ -205,7 +205,7 @@ function animate() {
   if (dataLoaded) {
 
     enginePlayers.movePlayer();
-    //enginePlayers.moveOpponent();
+    enginePlayers.moveOpponent();
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
