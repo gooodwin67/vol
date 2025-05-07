@@ -2,8 +2,8 @@ import * as THREE from "three";
 
 export class Ball {
  constructor(scene) {
-  this.ballGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-  this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0x0000aa });
+  this.ballGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+  this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
   this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
   this.ball.position.z = -2;
   this.ball.position.y = 8.4;
@@ -16,7 +16,7 @@ export class Ball {
   this.ballMark.position.z = 1;
 
   this.ballMark2Geometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
-  this.ballMark2Material = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
+  this.ballMark2Material = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
   this.ballMarkOnGround = new THREE.Mesh(this.ballMark2Geometry, this.ballMark2Material);
   this.ballMarkOnGround.position.y = 0.1;
   this.ballMarkOnGround.position.z = -2;

@@ -96,11 +96,11 @@ async function initClases() {
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 80) //speed, thinkSpeed Меткость
   player1.player.position.x -= 2;
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2) //speed, thinkSpeed
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100) //speed, thinkSpeed Меткость
   player2.player.position.x = 2;
 
   player2.previousPosition.copy(player2.player.position);
@@ -112,6 +112,8 @@ async function initClases() {
 
   await playersData.players[0].loadPlayerModel();
   await playersData.players[1].loadPlayerModel();
+
+  await worldClass.loadArenaModel();
 
 
 
@@ -126,6 +128,7 @@ async function initScenes() {
   //scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
+  scene.add(worldClass.arenaModel);
 
   scene.add(worldClass.net);
   scene.add(ballClass.ball);

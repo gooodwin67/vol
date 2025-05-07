@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class World {
   constructor(scene) {
@@ -18,16 +19,18 @@ export class World {
     this.widthPlane = 8;
     this.heightPlane = 16;
 
+    this.arenaModel;
+
     this.eventQueue;
 
     this.geometryPlane = new THREE.BoxGeometry(this.widthPlane, 0.2, this.heightPlane);
-    this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
+    this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0 });
     this.plane = new THREE.Mesh(this.geometryPlane, this.materialPlane);
     this.plane.receiveShadow = true;
     this.plane.position.set(0, 0, 0);
 
 
-    this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.3 }));
+    this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
     this.net.position.set(0, 1.0, 0);
     this.net.rotation.x = Math.PI / 2;
     this.net.rotation.y = Math.PI / 2;
@@ -36,5 +39,30 @@ export class World {
     this.gravity = -9.81; //6.81
 
     this.powerBlockWidth = 0;
+  }
+
+  async loadArenaModel() {
+    const gltfLoader = new GLTFLoader();
+    const url = 'models/arena/arena.glb';
+
+
+    await gltfLoader.loadAsync(url).then((gltf) => {
+      const root = gltf.scene;
+      this.arenaModel = root;
+
+      // this.arenaModel.rotation.y = Math.PI;
+      this.arenaModel.scale.x = 0.885;
+      this.arenaModel.scale.z = 0.893;
+      this.arenaModel.scale.y = 0.86;
+      // this.arenaModel.scale.y = 0.7;
+      // this.arenaModel.scale.z = 0.7;
+
+      this.arenaModel.position.x = 0.17;
+      this.arenaModel.position.y = 0.1;
+
+
+
+
+    });
   }
 }

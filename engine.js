@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getRandomNumber } from "./functions/functions";
+import { getRandomNumber, randomVector } from "./functions/functions";
 
 export class Engine {
   constructor(scene, ballClass, worldClass, playersData) {
@@ -93,6 +93,8 @@ export class Engine {
       ballClass.ballSideMe = true;
     }
     else ballClass.ballSideMe = false;
+
+    //console.log(randomVector(this.playersData.players[this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy));
 
 
     let topPosY = this.playersData.players[this.playersData.activePlayerNum].player.position.y + 1.3;
@@ -277,8 +279,7 @@ export class Engine {
       let landingPoint
       if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas && ballClass.ballMark.position.distanceTo(ballClass.ball.position) < 3) {
 
-        landingPoint = new THREE.Vector3(getRandomNumber(this.playersData.players[1 - this.playersData.activePlayerNum].player.position.x - 3, this.playersData.players[1 - this.playersData.activePlayerNum].player.position.x + 3), 0, getRandomNumber(this.playersData.players[1 - this.playersData.activePlayerNum].player.position.z - 3, this.playersData.players[1 - this.playersData.activePlayerNum].player.position.z + 3));
-        console.log(`new ${landingPoint.x}`)
+        landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
         }
@@ -287,8 +288,8 @@ export class Engine {
         }
       }
       else {
-        landingPoint = ballClass.ballMark.position;
-        console.log(`old ${landingPoint.x}`)
+
+        landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
       }
       this.shootEngine(3, 0.45, landingPoint)
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
@@ -331,7 +332,7 @@ export class Engine {
     if (playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y > 1) {
 
       //удар
-      const landingPoint = ballClass.ballMark.position;
+      const landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);;
       this.shootEngine(0.05, 0.10, landingPoint)
 
       this.playersData.players[this.playersData.activePlayerNum].animActive('jump_hit', 3, 0.1);
