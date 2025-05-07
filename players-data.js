@@ -11,7 +11,7 @@ export class PlayersData {
     this.playerTop.position.set(0, 0.0, 0);
 
     this.playerMarkGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-    this.playerMarkMaterial = new THREE.MeshLambertMaterial({ color: 0x005500 });
+    this.playerMarkMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     this.playerMark = new THREE.Mesh(this.playerMarkGeometry, this.playerMarkMaterial);
     this.playerMark.position.set(0, this.playerHeight / 2 + 1.2, 0);
 
@@ -65,7 +65,7 @@ export class PlayersData {
 
     this.opponentBodies = [];
 
-    this.opponentsSpeed = [0.09, 0.09];
+    this.opponentsSpeed = [0.06, 0.06];
 
     this.opponentsPas = false;
 

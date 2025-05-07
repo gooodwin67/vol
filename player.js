@@ -30,6 +30,8 @@ export class Player {
     this.playerCanPas = true;
     this.playerNowPas = false;
 
+    this.playerJumpHit = false;
+
 
 
 
@@ -69,7 +71,10 @@ export class Player {
       const runBackLeft = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'runback_left'));
       const pass = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass'));
       const passHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass_hit'));
-      const shoot = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'shoot'));
+      const passBottom = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass_bottom'));
+      const passBottomHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass_bottom_hit'));
+      const jump = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'jump'));
+      const jumpHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'jump_hit'));
 
       this.activeAction = idle;
 
@@ -85,7 +90,10 @@ export class Player {
         'runback_left': runBackLeft,
         'pass': pass,
         'pass_hit': passHit,
-        'shoot': shoot,
+        'pass_bottom': passBottom,
+        'pass_bottom_hit': passBottomHit,
+        'jump': jump,
+        'jump_hit': jumpHit,
       };
 
     });
@@ -102,6 +110,33 @@ export class Player {
 
       if (anim == 'pass' || anim == 'pass_hit') {
         //this.activeAction.clampWhenFinished = true
+        this.activeAction
+          .reset()
+          //.setLoop(THREE.LoopOnce, 1)
+          .setEffectiveTimeScale(1)
+
+          .setEffectiveWeight(5)
+
+          // .setEffectiveTimeScale(1)
+          // .setEffectiveWeight(weight)
+          .fadeIn(0)
+          .play();
+      }
+      else if (anim == 'pass_bottom' || anim == 'pass_bottom_hit') {
+        //this.activeAction.clampWhenFinished = true
+        this.activeAction
+          .reset()
+          //.setLoop(THREE.LoopOnce, 1)
+          .setEffectiveTimeScale(1)
+          .setEffectiveWeight(5)
+
+          // .setEffectiveTimeScale(1)
+          // .setEffectiveWeight(weight)
+          .fadeIn(duration)
+          .play();
+      }
+      else if (anim == 'jump') {
+        this.activeAction.clampWhenFinished = true
         this.activeAction
           .reset()
           //.setLoop(THREE.LoopOnce, 1)
