@@ -19,6 +19,8 @@ export class World {
     this.widthPlane = 8;
     this.heightPlane = 16;
 
+    this.centerOpponentField = new THREE.Vector3(0, 0, -this.heightPlane / 4);
+
     this.arenaModel;
 
     this.eventQueue;

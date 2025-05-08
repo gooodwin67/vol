@@ -5,8 +5,8 @@ export class Ball {
   this.ballGeometry = new THREE.SphereGeometry(0.15, 16, 16);
   this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
   this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
-  this.ball.position.z = -2;
-  this.ball.position.y = 8.4;
+  this.ball.position.z = 0;
+  this.ball.position.y = 1;
   this.ball.castShadow = true;
 
   this.ballMarkGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.2);

@@ -25,6 +25,7 @@ import { Ball } from "./ball";
 import { Opponent } from './opponent';
 import { PlayersData } from './players-data';
 import { Engine } from './engine';
+import { GameClass } from './game';
 
 console.clear();
 
@@ -66,6 +67,8 @@ let dynamicBodies = [];
 let worldClass;
 let playersData;
 
+let gameClass;
+
 let playerClass;
 
 let opponentClass;
@@ -90,6 +93,7 @@ async function initClases() {
   worldClass = new World();
   playersData = new PlayersData();
   ballClass = new Ball(scene);
+  gameClass = new GameClass();
 
   let opponent1 = new Opponent(scene, ballClass, worldClass, playersData);
   let opponent2 = new Opponent(scene, ballClass, worldClass, playersData);
@@ -108,7 +112,7 @@ async function initClases() {
 
 
 
-  enginePlayers = new Engine(scene, ballClass, worldClass, playersData)
+  enginePlayers = new Engine(scene, ballClass, worldClass, playersData, gameClass)
 
   await playersData.players[0].loadPlayerModel();
   await playersData.players[1].loadPlayerModel();
@@ -194,7 +198,7 @@ async function loadPhysWorld() {
   addPhysicsToObject(worldClass.plane, 'plane');
   addPhysicsToObject(worldClass.ground, 'ground');
 
-  addPhysicsToObject(worldClass.net, 'plane6');
+  addPhysicsToObject(worldClass.net, 'net');
 
 
 }
@@ -221,6 +225,7 @@ function animate() {
 
     enginePlayers.movePlayer();
     enginePlayers.moveOpponent();
+    enginePlayers.game();
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -298,6 +303,23 @@ function addPhysicsToObject(obj, body) {
     world.createCollider(shapeBall, bodyBall)
 
     dynamicBodies.push([obj, bodyBall, obj.id])
+  }
+
+  else if (body == 'net') {
+
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(2).setRestitution(0).setFriction(0);
+
+    world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+
+    // const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.1 });
+    // const cube = new THREE.Mesh(geometry, material);
+    // cube.position.set(obj.position.x, obj.position.y, obj.position.z)
+    // cube.rotation.copy(originalRotation);
+    // scene.add(cube);
   }
 
   else if (body.includes('plane')) {
