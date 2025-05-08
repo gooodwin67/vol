@@ -29,6 +29,12 @@ export class World {
     this.plane.receiveShadow = true;
     this.plane.position.set(0, 0, 0);
 
+    this.geometryGround = new THREE.BoxGeometry(this.widthPlane * 3, 0.2, this.heightPlane * 2);
+    this.materialGround = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0 });
+    this.ground = new THREE.Mesh(this.geometryGround, this.materialGround);
+    this.ground.receiveShadow = true;
+    this.ground.position.set(0, 0, 0);
+
 
     this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
     this.net.position.set(0, 1.0, 0);
@@ -43,7 +49,7 @@ export class World {
 
   async loadArenaModel() {
     const gltfLoader = new GLTFLoader();
-    const url = 'models/arena/arena.glb';
+    const url = 'models/arena/new/arena.gltf';
 
 
     await gltfLoader.loadAsync(url).then((gltf) => {

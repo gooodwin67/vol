@@ -96,7 +96,7 @@ async function initClases() {
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 80) //speed, thinkSpeed Меткость
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100) //speed, thinkSpeed Меткость
   player1.player.position.x -= 2;
 
   player1.previousPosition.copy(player1.player.position);
@@ -113,6 +113,9 @@ async function initClases() {
   await playersData.players[0].loadPlayerModel();
   await playersData.players[1].loadPlayerModel();
 
+  await playersData.opponents[0].loadOpponentModel();
+  await playersData.opponents[1].loadOpponentModel();
+
   await worldClass.loadArenaModel();
 
 
@@ -128,6 +131,7 @@ async function initScenes() {
   //scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
+  scene.add(worldClass.ground);
   scene.add(worldClass.arenaModel);
 
   scene.add(worldClass.net);
@@ -150,8 +154,15 @@ async function initScenes() {
   scene.add(playersData.playerMark);
   scene.add(playersData.playerShootMark);
 
+
   scene.add(playersData.opponents[0].opponent);
+  scene.add(playersData.opponents[0].opponentModel);
+  playersData.opponents[0].opponentModel.userData.animMas.idle.play();
+
   scene.add(playersData.opponents[1].opponent);
+  scene.add(playersData.opponents[1].opponentModel);
+  playersData.opponents[1].opponentModel.userData.animMas.idle.play();
+
 
   scene.add(playersData.opponentTop);
 
@@ -181,6 +192,7 @@ async function loadPhysWorld() {
   })
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
+  addPhysicsToObject(worldClass.ground, 'ground');
 
   addPhysicsToObject(worldClass.net, 'plane6');
 
@@ -290,6 +302,22 @@ function addPhysicsToObject(obj, body) {
 
   else if (body.includes('plane')) {
 
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0.1);
+
+    world.createCollider(shape, body)
+
+    dynamicBodies.push([obj, body, obj.id])
+
+    // const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.1 });
+    // const cube = new THREE.Mesh(geometry, material);
+    // cube.position.set(obj.position.x, obj.position.y, obj.position.z)
+    // cube.rotation.copy(originalRotation);
+    // scene.add(cube);
+  }
+  else if (body.includes('ground')) {
+    console.log(123)
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0.1);
 

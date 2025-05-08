@@ -31,10 +31,9 @@ export class Player {
     this.playerCanPas = true;
     this.playerNowPas = false;
 
+    this.playerTapShoot = false;
+
     this.playerJumpHit = false;
-
-
-
 
 
   }

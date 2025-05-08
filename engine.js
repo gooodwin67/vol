@@ -34,6 +34,7 @@ export class Engine {
           break;
         case "s":
         case "ы":
+          if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas) ballClass.ballMark.position.copy(this.playersData.players[this.playersData.activePlayerNum].player.position);
           this.playersData.players[this.playersData.activePlayerNum].playerTapPas = true;
           this.xx = 0;
           this.zz = 0;
@@ -53,7 +54,7 @@ export class Engine {
         case "d":
           this.xx = 0;
           this.zz = 0;
-          this.playersData.playerTapShoot = true;
+          this.playersData.players[this.playersData.activePlayerNum].playerTapShoot = true;
           break;
       }
     });
@@ -77,7 +78,7 @@ export class Engine {
           break;
         case "в":
         case "d":
-          this.playersData.playerTapShoot = false;
+          this.playersData.players[this.playersData.activePlayerNum].playerTapShoot = false;
           break;
       }
     });
@@ -94,16 +95,16 @@ export class Engine {
     }
     else ballClass.ballSideMe = false;
 
-    //console.log(randomVector(this.playersData.players[this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy));
+
 
 
     let topPosY = this.playersData.players[this.playersData.activePlayerNum].player.position.y + 1.3;
-    if (this.ballClass.ball.position.y < topPosY && !this.playersData.playerTapShoot) topPosY = this.ballClass.ball.position.y;
+    if (this.ballClass.ball.position.y < topPosY && !this.playersData.playerTapShoot) topPosY = this.ballClass.ball.position.y - 0.3;
 
-    this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z }, true)
+    this.playersData.playerTopBody.setNextKinematicTranslation({ x: this.playersData.players[this.playersData.activePlayerNum].player.position.x, y: topPosY, z: this.playersData.players[this.playersData.activePlayerNum].player.position.z - 0.5 }, true)
 
     if (this.playersData.players[this.playersData.activePlayerNum].playerNowPas & playersData.playerTop.position.distanceTo(ballClass.ball.position) < 1.9) {
-      if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
+      if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight * 1.2) {
         this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
       }
       else {
@@ -184,11 +185,11 @@ export class Engine {
 
 
 
-    if (!this.playersData.playerTapShoot) this.playersData.playerBodies[this.playersData.activePlayerNum].setTranslation({ x: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().x + this.xx, y: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().y, z: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().z + this.zz }, true)
+    if (!this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) this.playersData.playerBodies[this.playersData.activePlayerNum].setTranslation({ x: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().x + this.xx, y: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().y, z: this.playersData.playerBodies[this.playersData.activePlayerNum].translation().z + this.zz }, true)
 
 
     if (this.forward) {
-      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.playerTapShoot) {
+      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.zz = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
         this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
@@ -197,7 +198,7 @@ export class Engine {
       }
     }
     else if (this.backward) {
-      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.playerTapShoot) {
+      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.zz = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
         this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
@@ -209,7 +210,7 @@ export class Engine {
       this.zz = 0
     }
     if (this.left) {
-      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.playerTapShoot) {
+      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.xx = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
         this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
@@ -218,7 +219,7 @@ export class Engine {
       }
     }
     else if (this.right) {
-      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.playerTapShoot) {
+      if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.xx = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
         this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
@@ -260,7 +261,12 @@ export class Engine {
       }
 
       if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323') {
-        //console.log('ГОООЛ');
+        console.log('ГОООЛ');
+        document.querySelector('.power_wrap').style.backgroundColor = 'red';
+        setTimeout(() => {
+          document.querySelector('.power_wrap').style.backgroundColor = 'white';
+        }, 1000)
+
       }
 
     })
@@ -298,13 +304,16 @@ export class Engine {
       else {
         playersData.activeOpponentNum = 1;
       }
+
       if (playersData.players[0].player.position.distanceTo(ballClass.ball.position) > playersData.players[1].player.position.distanceTo(ballClass.ball.position)) {
         this.playersData.players[this.playersData.activePlayerNum].playerTapPas = false;
-        playersData.activePlayerNum = 0;
+        playersData.activePlayerNum = 0; /////////////////////////////////Не переключается при приеме/////////////////////////////////////
+        console.log(123)
       }
       else {
         this.playersData.players[this.playersData.activePlayerNum].playerTapPas = false;
         playersData.activePlayerNum = 1;
+        console.log(123)
       }
       playersData.playerCanPas = false;
       this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
@@ -315,7 +324,7 @@ export class Engine {
     /****************************************************/
 
 
-    if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) < 2 && playersData.playerTapShoot && !playersData.playerFly) {
+    if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) < 2 && this.playersData.players[this.playersData.activePlayerNum].playerTapShoot && !playersData.playerFly) {
       playersData.playerBodies[playersData.activePlayerNum].applyImpulse({ x: 0, y: 5.2, z: 0 }, true)
     }
     else if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) > 2) {
@@ -349,6 +358,13 @@ export class Engine {
 
     }
 
+    if (this.playersData.players[this.playersData.activePlayerNum].playerTapPas || this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
+      this.ballClass.ballMark.material.opacity = 0.6;
+    }
+    else {
+      this.ballClass.ballMark.material.opacity = 0;
+    }
+
     // //движение не активного игрока
     // if (this.playersData.players[1 - this.playersData.activePlayerNum].playerTapPas && ballClass.ballMark.position.z > 0) {
 
@@ -377,13 +393,42 @@ export class Engine {
     let playersData = this.playersData;
     let worldClass = this.worldClass;
 
+    this.playersData.opponents.forEach((value, index, array) => {
+      value.opponentModel.position.copy(new THREE.Vector3(value.opponent.position.x, value.opponent.position.y - 0.7, value.opponent.position.z));
+      value.opponentModel.userData.mixer.update(value.clock.getDelta());
+
+      if (!playersData.opponentFly & !value.opponentTapPas) {
+        if (value.opponent.position.z - value.previousPosition.z > 0 && value.opponent.position.z - value.previousPosition.z > Math.abs(value.opponent.position.x - value.previousPosition.x)) {
+          this.playersData.opponents[index].animActive('run');
+        }
+        else if (value.opponent.position.z - value.previousPosition.z < 0 && value.opponent.position.z - value.previousPosition.z < Math.abs(value.opponent.position.x - value.previousPosition.x)) {
+          this.playersData.opponents[index].animActive('runBack');
+        }
+        else if (value.opponent.position.x - value.previousPosition.x < 0 && value.opponent.position.x - value.previousPosition.x < Math.abs(value.opponent.position.z - value.previousPosition.z)) {
+          this.playersData.opponents[index].animActive('runRight');
+        }
+        else if (value.opponent.position.x - value.previousPosition.x > 0 && value.opponent.position.x - value.previousPosition.x > Math.abs(value.opponent.position.z - value.previousPosition.z)) {
+          this.playersData.opponents[index].animActive('runLeft');
+        }
+
+
+        if (value.opponent.position.x - value.previousPosition.x == 0 & value.opponent.position.z - value.previousPosition.z == 0) {
+          this.playersData.opponents[index].animActive('idle');
+        }
+      }
+
+      value.previousPosition.copy(value.opponent.position);
+
+    })
+
+
     playersData.opponentShootMark.position.x = playersData.opponents[playersData.activeOpponentNum].opponent.position.x;
     playersData.opponentShootMark.position.z = playersData.opponents[playersData.activeOpponentNum].opponent.position.z;
 
     let topPosY = playersData.opponents[playersData.activeOpponentNum].opponent.position.y + 1.3;
     if (ballClass.ball.position.y < topPosY) topPosY = ballClass.ball.position.y;
 
-    this.playersData.opponentTopBody.setNextKinematicTranslation({ x: playersData.opponents[playersData.activeOpponentNum].opponent.position.x, y: topPosY, z: playersData.opponents[playersData.activeOpponentNum].opponent.position.z }, true)
+    this.playersData.opponentTopBody.setNextKinematicTranslation({ x: playersData.opponents[playersData.activeOpponentNum].opponent.position.x, y: topPosY - 0.3, z: playersData.opponents[playersData.activeOpponentNum].opponent.position.z }, true)
 
     if (ballClass.ballMarkOnGround.position.z < 0) {
 
@@ -401,6 +446,20 @@ export class Engine {
         const movementVector = direction.clone().multiplyScalar(playersData.opponentsSpeed[playersData.activeOpponentNum]);
         opponentBody.setTranslation({ x: opponentBody.translation().x + movementVector.x, y: opponentBody.translation().y, z: opponentBody.translation().z + movementVector.z }, true)
 
+        playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
+
+      }
+      else {
+        if (!playersData.opponentFly) {
+          if (playersData.opponentTop.position.y > this.playersData.opponents[playersData.activeOpponentNum].opponentHeight) {
+            this.playersData.opponents[playersData.activeOpponentNum].animActive('pass');
+          }
+          else {
+            this.playersData.opponents[playersData.activeOpponentNum].animActive('pass_bottom');
+          }
+          playersData.opponents[playersData.activeOpponentNum].opponentTapPas = true;
+        }
+
       }
 
 
@@ -411,6 +470,15 @@ export class Engine {
     if (playersData.ballOpponentCollision && !playersData.opponentsPas && !playersData.opponentTapShoot) {
       //пас
       let landingPoint;
+      if (!playersData.opponentFly) {
+        if (playersData.opponentTop.position.y > this.playersData.opponents[playersData.activeOpponentNum].opponentHeight) {
+          this.playersData.opponents[playersData.activeOpponentNum].animActive('pass_hit');
+        }
+        else {
+          this.playersData.opponents[playersData.activeOpponentNum].animActive('pass_bottom_hit');
+        }
+      }
+      playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
       playersData.opponentsIter++;
       if (playersData.opponentsIter < 3) {
         landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(-worldClass.heightPlane / 2, 0));
@@ -439,6 +507,7 @@ export class Engine {
 
       playersData.opponentsPas = true;
 
+
     }
     else if (playersData.opponentTop.position.distanceTo(ballClass.ball.position) > 1.1) {
       playersData.opponentsPas = false;
@@ -456,21 +525,32 @@ export class Engine {
     }
     if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y >= playersData.playerHeight / 1.5) {
       playersData.opponentFly = true;
+      if (!playersData.opponentHiting) this.playersData.opponents[playersData.activeOpponentNum].animActive('jump');
     }
     if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y < playersData.playerHeight / 1.5) {
       playersData.opponentFly = false;
+      playersData.opponentHiting = false;
     }
 
 
     if (playersData.ballOpponentCollision && playersData.opponentFly) {
       //удар
       const landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
+      this.playersData.opponents[playersData.activeOpponentNum].animActive('jump_hit');
+      playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
+      playersData.opponentHiting = true;
       this.shootEngine(0.05, 0.10, landingPoint)
 
       playersData.opponentsIter = 0;
 
       ////////////////////////////
       if (ballClass.ballMarkOnGround.position.z > 0) {
+
+        this.playersData.players[0].playerTapPas = false
+        this.playersData.players[0].playerTapShoot = false
+        this.playersData.players[1].playerTapPas = false
+        this.playersData.players[1].playerTapShoot = false
+
         if (playersData.players[0].player.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.players[1].player.position.distanceTo(ballClass.ballMarkOnGround.position)) {
           playersData.activePlayerNum = 0;
         }
