@@ -1,0 +1,468 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                8
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Volleyball_Volleyball_0"
+        },
+        {
+            "children" : [
+                0
+            ],
+            "name" : "Volleyball",
+            "rotation" : [
+                0,
+                -1,
+                0,
+                4.371138828673793e-08
+            ],
+            "translation" : [
+                -0.2027130126953125,
+                -0.22044360637664795,
+                -0.9146443605422974
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "Reel_Reel_0"
+        },
+        {
+            "children" : [
+                2
+            ],
+            "name" : "Reel"
+        },
+        {
+            "mesh" : 2,
+            "name" : "Volleyball_Net_Volleyball_Net_0"
+        },
+        {
+            "children" : [
+                3,
+                4
+            ],
+            "name" : "Volleyball_Net",
+            "rotation" : [
+                0,
+                -1,
+                0,
+                4.371138828673793e-08
+            ],
+            "translation" : [
+                -0.21497154235839844,
+                1.8429346084594727,
+                -0.008879575878381729
+            ]
+        },
+        {
+            "children" : [
+                1,
+                5
+            ],
+            "name" : "RootNode"
+        },
+        {
+            "children" : [
+                6
+            ],
+            "name" : "1144e7d4dd624ea3b0a2d8b261362a77.fbx",
+            "rotation" : [
+                0.70710688829422,
+                0,
+                0,
+                0.7071066498756409
+            ]
+        },
+        {
+            "children" : [
+                7
+            ],
+            "name" : "Sketchfab_model",
+            "rotation" : [
+                -0.70710688829422,
+                0,
+                0,
+                0.7071066498756409
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Volleyball",
+            "normalTexture" : {
+                "index" : 0
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 1
+                },
+                "metallicFactor" : 0,
+                "metallicRoughnessTexture" : {
+                    "index" : 2
+                }
+            }
+        },
+        {
+            "doubleSided" : true,
+            "name" : "Reel",
+            "normalTexture" : {
+                "index" : 3
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 4
+                },
+                "metallicRoughnessTexture" : {
+                    "index" : 5
+                }
+            }
+        },
+        {
+            "doubleSided" : true,
+            "name" : "Volleyball_Net",
+            "normalTexture" : {
+                "index" : 6
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 7
+                },
+                "metallicRoughnessTexture" : {
+                    "index" : 8
+                }
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Volleyball_Volleyball_0",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "TEXCOORD_0" : 1,
+                        "NORMAL" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        },
+        {
+            "name" : "Reel_Reel_0",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "TEXCOORD_0" : 5,
+                        "NORMAL" : 6
+                    },
+                    "indices" : 7,
+                    "material" : 1
+                }
+            ]
+        },
+        {
+            "name" : "Volleyball_Net_Volleyball_Net_0",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 8,
+                        "TEXCOORD_0" : 9,
+                        "NORMAL" : 10
+                    },
+                    "indices" : 11,
+                    "material" : 2
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        },
+        {
+            "sampler" : 0,
+            "source" : 1
+        },
+        {
+            "sampler" : 0,
+            "source" : 2
+        },
+        {
+            "sampler" : 0,
+            "source" : 3
+        },
+        {
+            "sampler" : 0,
+            "source" : 4
+        },
+        {
+            "sampler" : 0,
+            "source" : 5
+        },
+        {
+            "sampler" : 0,
+            "source" : 6
+        },
+        {
+            "sampler" : 0,
+            "source" : 7
+        },
+        {
+            "sampler" : 0,
+            "source" : 8
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_8",
+            "uri" : "Image_8.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_6",
+            "uri" : "Image_6.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_7",
+            "uri" : "Image_7.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_5",
+            "uri" : "Image_5.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_3",
+            "uri" : "Image_3.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_4",
+            "uri" : "Image_4.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_2",
+            "uri" : "Image_2.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_0",
+            "uri" : "Image_0.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "Image_1",
+            "uri" : "Image_1.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 278,
+            "max" : [
+                9.494427680969238,
+                0.22044424712657928,
+                14.571053504943848
+            ],
+            "min" : [
+                -9.52210807800293,
+                0.12788671255111694,
+                -16.414146423339844
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 278,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 278,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 288,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 1015,
+            "max" : [
+                5.371572494506836,
+                -0.7527259588241577,
+                0.03461108356714249
+            ],
+            "min" : [
+                5.1917924880981445,
+                -0.8581445813179016,
+                -0.12246527522802353
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 1015,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 1015,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 2601,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 8,
+            "componentType" : 5126,
+            "count" : 3299,
+            "max" : [
+                5.412062644958496,
+                0.7281632423400879,
+                0.03887747973203659
+            ],
+            "min" : [
+                -4.79393196105957,
+                -1.8429346084594727,
+                -0.03732264041900635
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 9,
+            "componentType" : 5126,
+            "count" : 3299,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 10,
+            "componentType" : 5126,
+            "count" : 3299,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 11,
+            "componentType" : 5123,
+            "count" : 9954,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 3336,
+            "byteOffset" : 0,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 2224,
+            "byteOffset" : 3336,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 3336,
+            "byteOffset" : 5560,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 576,
+            "byteOffset" : 8896,
+            "target" : 34963
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 12180,
+            "byteOffset" : 9472,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 8120,
+            "byteOffset" : 21652,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 12180,
+            "byteOffset" : 29772,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5202,
+            "byteOffset" : 41952,
+            "target" : 34963
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 39588,
+            "byteOffset" : 47156,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 26392,
+            "byteOffset" : 86744,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 39588,
+            "byteOffset" : 113136,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 19908,
+            "byteOffset" : 152724,
+            "target" : 34963
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 172632,
+            "uri" : "arena.bin"
+        }
+    ]
+}

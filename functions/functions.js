@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 export function detectCollisionCubes(object1, object2) {
     object1.geometry.computeBoundingBox();
     object2.geometry.computeBoundingBox();
@@ -10,4 +12,15 @@ export function detectCollisionCubes(object1, object2) {
 
     //if (box1.intersectsBox(box2)) $('.info').text(1);
     return box1.intersectsBox(box2);
+}
+
+export function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min
+}
+
+export function randomVector(vector, accuracy) {
+    const newVector = vector.clone()
+    newVector.x += getRandomNumber(-1 * (100 - accuracy) / 10, (100 - accuracy) / 10)
+    newVector.z += getRandomNumber(-1 * (100 - accuracy) / 10, (100 - accuracy) / 10)
+    return newVector;
 }
