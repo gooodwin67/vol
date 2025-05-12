@@ -6,7 +6,7 @@ export class PlayersData {
     this.playerHeight = 1.4;
 
     this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 2);
-    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0 });
+    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0.0 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
 
@@ -31,10 +31,15 @@ export class PlayersData {
     this.playerNowPas = false;
 
     this.playerTapShoot = false;
+    this.playerCanShoot = true;
     this.playerFly = false;
     this.playerJump = false;
 
+    this.playersIter = 0;
+
     this.playerTopBody = 0;
+
+    this.playerLastTouch = true;
 
     this.ballPlayerCollision = false;
 
@@ -68,6 +73,7 @@ export class PlayersData {
     this.opponentsSpeed = [0.06, 0.06];
 
     this.opponentsPas = false;
+    this.opponentsShoot = false;
 
 
 
@@ -80,6 +86,7 @@ export class PlayersData {
     this.opponentsIter = 0;
 
     this.ballOpponentCollision = false;
+
 
   }
 

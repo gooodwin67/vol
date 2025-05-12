@@ -4,7 +4,22 @@ export class GameClass {
  constructor() {
 
 
-  this.gameIsStart = true;
   this.serve = true;
+
+  this.gameSuspended = false;
+
+  this.scoreUpdating = false;
+
+  this.meScore = 0;
+  this.oppScore = 0;
+
+ }
+
+ scoreUpdate() {
+  if (this.scoreUpdating) {
+   document.querySelector('.score_block_player').textContent = this.meScore;
+   document.querySelector('.score_block_opponent').textContent = this.oppScore;
+   this.scoreUpdating = false;
+  }
  }
 }

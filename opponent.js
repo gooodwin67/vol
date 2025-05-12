@@ -23,6 +23,8 @@ export class Opponent {
 
     this.activeAction;
 
+    this.opponentTouchNum = 0;
+
   }
 
 

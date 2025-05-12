@@ -35,7 +35,7 @@ export class Engine {
           break;
         case "s":
         case "ы":
-          if (this.gameClass.serve) {
+          if (this.gameClass.serve && !this.gameClass.gameSuspended) {
             this.serve();
           }
           else {
@@ -108,6 +108,86 @@ export class Engine {
     this.gameClass.serve = false;
   }
 
+  goal(goal, who) {
+    if (!this.gameClass.gameSuspended && !this.gameClass.serve) {
+      console.log('ГОООЛ');
+      document.querySelector('.power_wrap').style.backgroundColor = 'red';
+
+      if (goal == 'goal') {
+        if (this.ballClass.ballSideMe && this.ballClass.inPlane) {
+          this.gameClass.oppScore++;
+        }
+        else if (!this.ballClass.ballSideMe && this.ballClass.inPlane) {
+          this.gameClass.meScore++;
+        }
+        else if (!this.ballClass.inPlane && this.playersData.playerLastTouch) {
+          this.gameClass.oppScore++;
+        }
+        else if (!this.ballClass.inPlane && !this.playersData.playerLastTouch) {
+          this.gameClass.meScore++;
+        }
+
+
+      }
+      else if (goal == 'iters') {
+        if (who == 'player') {
+          this.gameClass.oppScore++;
+        }
+        else if (who == 'opponent') {
+          this.gameClass.meScore++;
+        }
+      }
+
+      this.gameClass.scoreUpdating = true;
+      this.gameClass.scoreUpdate();
+      this.gameClass.gameSuspended = true;
+      setTimeout(() => {
+        this.resetInGame();
+        document.querySelector('.power_wrap').style.backgroundColor = 'white';
+        this.gameClass.gameSuspended = false;
+        this.gameClass.serve = true;
+      }, 200)
+    }
+  }
+
+
+  playerTouching() {
+    this.playersData.playerLastTouch = true;
+    this.playersData.players[this.playersData.activePlayerNum].playerTouchNum++
+    this.playersData.players[1 - this.playersData.activePlayerNum].playerTouchNum = 0;
+    this.playersData.playersIter++;
+    if (this.playersData.playersIter > 3 || this.playersData.players[this.playersData.activePlayerNum].playerTouchNum > 1) {
+      this.goal('iters', 'player');
+    }
+    this.playersData.opponentsIter = 0;
+    this.playersData.opponents[0].opponentTouchNum = 0;
+    this.playersData.opponents[1].opponentTouchNum = 0;
+  }
+
+  opponentTouching() {
+    this.playersData.playerLastTouch = false;
+    this.playersData.opponents[this.playersData.activeOpponentNum].opponentTouchNum++
+    this.playersData.opponents[1 - this.playersData.activeOpponentNum].opponentTouchNum = 0
+
+    this.playersData.opponentsIter++;
+    if (this.playersData.opponentsIter > 3 || this.playersData.opponents[this.playersData.activeOpponentNum].opponentTouchNum > 1) {
+      this.goal('iters', 'opponent');
+    }
+    this.playersData.playersIter = 0;
+    this.playersData.players[0].playerTouchNum = 0;
+    this.playersData.players[1].playerTouchNum = 0;
+  }
+
+  resetInGame() {
+    this.playersData.opponentsIter = 0;
+    this.playersData.opponents[0].opponentTouchNum = 0;
+    this.playersData.opponents[1].opponentTouchNum = 0;
+
+    this.playersData.playersIter = 0;
+    this.playersData.players[0].playerTouchNum = 0;
+    this.playersData.players[1].playerTouchNum = 0;
+  }
+
   movePlayer() {
 
     let ballClass = this.ballClass;
@@ -117,8 +197,18 @@ export class Engine {
     if (ballClass.ball.position.z > 0) {
       ballClass.ballSideMe = true;
     }
-    else ballClass.ballSideMe = false;
+    else {
+      ballClass.ballSideMe = false;
+      this.playersData.players[0].playerNowPas = false;
+      this.playersData.players[1].playerNowPas = false;
+    }
 
+    if (ballClass.ball.position.x > -worldClass.widthPlane / 2 && ballClass.ball.position.x < worldClass.widthPlane / 2 && ballClass.ball.position.z > -worldClass.heightPlane / 2 && ballClass.ball.position.z < worldClass.heightPlane / 2) {
+      ballClass.inPlane = true;
+    }
+    else {
+      ballClass.inPlane = false;
+    }
 
 
 
@@ -209,7 +299,6 @@ export class Engine {
     if (this.forward) {
       if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.zz = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
-        this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
       else {
         this.ballClass.ballMark.position.z -= this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
@@ -218,7 +307,6 @@ export class Engine {
     else if (this.backward) {
       if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.zz = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
-        this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
       else {
         this.ballClass.ballMark.position.z += this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
@@ -230,7 +318,6 @@ export class Engine {
     if (this.left) {
       if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.xx = -this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
-        this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
       else {
         this.ballClass.ballMark.position.x -= this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
@@ -239,7 +326,6 @@ export class Engine {
     else if (this.right) {
       if (!this.playersData.players[this.playersData.activePlayerNum].playerTapPas && !this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
         this.xx = this.playersData.players[this.playersData.activePlayerNum].playerSpeed;
-        this.playersData.players[this.playersData.activePlayerNum].playerNowPas = false;
       }
       else {
         this.ballClass.ballMark.position.x += this.playersData.players[this.playersData.activePlayerNum].playerThinkSpeed;
@@ -277,13 +363,16 @@ export class Engine {
       if (handle2 == ballClass.ballBody.handle && handle1 == '1.5e-323' && started) {
         playersData.ballOpponentCollision = true;
       }
+      if (handle2 == ballClass.ballBody.handle && handle1 == playersData.playerBodies[1 - playersData.activePlayerNum].handle && started) {
+        playersData.activePlayerNum = 1 - playersData.activePlayerNum;
+        playerTouching();
+      }
 
-      if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323') {
-        console.log('ГОООЛ');
-        document.querySelector('.power_wrap').style.backgroundColor = 'red';
-        setTimeout(() => {
-          document.querySelector('.power_wrap').style.backgroundColor = 'white';
-        }, 1000)
+
+      if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323' && !this.gameClass.gameSuspended && started) {
+        this.goal('goal');
+        ballClass.ballTouch.position.x = ballClass.ball.position.x;
+        ballClass.ballTouch.position.z = ballClass.ball.position.z;
 
       }
 
@@ -295,11 +384,11 @@ export class Engine {
 
     if (playersData.playerCanPas && playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1) {
       //пас
-
-
+      this.playerTouching();
 
       let landingPoint;
       if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
+        console.log(1)
         landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
@@ -309,6 +398,7 @@ export class Engine {
         }
       }
       else {
+        console.log(2)
         landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
@@ -343,8 +433,8 @@ export class Engine {
     }
 
 
-    /****************************************************/
-
+    /****************************************************************************************************************************/
+    //прыжок
 
     if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) < 2 && this.playersData.players[this.playersData.activePlayerNum].playerTapShoot && !playersData.playerFly) {
       playersData.playerBodies[playersData.activePlayerNum].applyImpulse({ x: 0, y: 6.2, z: 0 }, true)
@@ -360,11 +450,14 @@ export class Engine {
       playersData.playerFly = false;
     }
 
-    if (playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y > 1) {
+    if (playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y > 1 && playersData.playerCanShoot) {
+
 
       //удар
-      const landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);;
+      const landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
       this.shootEngine(0.05, 0.10, landingPoint)
+
+      //this.playerTouching();      ////////////////////////////////////////////////////////////////////////////////////СРАБАТЫВАЕТ МНОГО РАЗ ////////////// При голе сбросить все
 
       this.playersData.players[this.playersData.activePlayerNum].animActive('jump_hit', 3, 0.1);
       this.playersData.players[this.playersData.activePlayerNum].playerJumpHit = true;
@@ -386,6 +479,11 @@ export class Engine {
     else {
       this.ballClass.ballMark.material.opacity = 0;
     }
+
+    playersData.playerCanShoot = false;
+    setTimeout(() => {
+      playersData.playerCanShoot = true;
+    }, 10)
 
     // //движение не активного игрока
     // if (this.playersData.players[1 - this.playersData.activePlayerNum].playerTapPas && ballClass.ballMark.position.z > 0) {
@@ -491,6 +589,9 @@ export class Engine {
 
     if (playersData.ballOpponentCollision && !playersData.opponentsPas && !playersData.opponentTapShoot) {
       //пас
+
+      this.opponentTouching()
+
       let landingPoint;
       if (!playersData.opponentFly) {
         if (playersData.opponentTop.position.y > this.playersData.opponents[playersData.activeOpponentNum].opponentHeight) {
@@ -501,13 +602,13 @@ export class Engine {
         }
       }
       playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
-      playersData.opponentsIter++;
+
       if (playersData.opponentsIter < 3) {
         landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(-worldClass.heightPlane / 2, 0));
       }
       else {
         landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
-        playersData.opponentsIter = 0;
+
       }
 
       if (!playersData.opponentTapShoot) this.shootEngine(3, 0.45, landingPoint)
@@ -561,9 +662,9 @@ export class Engine {
       this.playersData.opponents[playersData.activeOpponentNum].animActive('jump_hit');
       playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
       playersData.opponentHiting = true;
-      this.shootEngine(0.02, 0.10, landingPoint)
+      this.shootEngine(0.02, 0.07, landingPoint)
 
-      playersData.opponentsIter = 0;
+      this.opponentTouching();
 
       ////////////////////////////
       if (ballClass.ballMarkOnGround.position.z > 0) {
@@ -582,6 +683,7 @@ export class Engine {
       }
 
       ballClass.ballMark.position.copy(this.playersData.players[this.playersData.activePlayerNum].player.position)
+
 
     }
 

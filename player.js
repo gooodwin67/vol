@@ -22,6 +22,8 @@ export class Player {
 
     this.activeAction;
 
+    this.playerTouchNum = 0;
+
     this.previousPosition = new THREE.Vector3(0, 0, 0);
 
 
@@ -34,6 +36,7 @@ export class Player {
     this.playerTapShoot = false;
 
     this.playerJumpHit = false;
+
 
 
   }

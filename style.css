@@ -28,3 +28,13 @@ canvas {
     width: 0;
     background-color: red;
 }
+
+.score_block {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    font-size: 30px;
+    color: #899cf7;
+}

@@ -22,9 +22,18 @@ export class Ball {
   this.ballMarkOnGround.position.z = -2;
 
 
+  this.ballTouchGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+  this.ballTouchMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, transparent: true, opacity: 1 });
+  this.ballTouch = new THREE.Mesh(this.ballTouchGeometry, this.ballTouchMaterial);
+  this.ballTouch.position.y = 0.1;
+  this.ballTouch.position.z = 0;
+
+
   this.ballBody;
 
   this.ballSideMe = false;
   this.ballMarkSideMe = false;
+
+  this.inPlane = false;
  }
 }

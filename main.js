@@ -135,13 +135,15 @@ async function initScenes() {
   //scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
-  scene.add(worldClass.ground);
+
   scene.add(worldClass.arenaModel);
 
   scene.add(worldClass.net);
   scene.add(ballClass.ball);
   scene.add(ballClass.ballMark);
   scene.add(ballClass.ballMarkOnGround);
+
+  scene.add(ballClass.ballTouch);
 
   scene.add(playersData.players[0].player);
   scene.add(playersData.players[0].playerModel);
@@ -196,7 +198,7 @@ async function loadPhysWorld() {
   })
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
-  addPhysicsToObject(worldClass.ground, 'ground');
+
 
   addPhysicsToObject(worldClass.net, 'net');
 
@@ -338,20 +340,5 @@ function addPhysicsToObject(obj, body) {
     // cube.rotation.copy(originalRotation);
     // scene.add(cube);
   }
-  else if (body.includes('ground')) {
-    console.log(123)
-    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(1).setRestitution(0).setFriction(0.1);
 
-    world.createCollider(shape, body)
-
-    dynamicBodies.push([obj, body, obj.id])
-
-    // const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
-    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.1 });
-    // const cube = new THREE.Mesh(geometry, material);
-    // cube.position.set(obj.position.x, obj.position.y, obj.position.z)
-    // cube.rotation.copy(originalRotation);
-    // scene.add(cube);
-  }
 }
