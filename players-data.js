@@ -70,7 +70,7 @@ export class PlayersData {
 
     this.opponentBodies = [];
 
-    this.opponentsSpeed = [0.06, 0.06];
+    this.opponentsSpeed = [0.04, 0.06];
 
     this.opponentsPas = false;
     this.opponentsShoot = false;

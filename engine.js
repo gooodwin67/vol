@@ -157,7 +157,7 @@ export class Engine {
     this.playersData.players[1 - this.playersData.activePlayerNum].playerTouchNum = 0;
     this.playersData.playersIter++;
     if (this.playersData.playersIter > 3 || this.playersData.players[this.playersData.activePlayerNum].playerTouchNum > 1) {
-      this.goal('iters', 'player');
+      //this.goal('iters', 'player');
     }
     this.playersData.opponentsIter = 0;
     this.playersData.opponents[0].opponentTouchNum = 0;
@@ -186,6 +186,26 @@ export class Engine {
     this.playersData.playersIter = 0;
     this.playersData.players[0].playerTouchNum = 0;
     this.playersData.players[1].playerTouchNum = 0;
+
+    this.playersData.playerTapPas = false;
+    this.playersData.playerCanPas = true;
+    this.playersData.playerNowPas = false;
+
+    this.playersData.playerTapShoot = false;
+    this.playersData.playerCanShoot = true;
+    this.playersData.playerFly = false;
+    this.playersData.playerJump = false;
+
+    this.playersData.opponentsPas = false;
+    this.playersData.opponentsShoot = false;
+
+
+
+    this.playersData.opponentFly = false;
+
+    this.playersData.opponentTapShoot = false;
+
+    this.playersData.opponentHiting = false;
   }
 
   movePlayer() {
@@ -357,7 +377,7 @@ export class Engine {
     playersData.ballOpponentCollision = false;
 
     worldClass.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
-      if (handle2 == ballClass.ballBody.handle && handle1 == 0) {
+      if (handle2 == ballClass.ballBody.handle && handle1 == 0 && started) {
         playersData.ballPlayerCollision = true;
       }
       if (handle2 == ballClass.ballBody.handle && handle1 == '1.5e-323' && started) {
@@ -388,7 +408,6 @@ export class Engine {
 
       let landingPoint;
       if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
-        console.log(1)
         landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
@@ -398,7 +417,6 @@ export class Engine {
         }
       }
       else {
-        console.log(2)
         landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
@@ -455,9 +473,11 @@ export class Engine {
 
       //удар
       const landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
-      this.shootEngine(0.05, 0.10, landingPoint)
+      //this.shootEngine(0.02, 0.08, landingPoint)
+      this.shootEngine1(0.01, 0.08, landingPoint)
 
-      //this.playerTouching();      ////////////////////////////////////////////////////////////////////////////////////СРАБАТЫВАЕТ МНОГО РАЗ ////////////// При голе сбросить все
+
+      this.playerTouching();
 
       this.playersData.players[this.playersData.activePlayerNum].animActive('jump_hit', 3, 0.1);
       this.playersData.players[this.playersData.activePlayerNum].playerJumpHit = true;
@@ -471,6 +491,12 @@ export class Engine {
         playersData.activeOpponentNum = 1;
       }
 
+      playersData.playerCanShoot = false;
+
+      setTimeout(() => {
+        playersData.playerCanShoot = true;
+      }, 10)
+
     }
 
     if (this.playersData.players[this.playersData.activePlayerNum].playerTapPas || this.playersData.players[this.playersData.activePlayerNum].playerTapShoot) {
@@ -480,10 +506,7 @@ export class Engine {
       this.ballClass.ballMark.material.opacity = 0;
     }
 
-    playersData.playerCanShoot = false;
-    setTimeout(() => {
-      playersData.playerCanShoot = true;
-    }, 10)
+
 
     // //движение не активного игрока
     // if (this.playersData.players[1 - this.playersData.activePlayerNum].playerTapPas && ballClass.ballMark.position.z > 0) {
@@ -712,6 +735,40 @@ export class Engine {
     const impulse = {
       x: horizontalVelocityX,
       y: verticalVelocityY,
+      z: horizontalVelocityZ
+    };
+
+    ballClass.ballMarkOnGround.position.copy(landingPoint);
+    ballClass.ballMarkOnGround.position.y = 0.2;
+
+    ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ballClass.ballBody.applyImpulse(impulse, true);
+  }
+
+  shootEngine1(heightFactor, speedFactor, landingPoint) {
+
+    let ballClass = this.ballClass;
+    let playersData = this.playersData;
+    let worldClass = this.worldClass;
+
+    const ballPosition = ballClass.ballBody.translation();
+
+    ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+
+    const deltaX = landingPoint.x - ballPosition.x;
+    const deltaZ = landingPoint.z - ballPosition.z;
+
+    const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
+
+    const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
+    const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
+    const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
+    console.log(verticalVelocityY)
+    const impulse = {
+      x: horizontalVelocityX,
+      y: 0,
       z: horizontalVelocityZ
     };
 
