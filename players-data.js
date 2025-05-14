@@ -43,6 +43,8 @@ export class PlayersData {
 
     this.ballPlayerCollision = false;
 
+    this.playerMistakeNow = 0;
+
 
 
 
@@ -70,7 +72,6 @@ export class PlayersData {
 
     this.opponentBodies = [];
 
-    this.opponentsSpeed = [0.04, 0.06];
 
     this.opponentsPas = false;
     this.opponentsShoot = false;
@@ -86,6 +87,8 @@ export class PlayersData {
     this.opponentsIter = 0;
 
     this.ballOpponentCollision = false;
+
+    this.opponentMistakeNow = 0;
 
 
   }

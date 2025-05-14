@@ -104,7 +104,7 @@ export class Engine {
 
   serve() {
     const landingPoint = randomVector(this.worldClass.centerOpponentField, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
-    this.shootEngine(3, 0.45, landingPoint)
+    this.passEngine(3, 0.45, landingPoint)
     this.gameClass.serve = false;
   }
 
@@ -406,9 +406,13 @@ export class Engine {
       //пас
       this.playerTouching();
 
+      if (this.xx != 0 || this.zz != 0) {
+        this.playersData.playerMistakeNow = 100 - this.playersData.players[this.playersData.activePlayerNum].agility;
+      }
+
       let landingPoint;
       if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
-        landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
+        landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy - this.playersData.playerMistakeNow);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
         }
@@ -417,7 +421,7 @@ export class Engine {
         }
       }
       else {
-        landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
+        landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy - this.playersData.playerMistakeNow);
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
         }
@@ -425,7 +429,7 @@ export class Engine {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_bottom_hit', 1, 0.2);
         }
       }
-      this.shootEngine(3, 0.45, landingPoint)
+      this.passEngine(3, 0.45, landingPoint)
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
       }
@@ -446,6 +450,7 @@ export class Engine {
 
       setTimeout(() => {
         playersData.playerCanPas = true;
+        this.playersData.playerMistakeNow = 0;
       }, 100);
 
     }
@@ -455,7 +460,7 @@ export class Engine {
     //прыжок
 
     if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) < 2 && this.playersData.players[this.playersData.activePlayerNum].playerTapShoot && !playersData.playerFly) {
-      playersData.playerBodies[playersData.activePlayerNum].applyImpulse({ x: 0, y: 6.2, z: 0 }, true)
+      playersData.playerBodies[playersData.activePlayerNum].applyImpulse({ x: 0, y: 8.2, z: 0 }, true)
     }
     else if (ballClass.ball.position.distanceTo(playersData.playerShootMark.position) > 2) {
       this.playersData.players[this.playersData.activePlayerNum].playerJumpHit = false;
@@ -474,7 +479,7 @@ export class Engine {
       //удар
       const landingPoint = randomVector(ballClass.ballMark.position, this.playersData.players[this.playersData.activePlayerNum].playerAccuracy);
       //this.shootEngine(0.02, 0.08, landingPoint)
-      this.shootEngine1(0.01, 0.08, landingPoint)
+      this.shotEngine(playersData.players[playersData.activePlayerNum].shotSpeed, landingPoint)
 
 
       this.playerTouching();
@@ -586,7 +591,7 @@ export class Engine {
       if (distance > 0.5) {
 
         const opponentBody = playersData.opponentBodies[playersData.activeOpponentNum];
-        const movementVector = direction.clone().multiplyScalar(playersData.opponentsSpeed[playersData.activeOpponentNum]);
+        const movementVector = direction.clone().multiplyScalar(playersData.opponents[playersData.activeOpponentNum].opponentSpeed);
         opponentBody.setTranslation({ x: opponentBody.translation().x + movementVector.x, y: opponentBody.translation().y, z: opponentBody.translation().z + movementVector.z }, true)
 
         playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
@@ -610,6 +615,7 @@ export class Engine {
     /*//////////////////////////////////////////////////////////////////////////*/
 
 
+
     if (playersData.ballOpponentCollision && !playersData.opponentsPas && !playersData.opponentTapShoot) {
       //пас
 
@@ -626,15 +632,32 @@ export class Engine {
       }
       playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
 
+
+
+      if (playersData.opponentTopBody.linvel().x != 0 || playersData.opponentTopBody.linvel().z != 0) {
+        this.playersData.opponentMistakeNow = 100 - this.playersData.opponents[this.playersData.activePlayerNum].agility;
+      }
+
+
+      setTimeout(() => {
+        this.playersData.opponentMistakeNow = 0;
+      }, 100);
+
       if (playersData.opponentsIter < 3) {
-        landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(-worldClass.heightPlane / 2, 0));
+        //landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(-worldClass.heightPlane / 2, 0));
+        const zz = getRandomNumber(this.playersData.opponents[this.playersData.activeOpponentNum].opponent.position.z, 0)
+        const xx = getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2)
+        const yy = 0;
+        const newLandPos = new THREE.Vector3(xx, yy, zz);
+
+        landingPoint = randomVector(newLandPos, this.playersData.opponents[this.playersData.activeOpponentNum].opponentAccuracy - this.playersData.opponentMistakeNow);
       }
       else {
         landingPoint = new THREE.Vector3(getRandomNumber(-worldClass.widthPlane / 2, worldClass.widthPlane / 2), 0, getRandomNumber(4, worldClass.heightPlane / 2));
 
       }
 
-      if (!playersData.opponentTapShoot) this.shootEngine(3, 0.45, landingPoint)
+      if (!playersData.opponentTapShoot) this.passEngine(3, 0.45, landingPoint)
 
       playersData.activeOpponentNum = 1 - playersData.activeOpponentNum;
 
@@ -667,7 +690,7 @@ export class Engine {
     }
 
     if (ballClass.ball.position.distanceTo(playersData.opponentShootMark.position) < 2 && playersData.opponentTapShoot && !playersData.opponentFly) {
-      playersData.opponentBodies[playersData.activeOpponentNum].applyImpulse({ x: 0, y: 6.2, z: 0 }, true)
+      playersData.opponentBodies[playersData.activeOpponentNum].applyImpulse({ x: 0, y: 8.2, z: 0 }, true)
     }
     if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y >= playersData.playerHeight / 1.5) {
       playersData.opponentFly = true;
@@ -685,7 +708,8 @@ export class Engine {
       this.playersData.opponents[playersData.activeOpponentNum].animActive('jump_hit');
       playersData.opponents[playersData.activeOpponentNum].opponentTapPas = false;
       playersData.opponentHiting = true;
-      this.shootEngine(0.02, 0.07, landingPoint)
+      //this.passEngine(0.02, 0.07, landingPoint)
+      this.shotEngine(playersData.opponents[playersData.activeOpponentNum].shotSpeed, landingPoint)
 
       this.opponentTouching();
 
@@ -712,7 +736,7 @@ export class Engine {
 
   }
 
-  shootEngine(heightFactor, speedFactor, landingPoint) {
+  passEngine(heightFactor, speedFactor, landingPoint) {
 
     let ballClass = this.ballClass;
     let playersData = this.playersData;
@@ -746,31 +770,38 @@ export class Engine {
     ballClass.ballBody.applyImpulse(impulse, true);
   }
 
-  shootEngine1(heightFactor, speedFactor, landingPoint) {
+  shotEngine(speed, landingPoint) {
 
     let ballClass = this.ballClass;
-    let playersData = this.playersData;
     let worldClass = this.worldClass;
 
-    const ballPosition = ballClass.ballBody.translation();
+    const currentBallPosition = ballClass.ballBody.translation();
+
+    const gravity = worldClass.gravity;
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
-    const deltaX = landingPoint.x - ballPosition.x;
-    const deltaZ = landingPoint.z - ballPosition.z;
+    // Шаг 1: вычисляем вектор направления
+    const direction = landingPoint.clone().sub(currentBallPosition); // вектор от мяча к точке приземления
+    const horizontalDistance = Math.sqrt(direction.x * direction.x + direction.z * direction.z); // горизонтальное расстояние
+    const verticalDistance = direction.y; // вертикальное расстояние
 
-    const timeOfFlight = Math.sqrt((2 * heightFactor) / Math.abs(worldClass.gravity));
+    // Шаг 2: вычисляем время полета
+    // Используем уравнение движения для свободного падения
+    const timeOfFlight = (horizontalDistance / speed); // базовое время полета без учета гравитации, задаем горизонтальную скорость
 
-    const horizontalVelocityX = (deltaX / timeOfFlight) * speedFactor;
-    const horizontalVelocityZ = (deltaZ / timeOfFlight) * speedFactor;
-    const verticalVelocityY = Math.sqrt(2 * Math.abs(worldClass.gravity) * heightFactor);
-    console.log(verticalVelocityY)
-    const impulse = {
-      x: horizontalVelocityX,
-      y: 0,
-      z: horizontalVelocityZ
-    };
+    // Учитываем гравитацию
+    const totalHeight = (0.5 * (-gravity) * timeOfFlight * timeOfFlight);
+    const adjustedVerticalSpeed = (verticalDistance + totalHeight) / timeOfFlight; // корректируем вертикальную скорость
+
+    // Шаг 3: создаем итоговый вектор скорости
+    const finalVelocity = new THREE.Vector3(direction.x, adjustedVerticalSpeed, direction.z).normalize().multiplyScalar(speed);
+
+    // Шаг 4: вычисляем импульс (импульс = скорость * масса)
+    const mass = 1; // масса мяча
+    const impulse = finalVelocity.multiplyScalar(mass);
+
 
     ballClass.ballMarkOnGround.position.copy(landingPoint);
     ballClass.ballMarkOnGround.position.y = 0.2;
