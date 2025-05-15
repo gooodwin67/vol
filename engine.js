@@ -146,7 +146,7 @@ export class Engine {
         document.querySelector('.power_wrap').style.backgroundColor = 'white';
         this.gameClass.gameSuspended = false;
         this.gameClass.serve = true;
-      }, 200)
+      }, 1000)
     }
   }
 
@@ -157,11 +157,13 @@ export class Engine {
     this.playersData.players[1 - this.playersData.activePlayerNum].playerTouchNum = 0;
     this.playersData.playersIter++;
     if (this.playersData.playersIter > 3 || this.playersData.players[this.playersData.activePlayerNum].playerTouchNum > 1) {
-      //this.goal('iters', 'player');
+      this.goal('iters', 'player');
     }
     this.playersData.opponentsIter = 0;
     this.playersData.opponents[0].opponentTouchNum = 0;
     this.playersData.opponents[1].opponentTouchNum = 0;
+
+    this.reLandPosition(this.ballClass.ballBody.linvel(), this.ballClass.ballBody.translation())
   }
 
   opponentTouching() {
@@ -176,6 +178,8 @@ export class Engine {
     this.playersData.playersIter = 0;
     this.playersData.players[0].playerTouchNum = 0;
     this.playersData.players[1].playerTouchNum = 0;
+
+    this.reLandPosition(this.ballClass.ballBody.linvel(), this.ballClass.ballBody.translation())
   }
 
   resetInGame() {
@@ -377,6 +381,9 @@ export class Engine {
     playersData.ballOpponentCollision = false;
 
     worldClass.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
+      if (handle1 == ballClass.ballBody.handle && handle2 == '4e-323') {
+        this.reLandPosition(this.ballClass.ballBody.linvel(), this.ballClass.ballBody.translation())
+      }
       if (handle2 == ballClass.ballBody.handle && handle1 == 0 && started) {
         playersData.ballPlayerCollision = true;
       }
@@ -429,7 +436,15 @@ export class Engine {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_bottom_hit', 1, 0.2);
         }
       }
-      this.passEngine(3, 0.45, landingPoint)
+      let passHeight;
+      if (this.playersData.playersIter == 3) {
+        passHeight = this.playersData.playerPasHeightShot
+      }
+      else {
+        passHeight = this.playersData.playerPasHeight
+      }
+      this.passEngine(passHeight, 0.45, landingPoint)
+      this.reLandPosition(this.ballClass.ballBody.linvel(), this.ballClass.ballBody.translation())
       if (playersData.opponents[0].opponent.position.distanceTo(ballClass.ballMarkOnGround.position) < playersData.opponents[1].opponent.position.distanceTo(ballClass.ballMarkOnGround.position)) {
         playersData.activeOpponentNum = 0;
       }
@@ -578,7 +593,7 @@ export class Engine {
 
     this.playersData.opponentTopBody.setNextKinematicTranslation({ x: playersData.opponents[playersData.activeOpponentNum].opponent.position.x, y: topPosY - 0.3, z: playersData.opponents[playersData.activeOpponentNum].opponent.position.z }, true)
 
-    if (ballClass.ballMarkOnGround.position.z < 0) {
+    if (ballClass.ballMarkOnGround.position.z < 0 || ballClass.ball.position.z < 0) {
 
       const direction = new THREE.Vector3();
       direction.subVectors(new THREE.Vector3(ballClass.ballMarkOnGround.position.x, playersData.opponents[playersData.activeOpponentNum].opponent.position.y, ballClass.ballMarkOnGround.position.z + 0.2), playersData.opponents[playersData.activeOpponentNum].opponent.position).normalize();
@@ -616,7 +631,8 @@ export class Engine {
 
 
 
-    if (playersData.ballOpponentCollision && !playersData.opponentsPas && !playersData.opponentTapShoot) {
+    if (playersData.ballOpponentCollision && !playersData.opponentFly) {
+
       //пас
 
       this.opponentTouching()
@@ -657,7 +673,19 @@ export class Engine {
 
       }
 
-      if (!playersData.opponentTapShoot) this.passEngine(3, 0.45, landingPoint)
+      let passHeight;
+      let passSpeed;
+      if (this.playersData.opponentsIter == 3) {
+        passHeight = this.playersData.opponentPasHeightShot
+        passSpeed = 0.25;
+      }
+      else {
+        passHeight = this.playersData.opponentPasHeight
+        passSpeed = 0.45;
+      }
+
+      if (!playersData.opponentTapShoot) this.passEngine(passHeight, passSpeed, landingPoint)
+      this.reLandPosition(this.ballClass.ballBody.linvel(), this.ballClass.ballBody.translation())
 
       playersData.activeOpponentNum = 1 - playersData.activeOpponentNum;
 
@@ -682,14 +710,14 @@ export class Engine {
       playersData.opponentsPas = false;
     }
 
-    if (playersData.opponents[playersData.activeOpponentNum].opponent.position.z > -2) {
+    if (this.playersData.opponentsIter == 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.z > -1.5 && ballClass.ball.position.y > 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.distanceTo(ballClass.ball.position) < 3) {
       playersData.opponentTapShoot = true;
     }
     else {
       playersData.opponentTapShoot = false;
     }
 
-    if (ballClass.ball.position.distanceTo(playersData.opponentShootMark.position) < 2 && playersData.opponentTapShoot && !playersData.opponentFly) {
+    if (ballClass.ball.position.distanceTo(playersData.opponentShootMark.position) < 1 && playersData.opponentTapShoot && !playersData.opponentFly) {
       playersData.opponentBodies[playersData.activeOpponentNum].applyImpulse({ x: 0, y: 8.2, z: 0 }, true)
     }
     if (playersData.opponentBodies[playersData.activeOpponentNum].translation().y >= playersData.playerHeight / 1.5) {
@@ -712,6 +740,8 @@ export class Engine {
       this.shotEngine(playersData.opponents[playersData.activeOpponentNum].shotSpeed, landingPoint)
 
       this.opponentTouching();
+
+      playersData.opponentTapShoot = false;
 
       ////////////////////////////
       if (ballClass.ballMarkOnGround.position.z > 0) {
@@ -806,9 +836,118 @@ export class Engine {
     ballClass.ballMarkOnGround.position.copy(landingPoint);
     ballClass.ballMarkOnGround.position.y = 0.2;
 
+
+
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
     ballClass.ballBody.applyImpulse(impulse, true);
+
+
+
+
+
+
+    /************************************************************************************************/
+
+
+
+
+
+
   }
+
+  reLandPosition(impulse, currentBallPosition) {
+
+    const ballMass = 1.0; // масса мяча в килограммах
+
+    const g = -this.worldClass.gravity; // ускорение свободного падения в м/с²
+
+    const initialVelocity = {
+      x: impulse.x / ballMass, // скорость в направлении x
+      y: impulse.y / ballMass, // скорость в направлении y
+      z: impulse.z / ballMass  // скорость в направлении z
+    };
+
+    // Учитываем высоту, с которой мы начинаем (предположим, это y-координата текущей позиции):
+    const startHeight = currentBallPosition.y;
+
+    // Расчет времени полета до момента падения на землю
+    // Уравнение движения в вертикальном направлении: h = h0 + v0*t - (1/2)*g*t^2
+    // В нашем случае h = 0 (земля), h0 = startHeight, v0 = initialVelocity.y
+    // Упростим уравнение: 0 = startHeight + initialVelocity.y * t - (1/2) * g * t^2
+
+    // Это квадратное уравнение относительно t:
+    const aCoeff = -0.5 * g;
+    const bCoeff = initialVelocity.y;
+    const cCoeff = startHeight;
+
+    const discriminant = bCoeff * bCoeff - 4 * aCoeff * cCoeff;
+
+
+    const sqrtDiscriminant = Math.sqrt(discriminant);
+    const t1 = (-bCoeff + sqrtDiscriminant) / (2 * aCoeff);
+    const t2 = (-bCoeff - sqrtDiscriminant) / (2 * aCoeff);
+
+    // Нам нужно только положительное время
+    const timeToFall = Math.max(t1, t2);
+
+    // Находим координаты, когда мяч упадет на землю
+    const finalPosition = {
+      x: currentBallPosition.x + initialVelocity.x * timeToFall,
+      y: 0, // потому что мяч упадет на уровень земли
+      z: currentBallPosition.z + initialVelocity.z * timeToFall
+    };
+
+    // console.log('Позиция падения мяча:', finalPosition);
+    this.ballClass.ballMarkOnGround.position.copy(finalPosition);
+    this.ballClass.ballMarkOnGround.position.y = 0.1;
+
+  }
+
+  // shotEngine(speed, landingPoint) {
+  //   const ballClass = this.ballClass;
+  //   const worldClass = this.worldClass;
+
+  //   const currentBallPosition = ballClass.ballBody.translation();
+  //   const gravity = worldClass.gravity;
+
+  //   // Сброс скоростей
+  //   ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+  //   ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+
+  //   // Вычисление вектора направления
+  //   const direction = landingPoint.clone().sub(currentBallPosition);
+  //   const horizontalDistance = Math.sqrt(direction.x * direction.x + direction.z * direction.z);
+  //   const verticalDistance = direction.y;
+
+  //   // Увеличиваем скорость для больших расстояний
+  //   const distanceFactor = Math.max(1, horizontalDistance / 10); // Настройте коэффициент по необходимости
+  //   const adjustedSpeed = speed * distanceFactor;
+
+  //   // Расчет времени полета
+  //   if (adjustedSpeed <= 0) {
+  //     console.error("Speed must be greater than zero.");
+  //     return;
+  //   }
+  //   const timeOfFlight = horizontalDistance / adjustedSpeed;
+
+  //   // Учет гравитации
+  //   const totalHeight = (0.5 * (-gravity) * timeOfFlight * timeOfFlight);
+  //   const adjustedVerticalSpeed = (verticalDistance + totalHeight) / timeOfFlight;
+
+  //   // Итоговый вектор скорости
+  //   const finalVelocity = new THREE.Vector3(direction.x, adjustedVerticalSpeed, direction.z).normalize().multiplyScalar(adjustedSpeed);
+
+  //   // Расчет импульса
+  //   const mass = 1; // или получите массу из ballBody
+  //   const impulse = finalVelocity.multiplyScalar(mass);
+
+  //   // Обновление позиции метки
+  //   ballClass.ballMarkOnGround.position.copy(landingPoint);
+  //   ballClass.ballMarkOnGround.position.y = 0.2;
+
+  //   // Применение импульса
+  //   ballClass.ballBody.applyImpulse(impulse, true);
+  // }
 
 }

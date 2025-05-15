@@ -30,7 +30,8 @@ import { GameClass } from './game';
 console.clear();
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdceef6);
+scene.background = new THREE.Color(0xc9e1f4);
+scene.fog = new THREE.Fog(scene.background, 1, 60);
 
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -95,16 +96,16 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass();
 
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 100, 12, 100); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении)
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 100, 12, 100);
+  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 95, 11, 80); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 95, 11, 80);
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 7, 100) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 95, 11, 80) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 7, 100) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 95, 11, 80) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player2.player.position.x = 2;
 
   player2.previousPosition.copy(player2.player.position);
@@ -298,7 +299,7 @@ function addPhysicsToObject(obj, body) {
   }
 
   else if (body == 'ball') {
-    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
+    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(true, true, true).setLinearDamping(0).setAngularDamping(10.0));
     const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
     shapeBall.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     ballClass.ballBody = bodyBall;
@@ -309,8 +310,9 @@ function addPhysicsToObject(obj, body) {
 
   else if (body == 'net') {
 
-    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(2.0));
-    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(2).setRestitution(0).setFriction(0);
+    const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(0.0));
+    const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(2).setRestitution(0).setFriction(1);
+    console.log(body.handle)
 
     world.createCollider(shape, body)
 

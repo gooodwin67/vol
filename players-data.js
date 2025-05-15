@@ -45,11 +45,14 @@ export class PlayersData {
 
     this.playerMistakeNow = 0;
 
+    this.playerPasHeight = 3;
+    this.playerPasHeightShot = 1;
+
 
 
 
     this.opponentTopGeometry = new THREE.BoxGeometry(2, 0.1, 2);
-    this.opponentTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: false });
+    this.opponentTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0 });
     this.opponentTop = new THREE.Mesh(this.opponentTopGeometry, this.opponentTopMaterial);
     this.opponentTop.position.set(0, 0.0, 0);
 
@@ -89,6 +92,9 @@ export class PlayersData {
     this.ballOpponentCollision = false;
 
     this.opponentMistakeNow = 0;
+
+    this.opponentPasHeight = 3;
+    this.opponentPasHeightShot = 1;
 
 
   }
