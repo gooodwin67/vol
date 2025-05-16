@@ -27,7 +27,7 @@ export class PlayersData {
     this.playerBodies = [];
 
     this.playerTapPas = false;
-    this.playerCanPas = true;
+    this.playerCanPas = false;
     this.playerNowPas = false;
 
     this.playerTapShoot = false;
@@ -47,6 +47,10 @@ export class PlayersData {
 
     this.playerPasHeight = 3;
     this.playerPasHeightShot = 1;
+
+    this.playerActiveServe = 0;
+
+    this.playerServe = true;
 
 
 
@@ -79,11 +83,15 @@ export class PlayersData {
     this.opponentsPas = false;
     this.opponentsShoot = false;
 
+    this.opponentCanPas = false;
+
 
 
     this.opponentFly = false;
 
     this.opponentTapShoot = false;
+
+    this.opponentJumping = false;
 
     this.opponentHiting = false;
 
@@ -95,6 +103,8 @@ export class PlayersData {
 
     this.opponentPasHeight = 3;
     this.opponentPasHeightShot = 1;
+
+    this.opponentActiveServe = 0;
 
 
   }
