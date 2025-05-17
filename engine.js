@@ -36,6 +36,9 @@ export class Engine {
         case "s":
         case "ы":
           if (this.gameClass.serve && !this.gameClass.gameSuspended && this.playersData.playerServe) {
+            // playersData.serveTap = true;
+            // this.playersData.servePowerLine += 1;
+            // document.querySelector('.power_block').style.width = this.playersData.servePowerLine + 'px';
             this.serve();
           }
           else {
@@ -143,7 +146,7 @@ export class Engine {
   goal(goal, who) {
     if (!this.gameClass.gameSuspended && !this.gameClass.serve) {
       console.log('ГОООЛ');
-      document.querySelector('.power_wrap').style.backgroundColor = 'red';
+
 
       if (goal == 'goal') {
         if (this.ballClass.ballSideMe && this.ballClass.inPlane) {
@@ -187,7 +190,7 @@ export class Engine {
       this.gameClass.gameSuspended = true;
       setTimeout(() => {
         this.resetInGame();
-        document.querySelector('.power_wrap').style.backgroundColor = 'white';
+
         this.gameClass.gameSuspended = false;
         this.gameClass.serve = true;
         this.playersData.playerCanPas = false;
