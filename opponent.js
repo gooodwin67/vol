@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class Opponent {
-  constructor(scene, ballClass, worldClass, opponentSpeed, opponentAccuracy, shotSpeed, agility) {
+  constructor(scene, ballClass, worldClass, opponentSpeed, opponentAccuracy, shotSpeed, agility, skill) {
 
     this.scene = scene;
     this.ballClass = ballClass;
@@ -11,6 +11,7 @@ export class Opponent {
     this.opponentAccuracy = opponentAccuracy;
     this.shotSpeed = shotSpeed;
     this.agility = agility;
+    this.skill = skill;
 
     this.opponentHeight = 1.4;
     this.opponentGeometry = new THREE.BoxGeometry(0.5, this.opponentHeight, 0.5);

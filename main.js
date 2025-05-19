@@ -96,18 +96,18 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass();
 
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 95, 11, 80); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 80, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
   opponent1.opponent.position.x -= 2;
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 100, 11, 80);
+  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 80, 1.5);
   opponent2.opponent.position.x = 2;
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 95, 11, 80) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 95, 11, 80, 1) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 80) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 80, 3.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player2.player.position.x = 2;
 
   player2.previousPosition.copy(player2.player.position);
@@ -301,7 +301,7 @@ function addPhysicsToObject(obj, body) {
   }
 
   else if (body == 'ball') {
-    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(true, true, true).setLinearDamping(0).setAngularDamping(10.0));
+    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(true, true, true).setLinearDamping(0).setAngularDamping(10.0).setGravityScale(0.0));
     const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
     shapeBall.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     ballClass.ballBody = bodyBall;

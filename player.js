@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class Player {
-  constructor(scene, ballClass, worldClass, playersData, playerSpeed, playerThinkSpeed, playerAccuracy, shotSpeed, agility) {
+  constructor(scene, ballClass, worldClass, playersData, playerSpeed, playerThinkSpeed, playerAccuracy, shotSpeed, agility, skill) {
     this.scene = scene;
     this.ballClass = ballClass;
     this.worldClass = worldClass;
@@ -12,6 +12,7 @@ export class Player {
     this.playerAccuracy = playerAccuracy;
     this.shotSpeed = shotSpeed;
     this.agility = agility;
+    this.skill = skill;
 
     this.playerHeight = 1.4;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
@@ -58,6 +59,10 @@ export class Player {
       this.playerModel.scale.x = 0.7;
       this.playerModel.scale.y = 0.7;
       this.playerModel.scale.z = 0.7;
+
+      const textureLoader = new THREE.TextureLoader();
+      const texture1 = textureLoader.load('/models/players/new/textures/rus2.jpg');
+      this.playerModel.children[0].children[0].material = new THREE.MeshLambertMaterial({ map: texture1 });
 
       const mixer = new THREE.AnimationMixer(this.playerModel);
       const clips = this.playerModel.animations;

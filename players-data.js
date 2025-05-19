@@ -5,8 +5,8 @@ export class PlayersData {
 
     this.playerHeight = 1.4;
 
-    this.playerTopGeometry = new THREE.BoxGeometry(1.5, 0.1, 2);
-    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0.0 });
+    this.playerTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
+    this.playerTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0.4 });
     this.playerTop = new THREE.Mesh(this.playerTopGeometry, this.playerTopMaterial);
     this.playerTop.position.set(0, 0.0, 0);
 
@@ -57,8 +57,7 @@ export class PlayersData {
 
 
 
-
-    this.opponentTopGeometry = new THREE.BoxGeometry(2, 0.1, 2);
+    this.opponentTopGeometry = new THREE.BoxGeometry(1, 0.1, 1);
     this.opponentTopMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaa00, transparent: true, opacity: 0 });
     this.opponentTop = new THREE.Mesh(this.opponentTopGeometry, this.opponentTopMaterial);
     this.opponentTop.position.set(0, 0.0, 0);
