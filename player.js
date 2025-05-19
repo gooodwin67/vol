@@ -21,6 +21,7 @@ export class Player {
     this.player.position.set(0, 0.5, 5);
     this.player.castShadow = true;
 
+
     this.playerModel;
 
     this.activeAction;
