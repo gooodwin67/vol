@@ -31,6 +31,12 @@ export class Opponent {
 
     this.opponentTouchNum = 0;
 
+    this.pos = new THREE.Vector3();
+
+    this.startPosition;
+
+    this.opponentActiveServe = false;
+
   }
 
 
@@ -71,6 +77,8 @@ export class Opponent {
       const passBottomHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'pass_bottom_hit'));
       const jump = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'jump'));
       const jumpHit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'jump_hit'));
+      const serve = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'serve'));
+      const serve_hit = mixer.clipAction(THREE.AnimationClip.findByName(clips, 'serve_hit'));
 
       this.activeAction = idle;
 
@@ -90,6 +98,8 @@ export class Opponent {
         'pass_bottom_hit': passBottomHit,
         'jump': jump,
         'jump_hit': jumpHit,
+        'serve': serve,
+        'serve_hit': serve_hit,
       };
 
     });
@@ -142,6 +152,28 @@ export class Opponent {
 
           // .setEffectiveTimeScale(1)
           // .setEffectiveWeight(weight)
+          .fadeIn(duration)
+          .play();
+      }
+      else if (anim == 'serve') {
+        this.activeAction.clampWhenFinished = true
+        this.activeAction
+          .reset()
+          .setLoop(THREE.LoopPingPong)
+          .setEffectiveTimeScale(0.3)
+          .fadeIn(1)
+          .setEffectiveWeight(1)
+          .fadeIn(duration)
+          .play();
+      }
+      else if (anim == 'serve_hit') {
+        this.activeAction.clampWhenFinished = true
+        this.activeAction
+          .reset()
+          .setLoop(THREE.LoopPingPong)
+          .setEffectiveTimeScale(0.5)
+          .fadeIn(1)
+          .setEffectiveWeight(10)
           .fadeIn(duration)
           .play();
       }

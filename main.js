@@ -96,19 +96,25 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass();
 
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 80, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
+  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 90, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
   opponent1.opponent.position.x -= 2;
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 80, 1.5);
+  opponent1.startPosition = opponent1.opponent.position.clone();
+
+  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 90, 1.5);
   opponent2.opponent.position.x = 2;
+  opponent2.startPosition = opponent2.opponent.position.clone();
+
 
   playersData.opponents.push(opponent1, opponent2)
 
   let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 100, 2) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
+  player1.startPosition = player1.player.position.clone();
 
   player1.previousPosition.copy(player1.player.position);
   let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 100, 2) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player2.player.position.x = 2;
+  player2.startPosition = player2.player.position.clone();
 
   player2.previousPosition.copy(player2.player.position);
   playersData.players.push(player1, player2)

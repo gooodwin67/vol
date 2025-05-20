@@ -47,6 +47,7 @@ export class PlayersData {
 
     this.playerPasHeight = 3;
     this.playerPasHeightShot = 1;
+    this.playerPasVeryHeight = 3.4;
 
     this.playerActiveServe = 0;
 
@@ -105,6 +106,7 @@ export class PlayersData {
 
     this.opponentPasHeight = 3;
     this.opponentPasHeightShot = 1;
+    this.opponentPasVeryHeight = 3.4;
 
     this.opponentActiveServe = 0;
 
