@@ -7,13 +7,29 @@
    <title>Волейбол</title>
    <link href="style.css" rel="stylesheet" />
    <script type="module" src="/main.js"></script>
+   <script type="" src="/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
 
-   <div class='power_wrap'>
-      <div class="power_block"></div>
+   <div class='screens'>
+      <div class='start_screen'>
+         <a class='game_btn training_game_btn' res="training_screen">Тренеровка</a>
+         <a class='game_btn carier_game_btn' res="carier_screen">Карьера</a>
+      </div>
+      <div class='training_screen hidden_screen'>
+         <a class='game_btn start_training_btn'>Start Game1</a>
+         <a class='game_btn_back'>back</a>
+      </div>
+      <div class='carier_screen hidden_screen'>
+         <a class='game_btn second_carier_btn'>Start Game2</a>
+         <a class='game_btn_back'>back</a>
+      </div>
    </div>
+
+   <!-- <div class='power_wrap'>
+      <div class="power_block"></div>
+   </div> -->
 
    <div class='score_block'>
       <span class='score_block_item score_block_player'>0</span>

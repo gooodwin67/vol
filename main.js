@@ -96,23 +96,23 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass();
 
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 90, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
+  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.05, 90, 7, 90, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
   opponent1.opponent.position.x -= 2;
   opponent1.startPosition = opponent1.opponent.position.clone();
 
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.06, 90, 10, 90, 1.5);
+  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.05, 90, 7, 90, 1.5);
   opponent2.opponent.position.x = 2;
   opponent2.startPosition = opponent2.opponent.position.clone();
 
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 100, 2) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
   player1.startPosition = player1.player.position.clone();
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 100, 11, 100, 2) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player2.player.position.x = 2;
   player2.startPosition = player2.player.position.clone();
 
@@ -232,7 +232,7 @@ init();
 function animate() {
 
 
-  if (dataLoaded) {
+  if (dataLoaded & worldClass.startGame) {
 
     enginePlayers.movePlayer();
     enginePlayers.moveOpponent();
@@ -320,7 +320,7 @@ function addPhysicsToObject(obj, body) {
 
     const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(false, false, false).setLinearDamping(0).setAngularDamping(0.0));
     const shape = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2).setMass(2).setRestitution(0).setFriction(1);
-    console.log(body.handle)
+
 
     world.createCollider(shape, body)
 
@@ -351,4 +351,41 @@ function addPhysicsToObject(obj, body) {
     // scene.add(cube);
   }
 
+}
+
+
+
+
+document.querySelectorAll('.screens .game_btn').forEach((child, index) => {
+  child.addEventListener('click', () => {
+
+    selectScreen($(`.${child.getAttribute('res')}`))
+
+  });
+})
+
+document.querySelectorAll('.screens .game_btn_back').forEach((child, index) => {
+  child.addEventListener('click', () => {
+
+    backScreen($(`.${child.closest('div').getAttribute('class').replace(/ /g, ".")}`))
+
+  });
+})
+
+document.querySelector('.second_carier_btn').addEventListener('click', () => {
+  hideScreens();
+  worldClass.startGame = true;
+})
+
+function selectScreen(screen) {
+  //screen.animate({ 'left': '0%' }, 300)
+  screen.css("display", "flex").hide().fadeIn(300)
+}
+function backScreen(screen) {
+  //screen.animate({ 'left': '100%' }, 300)
+  screen.fadeOut(300)
+
+}
+function hideScreens() {
+  $('.screens').fadeOut(300);
 }

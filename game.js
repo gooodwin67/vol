@@ -13,6 +13,8 @@ export class GameClass {
   this.meScore = 0;
   this.oppScore = 0;
 
+  this.startGame = false;
+
  }
 
  scoreUpdate() {
