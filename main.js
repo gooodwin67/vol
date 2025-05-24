@@ -217,14 +217,16 @@ async function loadPhysWorld() {
 
 
 async function init() {
+  toggleLoader();
   await initClases();
   await initScenes();
   await loadPhysWorld();
-
   dataLoaded = true;
+  toggleLoader();
+
 }
 
-init();
+
 
 
 
@@ -232,11 +234,13 @@ init();
 function animate() {
 
 
-  if (dataLoaded & worldClass.startGame) {
+  if (dataLoaded) {
 
-    enginePlayers.movePlayer();
-    enginePlayers.moveOpponent();
-    enginePlayers.game();
+    if (gameClass.startGame) {
+      enginePlayers.movePlayer();
+      enginePlayers.moveOpponent();
+      enginePlayers.game();
+    }
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -372,20 +376,22 @@ document.querySelectorAll('.screens .game_btn_back').forEach((child, index) => {
   });
 })
 
-document.querySelector('.second_carier_btn').addEventListener('click', () => {
+document.querySelector('.start_quicmatch_btn').addEventListener('click', () => {
   hideScreens();
-  worldClass.startGame = true;
+  init('quickMatch');
 })
 
 function selectScreen(screen) {
-  //screen.animate({ 'left': '0%' }, 300)
-  screen.css("display", "flex").hide().fadeIn(300)
+  screen.css("display", "flex").hide().fadeIn(300);
 }
 function backScreen(screen) {
-  //screen.animate({ 'left': '100%' }, 300)
   screen.fadeOut(300)
 
 }
 function hideScreens() {
   $('.screens').fadeOut(300);
+}
+
+function toggleLoader() {
+  $('.loader').hasClass('hidden_loader') ? $('.loader').removeClass('hidden_loader') : $('.loader').addClass('hidden_loader');
 }

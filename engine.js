@@ -363,6 +363,14 @@ export class Engine {
     this.playersData.opponentHiting = false;
   }
 
+
+  preGame() {
+    let ballClass = this.ballClass;
+    let playersData = this.playersData;
+    let worldClass = this.worldClass;
+
+  }
+
   movePlayer() {
 
     let ballClass = this.ballClass;
