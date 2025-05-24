@@ -96,6 +96,12 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass();
 
+
+
+
+}
+
+async function initEntity() {
   let opponent1 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
   opponent1.opponent.position.x -= 2;
   opponent1.startPosition = opponent1.opponent.position.clone();
@@ -130,9 +136,6 @@ async function initClases() {
   await playersData.opponents[1].loadOpponentModel();
 
   await worldClass.loadArenaModel();
-
-
-
 
 }
 
@@ -184,15 +187,10 @@ async function initScenes() {
   scene.add(playersData.opponentShootMark);
 }
 
-
-
 async function loadPhysWorld() {
   await RAPIER.init();
   world = new RAPIER.World(new RAPIER.Vector3(0, worldClass.gravity, 0));
   worldClass.eventQueue = new RAPIER.EventQueue(true);
-
-
-
 
   addPhysicsToObject(playersData.playerTop, 'player');
 
@@ -216,16 +214,146 @@ async function loadPhysWorld() {
 
 
 
-async function init() {
-  toggleLoader();
-  await initClases();
-  await initScenes();
-  await loadPhysWorld();
-  dataLoaded = true;
-  toggleLoader();
+/***************************************************************************************************************/
+
+
+async function initEntityTraining() {
+  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
+  opponent1.opponent.position.x -= 2;
+  opponent1.startPosition = opponent1.opponent.position.clone();
+
+  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5);
+  opponent2.opponent.position.x = 2;
+  opponent2.startPosition = opponent2.opponent.position.clone();
+
+
+  playersData.opponents.push(opponent1, opponent2)
+
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  player1.player.position.x -= 2;
+  player1.startPosition = player1.player.position.clone();
+
+  player1.previousPosition.copy(player1.player.position);
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  player2.player.position.x = 2;
+  player2.startPosition = player2.player.position.clone();
+
+  player2.previousPosition.copy(player2.player.position);
+  playersData.players.push(player1, player2)
+
+
+
+  enginePlayers = new Engine(scene, ballClass, worldClass, playersData, gameClass)
+
+  await playersData.players[0].loadPlayerModel();
+  await playersData.players[1].loadPlayerModel();
+
+  await playersData.opponents[0].loadOpponentModel();
+  await playersData.opponents[1].loadOpponentModel();
+
+  await worldClass.loadArenaModel();
 
 }
 
+async function initScenesTraining() {
+  scene.add(worldClass.ambientLight);
+  scene.add(worldClass.dirLight);
+  //scene.add(worldClass.hemiLight);
+
+  scene.add(worldClass.plane);
+
+  scene.add(worldClass.arenaModel);
+
+  scene.add(worldClass.net);
+  scene.add(ballClass.ball);
+  scene.add(ballClass.ballMark);
+  scene.add(ballClass.ballMarkOnGround);
+
+  scene.add(ballClass.ballTouch);
+
+  scene.add(playersData.players[0].player);
+  scene.add(playersData.players[0].playerModel);
+  playersData.players[0].playerModel.userData.animMas.idle.play();
+
+
+  scene.add(playersData.players[1].player);
+  scene.add(playersData.players[1].playerModel);
+  playersData.players[1].playerModel.userData.animMas.idle.play();
+
+
+  scene.add(playersData.playerTop);
+
+  scene.add(playersData.playerMark);
+  scene.add(playersData.playerShootMark);
+
+
+  scene.add(playersData.opponents[0].opponent);
+  scene.add(playersData.opponents[0].opponentModel);
+  playersData.opponents[0].opponentModel.userData.animMas.idle.play();
+
+  scene.add(playersData.opponents[1].opponent);
+  scene.add(playersData.opponents[1].opponentModel);
+  playersData.opponents[1].opponentModel.userData.animMas.idle.play();
+
+
+  scene.add(playersData.opponentTop);
+
+  scene.add(playersData.opponentShootMark);
+}
+
+
+async function loadPhysWorldTraining() {
+  await RAPIER.init();
+  world = new RAPIER.World(new RAPIER.Vector3(0, worldClass.gravity, 0));
+  worldClass.eventQueue = new RAPIER.EventQueue(true);
+
+  addPhysicsToObject(playersData.playerTop, 'player');
+
+  playersData.players.forEach((value, index, array) => {
+    addPhysicsToObject(value.player, 'playerMain');
+  })
+
+  addPhysicsToObject(playersData.opponentTop, 'opponent');
+
+  playersData.opponents.forEach((value, index, array) => {
+    addPhysicsToObject(value.opponent, 'opponentMain');
+  })
+  addPhysicsToObject(ballClass.ball, 'ball');
+  addPhysicsToObject(worldClass.plane, 'plane');
+
+
+  addPhysicsToObject(worldClass.net, 'net');
+
+
+}
+
+
+/***************************************************************************************************************/
+
+
+async function initMatch() {
+  toggleLoader();
+  await initClases();
+  await initEntity();
+  await initScenes();
+  await loadPhysWorld();
+  gameClass.trainingMatch = false;
+  gameClass.fullMatch = true;
+  dataLoaded = true;
+  toggleLoader();
+}
+
+async function initTraining() {
+  toggleLoader();
+  await initClases();
+  await initEntityTraining();
+  await initScenesTraining();
+  await loadPhysWorldTraining();
+  gameClass.fullMatch = false;
+  gameClass.trainingMatch = true;
+  dataLoaded = true;
+  toggleLoader();
+}
 
 
 
@@ -236,11 +364,12 @@ function animate() {
 
   if (dataLoaded) {
 
-    if (gameClass.startGame) {
+    if (gameClass.fullMatch) {
       enginePlayers.movePlayer();
       enginePlayers.moveOpponent();
       enginePlayers.game();
     }
+
 
     for (let i = 0, n = dynamicBodies.length; i < n; i++) {
       dynamicBodies[i][0].position.copy(dynamicBodies[i][1].translation())
@@ -376,10 +505,21 @@ document.querySelectorAll('.screens .game_btn_back').forEach((child, index) => {
   });
 })
 
+
 document.querySelector('.start_quicmatch_btn').addEventListener('click', () => {
   hideScreens();
-  init('quickMatch');
+  initMatch('quickMatch');
+  gameClass.fullMatch = true;
+  toggleScreensInGame('screens_in_game');
+  toggleScreenInGame('quicmatch_in_game_screen')
 })
+document.querySelector('.quicmatch_btn_in_game').addEventListener('click', () => {
+  toggleScreenInGame('quicmatch_in_game_screen');
+  toggleScreensInGame('screens_in_game');
+  gameClass.startGame = true;
+
+})
+
 
 function selectScreen(screen) {
   screen.css("display", "flex").hide().fadeIn(300);
@@ -394,4 +534,11 @@ function hideScreens() {
 
 function toggleLoader() {
   $('.loader').hasClass('hidden_loader') ? $('.loader').removeClass('hidden_loader') : $('.loader').addClass('hidden_loader');
+}
+
+function toggleScreensInGame(screen) {
+  $(`.${screen}`).hasClass('hidden_screens_in_game') ? $(`.${screen}`).removeClass('hidden_screens_in_game') : $(`.${screen}`).addClass('hidden_screens_in_game');
+}
+function toggleScreenInGame(screen) {
+  $(`.${screen}`).hasClass('hidden_screen_in_game') ? $(`.${screen}`).removeClass('hidden_screen_in_game') : $(`.${screen}`).addClass('hidden_screen_in_game');
 }

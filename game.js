@@ -14,6 +14,8 @@ export class GameClass {
   this.oppScore = 0;
 
   this.startGame = false;
+  this.fullMatch = false;
+  this.trainingMatch = false;
 
  }
 
