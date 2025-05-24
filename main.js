@@ -25,13 +25,14 @@ import { Ball } from "./ball";
 import { Opponent } from './opponent';
 import { PlayersData } from './players-data';
 import { Engine } from './engine';
+import { EngineTraining } from './engine-training';
 import { GameClass } from './game';
 
 console.clear();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xc9e1f4);
-scene.fog = new THREE.Fog(scene.background, 1, 60);
+// scene.fog = new THREE.Fog(scene.background, 1, 60);
 
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -82,6 +83,7 @@ let ball;
 let opponentTopBody;
 
 let enginePlayers;
+let enginePlayersTraining;
 
 
 
@@ -91,7 +93,7 @@ let powerWrap = document.querySelector('.power_wrap');
 
 
 async function initClases() {
-  worldClass = new World();
+  worldClass = new World(scene);
   playersData = new PlayersData();
   ballClass = new Ball(scene);
   gameClass = new GameClass();
@@ -136,6 +138,7 @@ async function initEntity() {
   await playersData.opponents[1].loadOpponentModel();
 
   await worldClass.loadArenaModel();
+  await worldClass.loadAround(); //////////////////////////////////
 
 }
 
@@ -218,16 +221,6 @@ async function loadPhysWorld() {
 
 
 async function initEntityTraining() {
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
-  opponent1.opponent.position.x -= 2;
-  opponent1.startPosition = opponent1.opponent.position.clone();
-
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5);
-  opponent2.opponent.position.x = 2;
-  opponent2.startPosition = opponent2.opponent.position.clone();
-
-
-  playersData.opponents.push(opponent1, opponent2)
 
   let player1 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
@@ -243,13 +236,10 @@ async function initEntityTraining() {
 
 
 
-  enginePlayers = new Engine(scene, ballClass, worldClass, playersData, gameClass)
+  enginePlayersTraining = new EngineTraining(scene, ballClass, worldClass, playersData, gameClass)
 
   await playersData.players[0].loadPlayerModel();
   await playersData.players[1].loadPlayerModel();
-
-  await playersData.opponents[0].loadOpponentModel();
-  await playersData.opponents[1].loadOpponentModel();
 
   await worldClass.loadArenaModel();
 
@@ -286,19 +276,6 @@ async function initScenesTraining() {
   scene.add(playersData.playerMark);
   scene.add(playersData.playerShootMark);
 
-
-  scene.add(playersData.opponents[0].opponent);
-  scene.add(playersData.opponents[0].opponentModel);
-  playersData.opponents[0].opponentModel.userData.animMas.idle.play();
-
-  scene.add(playersData.opponents[1].opponent);
-  scene.add(playersData.opponents[1].opponentModel);
-  playersData.opponents[1].opponentModel.userData.animMas.idle.play();
-
-
-  scene.add(playersData.opponentTop);
-
-  scene.add(playersData.opponentShootMark);
 }
 
 
@@ -313,11 +290,7 @@ async function loadPhysWorldTraining() {
     addPhysicsToObject(value.player, 'playerMain');
   })
 
-  addPhysicsToObject(playersData.opponentTop, 'opponent');
 
-  playersData.opponents.forEach((value, index, array) => {
-    addPhysicsToObject(value.opponent, 'opponentMain');
-  })
   addPhysicsToObject(ballClass.ball, 'ball');
   addPhysicsToObject(worldClass.plane, 'plane');
 
@@ -368,6 +341,10 @@ function animate() {
       enginePlayers.movePlayer();
       enginePlayers.moveOpponent();
       enginePlayers.game();
+    }
+    else if (gameClass.trainingMatch) {
+      enginePlayersTraining.movePlayer();
+      enginePlayersTraining.game()
     }
 
 
@@ -505,10 +482,11 @@ document.querySelectorAll('.screens .game_btn_back').forEach((child, index) => {
   });
 })
 
+/*****************************/
 
 document.querySelector('.start_quicmatch_btn').addEventListener('click', () => {
   hideScreens();
-  initMatch('quickMatch');
+  initMatch();
   gameClass.fullMatch = true;
   toggleScreensInGame('screens_in_game');
   toggleScreenInGame('quicmatch_in_game_screen')
@@ -519,6 +497,24 @@ document.querySelector('.quicmatch_btn_in_game').addEventListener('click', () =>
   gameClass.startGame = true;
 
 })
+
+/*****************************/
+
+document.querySelector('.start_training_btn').addEventListener('click', () => {
+  hideScreens();
+  initTraining();
+  gameClass.trainingMatch = true;
+  toggleScreensInGame('screens_in_game');
+  toggleScreenInGame('training_in_game_screen')
+})
+document.querySelector('.training_btn_in_game').addEventListener('click', () => {
+  toggleScreenInGame('training_in_game_screen');
+  toggleScreensInGame('screens_in_game');
+  gameClass.startGame = true;
+
+})
+
+/*****************************/
 
 
 function selectScreen(screen) {
