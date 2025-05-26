@@ -53,7 +53,7 @@ export class Engine {
             break;
           case "r":
             ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-            ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+            // ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
             ballClass.ballBody.setTranslation({ x: 0.0, y: 4.4, z: 4.0 }, true);
             //ballClass.ballBody.applyImpulse({ x: -0.5, y: -worldClass.gravity, z: -worldClass.gravity / 2.5 }, true);
             ballClass.ballBody.applyImpulse({ x: 0, y: 3, z: 0 }, true);
@@ -141,6 +141,7 @@ export class Engine {
       else {
         this.playersData.activeOpponentNum = 1;
       }
+      this.playersData.playerLastTouch = true;
     }
     else {
 
@@ -152,6 +153,8 @@ export class Engine {
       else {
         this.playersData.activePlayerNum = 1;
       }
+
+      this.playersData.playerLastTouch = false;
 
     }
 
@@ -170,6 +173,14 @@ export class Engine {
 
 
       if (goal == 'goal') {
+        if (this.ballClass.ballTouch.position.x > -this.worldClass.widthPlane / 2 && this.ballClass.ballTouch.position.x < this.worldClass.widthPlane / 2 && this.ballClass.ballTouch.position.z > -this.worldClass.heightPlane / 2 && this.ballClass.ballTouch.position.z < this.worldClass.heightPlane / 2) {
+          this.ballClass.inPlane = true;
+        }
+        else {
+          this.ballClass.inPlane = false;
+        }
+
+
         if (this.ballClass.ballSideMe && this.ballClass.inPlane) {
           this.gameClass.oppScore++;
           this.playersData.playerActiveServe = 1 - this.playersData.playerActiveServe;
@@ -214,6 +225,7 @@ export class Engine {
 
         this.gameClass.gameSuspended = false;
         this.gameClass.serve = true;
+        this.ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
         this.playersData.playerCanPas = false;
       }, 1000)
     }
@@ -396,12 +408,8 @@ export class Engine {
       ballClass.ballCenterField = false;
     }
 
-    if (ballClass.ball.position.x > -worldClass.widthPlane / 2 && ballClass.ball.position.x < worldClass.widthPlane / 2 && ballClass.ball.position.z > -worldClass.heightPlane / 2 && ballClass.ball.position.z < worldClass.heightPlane / 2) {
-      ballClass.inPlane = true;
-    }
-    else {
-      ballClass.inPlane = false;
-    }
+
+
 
 
 
@@ -584,14 +592,17 @@ export class Engine {
 
 
       if (handle1 == ballClass.ballBody.handle && handle2 == '3.5e-323' && !this.gameClass.gameSuspended && started) {
-        this.goal('goal');
-
         ballClass.ballTouch.position.x = ballClass.ball.position.x;
         ballClass.ballTouch.position.z = ballClass.ball.position.z;
 
+        this.goal('goal');
       }
 
     })
+
+    if (ballClass.ballBody.linvel().y < -10) {
+      this.goal('goal');
+    }
 
 
     if (playersData.playerCanPas && playersData.ballPlayerCollision && playersData.playerBodies[playersData.activePlayerNum].translation().y < 1 && !this.gameClass.serve) {
@@ -957,7 +968,7 @@ export class Engine {
       playersData.opponentsPas = false;
     }
 
-    if (this.playersData.opponentsIter == 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.z > -1.5 && ballClass.ball.position.y > 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.distanceTo(ballClass.ball.position) < 3) {
+    if (this.playersData.opponentsIter == 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.z > -1.0 && ballClass.ball.position.y > 2 && playersData.opponents[playersData.activeOpponentNum].opponent.position.distanceTo(ballClass.ball.position) < 3) {
       playersData.opponentTapShoot = true;
     }
     else {
@@ -1027,7 +1038,7 @@ export class Engine {
 
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    //ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;
@@ -1049,7 +1060,7 @@ export class Engine {
     ballClass.ballMarkOnGround.position.y = 0.2;
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ballClass.ballBody.setAngvel({ x: horizontalVelocityX, y: 0.0, z: horizontalVelocityZ }, true);
     ballClass.ballBody.applyImpulse(impulse, true);
 
   }
@@ -1064,7 +1075,7 @@ export class Engine {
     const gravity = worldClass.gravity;
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    // ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
     // Шаг 1: вычисляем вектор направления
     const direction = landingPoint.clone().sub(currentBallPosition); // вектор от мяча к точке приземления
@@ -1093,7 +1104,7 @@ export class Engine {
 
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+    ballClass.ballBody.setAngvel({ x: impulse.x, y: 0.0, z: impulse.z }, true);
     ballClass.ballBody.applyImpulse(impulse, true);
 
 

@@ -115,12 +115,12 @@ async function initEntity() {
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 90, 7, 100, 2.0) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player1.player.position.x -= 2;
   player1.startPosition = player1.player.position.clone();
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.05, 0.2, 90, 7, 90, 1.5) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 90, 7, 100, 2.0) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
   player2.player.position.x = 2;
   player2.startPosition = player2.player.position.clone();
 
@@ -138,6 +138,7 @@ async function initEntity() {
   await playersData.opponents[1].loadOpponentModel();
 
   await worldClass.loadArenaModel();
+  await ballClass.loadBallModel();
   await worldClass.loadAround(); //////////////////////////////////
 
 }
@@ -147,7 +148,7 @@ async function initEntity() {
 async function initScenes() {
   scene.add(worldClass.ambientLight);
   scene.add(worldClass.dirLight);
-  //scene.add(worldClass.hemiLight);
+  // scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);
 
@@ -242,6 +243,7 @@ async function initEntityTraining() {
   await playersData.players[1].loadPlayerModel();
 
   await worldClass.loadArenaModel();
+  await ballClass.loadBallModel();
 
 }
 
@@ -275,6 +277,7 @@ async function initScenesTraining() {
 
   scene.add(playersData.playerMark);
   scene.add(playersData.playerShootMark);
+
 
 }
 
@@ -417,7 +420,7 @@ function addPhysicsToObject(obj, body) {
   }
 
   else if (body == 'ball') {
-    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(true, true, true).setLinearDamping(0).setAngularDamping(10.0).setGravityScale(0.0));
+    const bodyBall = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(obj.position.x, obj.position.y, obj.position.z).setRotation(obj.quaternion).setCanSleep(false).enabledRotations(true, true, true).setLinearDamping(0).setAngularDamping(0.0).setGravityScale(0.0));
     const shapeBall = RAPIER.ColliderDesc.ball(size.z / 2).setMass(1).setRestitution(1).setFriction(0);
     shapeBall.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
     ballClass.ballBody = bodyBall;

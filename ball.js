@@ -1,13 +1,14 @@
 import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export class Ball {
  constructor(scene) {
-  this.ballGeometry = new THREE.SphereGeometry(0.15, 16, 16);
-  this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-  this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
-  this.ball.position.z = 1;
-  this.ball.position.y = 1;
-  this.ball.castShadow = true;
+  // this.ballGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+  // this.ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+  // this.ball = new THREE.Mesh(this.ballGeometry, this.ballMaterial);
+  // this.ball.position.z = 1;
+  // this.ball.position.y = 1;
+  // this.ball.castShadow = true;
 
   this.ballMarkGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.2);
   this.ballMarkMaterial = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
@@ -37,5 +38,35 @@ export class Ball {
   this.ballCenterField = false;
 
   this.inPlane = false;
+
+
+ }
+
+ async loadBallModel() {
+  const gltfLoader = new GLTFLoader();
+
+  const url = 'models/ball/ball.glb';
+
+
+  await gltfLoader.loadAsync(url).then((gltf) => {
+   const root = gltf.scene;
+   this.ball = root;
+
+
+
+   // const textureLoader = new THREE.TextureLoader();
+   // const texture1 = textureLoader.load('/models/arena/arena2.jpg');
+   // texture1.flipY = false; // По умолчанию true, попробуйте изменить
+   //this.arenaModel.children[0].children[0].children[0].children[0].children[0].material = new THREE.MeshLambertMaterial({ map: texture1 });
+
+
+   this.ball.scale.x = 0.5;
+   this.ball.scale.y = 0.5;
+   this.ball.scale.z = 0.5;
+
+
+
+
+  });
  }
 }

@@ -67,7 +67,8 @@ export class World {
 
   async loadArenaModel() {
     const gltfLoader = new GLTFLoader();
-    const url = 'models/arena/new/arena.gltf';
+    //const url = 'models/arena/new/arena.gltf';
+    const url = 'models/arena/big/arena.glb';
 
 
     await gltfLoader.loadAsync(url).then((gltf) => {
