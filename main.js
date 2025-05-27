@@ -116,13 +116,11 @@ const settingPlayers = [
     thinkSpeed: 0.2, //thinkSpeed
     playerAccuracy: 100, //Меткость
     shotSpeed: 12, //скорость удара (7-12)
-
     agility: 100, //ловкость (пас при движении)
 
     skill: 100, //до куда достает рукой
-
     serve: 100, //подача
-    jump: 75,
+    jump: 100,
   },
 
 
@@ -130,11 +128,11 @@ const settingPlayers = [
   {
     speed: 0.07,
     thinkSpeed: 0.2,
-    playerAccuracy: 100,
-    shotSpeed: 12,
-    agility: 100,
-    skill: 100,
-    serve: 100,
+    playerAccuracy: 90,
+    shotSpeed: 10,
+    agility: 90,
+    skill: 50,
+    serve: 80,
     jump: 50,
   }
 ]
