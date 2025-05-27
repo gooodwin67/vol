@@ -1,18 +1,22 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export class Player {
-  constructor(scene, ballClass, worldClass, playersData, playerSpeed, playerThinkSpeed, playerAccuracy, shotSpeed, agility, skill) {
+  constructor(scene, ballClass, worldClass, playersData, setting) {
     this.scene = scene;
     this.ballClass = ballClass;
     this.worldClass = worldClass;
     this.playersData = playersData;
-    this.playerSpeed = playerSpeed;
-    this.playerThinkSpeed = playerThinkSpeed;
-    this.playerAccuracy = playerAccuracy;
-    this.shotSpeed = shotSpeed;
-    this.agility = agility;
-    this.skill = skill;
+    this.playerSpeed = setting.speed;
+    this.playerThinkSpeed = setting.thinkSpeed;
+    this.playerAccuracy = setting.playerAccuracy;
+    this.shotSpeed = setting.shotSpeed;
+    this.agility = setting.agility;
+    this.skill = setting.skill;
+    this.serve = setting.serve;
+    this.jump = setting.jump;
+
 
     this.playerHeight = 1.4;
     this.playerGeometry = new THREE.BoxGeometry(0.5, this.playerHeight, 0.5);
@@ -20,6 +24,21 @@ export class Player {
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
     this.player.position.set(0, 0.5, 5);
     this.player.castShadow = true;
+
+    this.playerDiv = document.createElement('div');
+    this.playerDiv.className = 'serve_player';
+    this.playerDiv.innerHTML = '<div class = "serve_player_in"></div>';
+    this.playerDiv.style.backgroundColor = '#ffffff';
+
+    this.playerLabel = new CSS2DObject(this.playerDiv);
+    this.playerLabel.name = 'serveBlock';
+    this.playerLabel.visible = false;
+    this.playerLabel.position.set(0.0, 1.0, -1);
+    this.playerLabel.center.set(0.5, 0);
+    this.player.add(this.playerLabel);
+    this.playerLabel.layers.set(0);
+
+    this.serveBlock = this.player.children.find(e => e.name == 'serveBlock');
 
 
     this.playerModel;
@@ -42,6 +61,8 @@ export class Player {
     this.playerTapShoot = false;
 
     this.playerJumpHit = false;
+
+    this.playerOnGround = true;
 
     this.playerActiveServe = false;
 

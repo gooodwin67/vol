@@ -24,3 +24,7 @@ export function randomVector(vector, accuracy) {
     newVector.z += getRandomNumber(-1 * (100 - accuracy) / 10, (100 - accuracy) / 10)
     return newVector;
 }
+
+export function mapRange(x, inputMin, inputMax, outputMin, outputMax) {
+    return outputMin + ((x - inputMin) * (outputMax - outputMin)) / (inputMax - inputMin);
+}

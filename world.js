@@ -18,7 +18,7 @@ export class World {
     this.hemiLight.position.set(0, 100, 0);
 
     this.widthPlane = 8;
-    this.heightPlane = 16;
+    this.heightPlane = 16.3;
 
     this.centerPlayerField = new THREE.Vector3(0, 0, this.heightPlane / 4);
     this.centerOpponentField = new THREE.Vector3(0, 0, -this.heightPlane / 4);
@@ -27,11 +27,11 @@ export class World {
 
     this.eventQueue;
 
-    this.geometryPlane = new THREE.BoxGeometry(this.widthPlane * 4, 0.01, this.heightPlane * 3);
+    this.geometryPlane = new THREE.BoxGeometry(this.widthPlane * 4, 0.1, this.heightPlane * 3);
     this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0 });
     this.plane = new THREE.Mesh(this.geometryPlane, this.materialPlane);
     this.plane.receiveShadow = true;
-    this.plane.position.set(0, 0, 0);
+    this.plane.position.set(0, -0.05, 0);
 
     this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
     this.net.position.set(0, 1.0, 0);

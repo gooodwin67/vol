@@ -23,10 +23,10 @@ export class Ball {
   this.ballMarkOnGround.position.z = -2;
 
 
-  this.ballTouchGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+  this.ballTouchGeometry = new THREE.BoxGeometry(0.07, 0.02, 0.07);
   this.ballTouchMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, transparent: true, opacity: 1 });
   this.ballTouch = new THREE.Mesh(this.ballTouchGeometry, this.ballTouchMaterial);
-  this.ballTouch.position.y = 0.1;
+  this.ballTouch.position.y = 0.2;
   this.ballTouch.position.z = 0;
 
 

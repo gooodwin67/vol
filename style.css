@@ -121,3 +121,16 @@ div .hidden_screen {
 .hidden_loader {
     z-index: 0;
 }
+
+.serve_player {
+    width: 100px;
+    height: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.serve_player_in {
+    position: absolute;
+    height: 100%;
+    background-color: red;
+}

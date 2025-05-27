@@ -18,6 +18,7 @@ import RAPIER from '@dimforge/rapier3d-compat';
 
 
 import { detectCollisionCubes, getRandomNumber } from "./functions/functions";
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import { Player } from "./player";
 import { World } from "./world";
@@ -50,7 +51,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 
-let controls = new OrbitControls(camera, renderer.domElement);
+let labelRenderer;
+
+labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0px';
+document.body.appendChild(labelRenderer.domElement);
+
+let controls = new OrbitControls(camera, labelRenderer.domElement);
 controls.enableDamping = true;
 controls.target.set(0, 0, 0);
 
@@ -99,28 +108,56 @@ async function initClases() {
   gameClass = new GameClass();
 
 
-
-
 }
 
+const settingPlayers = [
+  {
+    speed: 0.07, //скорость
+    thinkSpeed: 0.2, //thinkSpeed
+    playerAccuracy: 100, //Меткость
+    shotSpeed: 12, //скорость удара (7-12)
+
+    agility: 100, //ловкость (пас при движении)
+
+    skill: 100, //до куда достает рукой
+
+    serve: 100, //подача
+    jump: 75,
+  },
+
+
+
+  {
+    speed: 0.07,
+    thinkSpeed: 0.2,
+    playerAccuracy: 100,
+    shotSpeed: 12,
+    agility: 100,
+    skill: 100,
+    serve: 100,
+    jump: 50,
+  }
+]
+
+
 async function initEntity() {
-  let opponent1 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше)
+  let opponent1 = new Opponent(scene, ballClass, worldClass, playersData, settingPlayers[1]); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше), подача
   opponent1.opponent.position.x -= 2;
   opponent1.startPosition = opponent1.opponent.position.clone();
 
-  let opponent2 = new Opponent(scene, ballClass, worldClass, 0.07, 95, 12, 95, 1.5);
+  let opponent2 = new Opponent(scene, ballClass, worldClass, playersData, settingPlayers[1]);
   opponent2.opponent.position.x = 2;
   opponent2.startPosition = opponent2.opponent.position.clone();
 
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 90, 7, 100, 2.0) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player1 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
   player1.player.position.x -= 2;
   player1.startPosition = player1.player.position.clone();
 
   player1.previousPosition.copy(player1.player.position);
-  let player2 = new Player(scene, ballClass, worldClass, playersData, 0.07, 0.2, 90, 7, 100, 2.0) //speed, thinkSpeed, Меткость, скорость удара (7-12), ловкость (пас при движении)
+  let player2 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
   player2.player.position.x = 2;
   player2.startPosition = player2.player.position.clone();
 
@@ -360,6 +397,7 @@ function animate() {
     world.step(worldClass.eventQueue);
     stats.update();
     renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
   }
 }
 renderer.setAnimationLoop(animate);
