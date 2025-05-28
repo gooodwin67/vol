@@ -112,28 +112,27 @@ async function initClases() {
 
 const settingPlayers = [
   {
-    speed: 0.07, //скорость
-    thinkSpeed: 0.2, //thinkSpeed
-    playerAccuracy: 100, //Меткость
-    shotSpeed: 12, //скорость удара (7-12)
-    agility: 100, //ловкость (пас при движении)
-
-    skill: 100, //до куда достает рукой
-    serve: 100, //подача
-    jump: 100,
+    speed: 50, //скорость
+    playerAccuracy: 50, //Меткость
+    shotSpeed: 50, //скорость удара (7-12)
+    agility: 50, //ловкость (пас при движении)
+    skill: 50, //до куда достает рукой
+    serve: 50, //подача
+    jump: 50, //высота прыжка
+    mind: 100, //интеллект
   },
 
 
 
   {
-    speed: 0.07,
-    thinkSpeed: 0.2,
-    playerAccuracy: 90,
-    shotSpeed: 10,
-    agility: 90,
+    speed: 50,
+    playerAccuracy: 50,
+    shotSpeed: 50,
+    agility: 50,
     skill: 50,
-    serve: 80,
+    serve: 50,
     jump: 50,
+    mind: 50,
   }
 ]
 

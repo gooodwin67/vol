@@ -9,13 +9,13 @@ export class Player {
     this.worldClass = worldClass;
     this.playersData = playersData;
     this.playerSpeed = setting.speed;
-    this.playerThinkSpeed = setting.thinkSpeed;
     this.playerAccuracy = setting.playerAccuracy;
     this.shotSpeed = setting.shotSpeed;
     this.agility = setting.agility;
     this.skill = setting.skill;
     this.serve = setting.serve;
     this.jump = setting.jump;
+    this.mind = setting.mind;
 
 
     this.playerHeight = 1.4;
@@ -35,8 +35,10 @@ export class Player {
     this.playerLabel.visible = false;
     this.playerLabel.position.set(0.0, 1.0, -1);
     this.playerLabel.center.set(0.5, 0);
+    this.playerLabel.rotation.y = Math.PI;
     this.player.add(this.playerLabel);
     this.playerLabel.layers.set(0);
+
 
     this.serveBlock = this.player.children.find(e => e.name == 'serveBlock');
 
@@ -50,6 +52,8 @@ export class Player {
     this.previousPosition = new THREE.Vector3(0, 0, 0);
 
     this.startPosition;
+
+    this.playerThinkSpeed = 0.2;
 
 
     this.clock = new THREE.Clock();

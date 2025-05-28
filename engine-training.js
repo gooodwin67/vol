@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getRandomNumber, randomVector } from "./functions/functions";
+import { getRandomNumber, mapRange, randomVector } from "./functions/functions";
 
 export class EngineTraining {
   constructor(scene, ballClass, worldClass, playersData, gameClass) {
@@ -479,7 +479,7 @@ export class EngineTraining {
       this.playerTouching(this.playersData.players[this.playersData.activePlayerNum]);
 
       if (this.xx != 0 || this.zz != 0) {
-        this.playersData.playerMistakeNow = 100 - this.playersData.players[this.playersData.activePlayerNum].agility;
+        this.playersData.playerMistakeNow = 100 - mapRange(this.playersData.players[this.playersData.activePlayerNum].agility, 50, 100, 80, 100);
       }
 
       let landingPoint;

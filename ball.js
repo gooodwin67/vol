@@ -10,24 +10,29 @@ export class Ball {
   // this.ball.position.y = 1;
   // this.ball.castShadow = true;
 
-  this.ballMarkGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.2);
+  this.ballMarkGeometry = new THREE.PlaneGeometry(0.3, 0.3);
   this.ballMarkMaterial = new THREE.MeshPhongMaterial({ color: 0xaa0000, transparent: true, opacity: 0.6 });
   this.ballMark = new THREE.Mesh(this.ballMarkGeometry, this.ballMarkMaterial);
-  this.ballMark.position.y = 0.1;
+  this.ballMark.position.y = 1;
   this.ballMark.position.z = 1;
+  this.ballMark.rotation.x = -Math.PI / 2;
 
-  this.ballMark2Geometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
+  this.ballMark2Geometry = new THREE.PlaneGeometry(0.7, 0.7);
   this.ballMark2Material = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
   this.ballMarkOnGround = new THREE.Mesh(this.ballMark2Geometry, this.ballMark2Material);
-  this.ballMarkOnGround.position.y = 0.1;
+  this.ballMarkOnGround.position.y = 0.04;
   this.ballMarkOnGround.position.z = -2;
+  this.ballMarkOnGround.rotation.x = -Math.PI / 2;
 
 
-  this.ballTouchGeometry = new THREE.BoxGeometry(0.07, 0.02, 0.07);
-  this.ballTouchMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, transparent: true, opacity: 1 });
+
+  this.ballTouchGeometry = new THREE.PlaneGeometry(0.2, 0.2);
+  this.ballTouchMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, transparent: true, opacity: 0.9 });
   this.ballTouch = new THREE.Mesh(this.ballTouchGeometry, this.ballTouchMaterial);
-  this.ballTouch.position.y = 0.2;
+  this.ballTouch.position.y = 0.04;
   this.ballTouch.position.z = 0;
+
+  this.ballTouch.rotation.x = -Math.PI / 2;
 
 
   this.ballBody;
@@ -39,14 +44,41 @@ export class Ball {
 
   this.inPlane = false;
 
-
  }
 
  async loadBallModel() {
+
+  const loaderTexture = new THREE.TextureLoader();
+  const urlTexture = 'textures/mark-ground.png';
+  await loaderTexture.loadAsync(urlTexture).then((texture) => {
+
+   const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+   this.ballMarkOnGround.material = material;
+
+  });
+
+  const loaderTextureTouch = new THREE.TextureLoader();
+  const urlTextureTouch = 'textures/mark-touch.png';
+  await loaderTextureTouch.loadAsync(urlTextureTouch).then((texture) => {
+
+   const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.4 });
+   this.ballTouch.material = material;
+
+  });
+
+  const loaderTextureBall = new THREE.TextureLoader();
+  const urlTextureBall = 'textures/mark-ball.png';
+  await loaderTextureBall.loadAsync(urlTextureBall).then((texture) => {
+
+   const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 1 });
+   this.ballMark.material = material;
+
+  });
+
+
+
   const gltfLoader = new GLTFLoader();
-
   const url = 'models/ball/ball.glb';
-
 
   await gltfLoader.loadAsync(url).then((gltf) => {
    const root = gltf.scene;
