@@ -23,7 +23,7 @@ export class Player {
     this.playerMaterial = new THREE.MeshPhongMaterial({ color: 0x00aa00, transparent: true, opacity: 0.0 });
     this.player = new THREE.Mesh(this.playerGeometry, this.playerMaterial);
     this.player.position.set(0, 0.5, 5);
-    this.player.castShadow = true;
+    // this.player.castShadow = true;
 
     this.playerDiv = document.createElement('div');
     this.playerDiv.className = 'serve_player';
@@ -53,7 +53,7 @@ export class Player {
 
     this.startPosition;
 
-    this.playerThinkSpeed = 0.2;
+    this.playerThinkSpeed = 0.15;
 
 
     this.clock = new THREE.Clock();

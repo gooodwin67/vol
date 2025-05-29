@@ -84,6 +84,8 @@ export class Ball {
    const root = gltf.scene;
    this.ball = root;
 
+   this.ball.castShadow = true;
+
 
 
    // const textureLoader = new THREE.TextureLoader();

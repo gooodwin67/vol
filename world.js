@@ -9,7 +9,7 @@ export class World {
     this.ambientLight = new THREE.AmbientLight(0xaaaaaa, 1);
 
     this.dirLight = new THREE.DirectionalLight(0xffffff, 2);
-    this.dirLight.position.set(0, 10, -2);
+    this.dirLight.position.set(0, 4, -2);
     this.dirLight.castShadow = true;
 
     this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 2);
