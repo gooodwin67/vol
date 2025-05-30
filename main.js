@@ -50,6 +50,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
 let labelRenderer;
 
@@ -125,14 +126,14 @@ const settingPlayers = [
 
 
   {
-    speed: 100,
-    playerAccuracy: 100,
-    shotSpeed: 100,
-    agility: 100,
-    skill: 100,
-    serve: 100,
-    jump: 100,
-    mind: 100,
+    speed: 90,
+    playerAccuracy: 90,
+    shotSpeed: 90,
+    agility: 90,
+    skill: 90,
+    serve: 90,
+    jump: 90,
+    mind: 90,
   }
 ]
 
@@ -152,13 +153,13 @@ async function initEntity() {
   let player1 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
   player1.player.position.x -= 2;
   player1.startPosition = player1.player.position.clone();
-
   player1.previousPosition.copy(player1.player.position);
+
   let player2 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
   player2.player.position.x = 2;
   player2.startPosition = player2.player.position.clone();
-
   player2.previousPosition.copy(player2.player.position);
+
   playersData.players.push(player1, player2)
 
 
@@ -180,8 +181,13 @@ async function initEntity() {
 
 
 async function initScenes() {
-  scene.add(worldClass.ambientLight);
+  // scene.add(worldClass.ambientLight);
   scene.add(worldClass.dirLight);
+
+
+
+  const helper = new THREE.CameraHelper(worldClass.dirLight.shadow.camera);
+  //scene.add(helper);
   // scene.add(worldClass.hemiLight);
 
   scene.add(worldClass.plane);

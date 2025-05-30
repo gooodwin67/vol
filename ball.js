@@ -84,7 +84,10 @@ export class Ball {
    const root = gltf.scene;
    this.ball = root;
 
-   this.ball.castShadow = true;
+
+
+   this.ball.children[0].children[0].castShadow = true;
+   this.ball.children[0].children[1].castShadow = true;
 
 
 

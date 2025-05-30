@@ -9,8 +9,24 @@ export class World {
     this.ambientLight = new THREE.AmbientLight(0xaaaaaa, 1);
 
     this.dirLight = new THREE.DirectionalLight(0xffffff, 2);
-    this.dirLight.position.set(0, 4, -2);
+    this.dirLight.color.setHSL(0.1, 1, 0.95);
+    this.dirLight.position.set(0, 1, 0);
+    this.dirLight.position.multiplyScalar(30);
     this.dirLight.castShadow = true;
+
+
+
+    const d = 15;
+
+    this.dirLight.shadow.camera.left = - d;
+    this.dirLight.shadow.camera.right = d;
+    this.dirLight.shadow.camera.top = d;
+    this.dirLight.shadow.camera.bottom = - d;
+
+    this.dirLight.shadow.camera.far = 3500;
+    this.dirLight.shadow.bias = - 0.0001;
+
+
 
     this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 2);
     this.hemiLight.color.setHSL(0.6, 1, 0.6);
@@ -28,10 +44,11 @@ export class World {
     this.eventQueue;
 
     this.geometryPlane = new THREE.BoxGeometry(this.widthPlane * 4, 0.1, this.heightPlane * 3);
-    this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0 });
+    this.materialPlane = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 1 });
     this.plane = new THREE.Mesh(this.geometryPlane, this.materialPlane);
     this.plane.receiveShadow = true;
     this.plane.position.set(0, -0.05, 0);
+
 
     this.net = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, this.widthPlane), new THREE.MeshLambertMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.0 }));
     this.net.position.set(0, 1.0, 0);
@@ -75,12 +92,25 @@ export class World {
       const root = gltf.scene;
       this.arenaModel = root;
 
-      console.log(this.arenaModel.children[0].children[0].children[0].children[0].children[0])
+      let planeModel = this.arenaModel.children.find(el => el.name == "Plane022")
+      let planeModel2 = this.arenaModel.children.find(el => el.name == "Plane021")
+      let planeModel3 = this.arenaModel.children.find(el => el.name == "Plane023")
+      let planeModel4 = this.arenaModel.children.find(el => el.name == "Plane001")
+
+      planeModel.receiveShadow = true;
+      planeModel2.receiveShadow = true;
+      planeModel3.receiveShadow = true;
+      planeModel4.receiveShadow = true;
+
+
 
       const textureLoader = new THREE.TextureLoader();
       const texture1 = textureLoader.load('/models/arena/arena2.jpg');
       texture1.flipY = false; // По умолчанию true, попробуйте изменить
-      //this.arenaModel.children[0].children[0].children[0].children[0].children[0].material = new THREE.MeshLambertMaterial({ map: texture1 });
+      //planeModel.material = new THREE.MeshLambertMaterial({ map: texture1 });
+
+
+
 
       //this.arenaModel.rotation.z = Math.PI;
       // this.arenaModel.rotation.y = Math.PI;

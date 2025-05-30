@@ -115,14 +115,14 @@ export class Engine {
     if (this.playersData.serveTap == true && this.playersData.servePowerLine < 100) {
 
       this.playersData.servePowerLine += 1;
-      document.querySelectorAll('.serve_player_in')[this.playersData.activePlayerNum].style.width = this.playersData.servePowerLine + 'px';
+      document.querySelectorAll('.serve_player_in')[0].style.width = this.playersData.servePowerLine + 'px';
     }
     else if (this.playersData.serveTap == true && this.playersData.servePowerLine > 99) {
       this.playersData.serveTap = false;
     }
     if (this.playersData.servePowerLine > 0 && !this.playersData.serveTap) {
       this.serve(this.playersData.servePowerLine);
-      document.querySelectorAll('.serve_player_in')[this.playersData.activePlayerNum].style.width = 0 + 'px';
+      document.querySelectorAll('.serve_player_in')[0].style.width = 0 + 'px';
       this.playersData.servePowerLine = 0;
     }
 
@@ -134,6 +134,7 @@ export class Engine {
 
     if (this.gameClass.serve && this.playersData.playerServe) {
       this.playersData.players[this.playersData.activePlayerNum].serveBlock.visible = true;
+      this.playersData.players[1 - this.playersData.activePlayerNum].serveBlock.visible = false;
       this.ballClass.ballBody.setTranslation({
         x: this.playersData.players[this.playersData.activePlayerNum].player.position.x,
         y: this.playersData.players[this.playersData.activePlayerNum].player.position.y + this.playersData.players[this.playersData.activePlayerNum].playerHeight / 4.5,
@@ -1102,7 +1103,6 @@ export class Engine {
 
 
     ballClass.ballBody.setLinvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-    //ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
 
     const deltaX = landingPoint.x - ballPosition.x;
     const deltaZ = landingPoint.z - ballPosition.z;

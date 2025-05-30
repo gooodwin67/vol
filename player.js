@@ -37,7 +37,7 @@ export class Player {
     this.playerLabel.center.set(0.5, 0);
     this.playerLabel.rotation.y = Math.PI;
     this.player.add(this.playerLabel);
-    this.playerLabel.layers.set(0);
+
 
 
     this.serveBlock = this.player.children.find(e => e.name == 'serveBlock');
