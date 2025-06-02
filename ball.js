@@ -44,6 +44,9 @@ export class Ball {
 
   this.inPlane = false;
 
+  this.ballSpeed = 0;
+  this.ballSpin = 0;
+
  }
 
  async loadBallModel() {

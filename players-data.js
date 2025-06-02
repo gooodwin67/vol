@@ -51,7 +51,7 @@ export class PlayersData {
 
     this.playerActiveServe = 0;
 
-    this.playerServe = false;
+    this.playerServe = true;
 
     this.serveTap = false;
     this.servePowerLine = 0;

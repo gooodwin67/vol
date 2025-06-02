@@ -16,6 +16,7 @@ export class Player {
     this.serve = setting.serve;
     this.jump = setting.jump;
     this.mind = setting.mind;
+    this.spin = setting.spin;
 
 
     this.playerHeight = 1.4;

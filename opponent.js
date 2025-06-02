@@ -16,6 +16,7 @@ export class Opponent {
     this.serve = setting.serve;
     this.jump = setting.jump;
     this.mind = setting.mind;
+    this.spin = setting.spin;
 
     this.opponentHeight = 1.4;
     this.opponentGeometry = new THREE.BoxGeometry(0.5, this.opponentHeight, 0.5);
