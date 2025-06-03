@@ -159,6 +159,8 @@ export class Engine {
       }, true)
 
     }
+
+
   }
 
   serve(power = 10) {
@@ -270,12 +272,18 @@ export class Engine {
       this.gameClass.scoreUpdate();
       this.gameClass.gameSuspended = true;
       setTimeout(() => {
-        this.resetInGame();
+        if (this.gameClass.meScore < this.gameClass.endScore && this.gameClass.oppScore < this.gameClass.endScore) {
+          this.resetInGame();
+          this.gameClass.gameSuspended = false;
+          this.gameClass.serve = true;
+          this.ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
+          this.playersData.playerCanPas = false;
+        }
+        else {
+          this.gameClass.startGame = false;
+          this.gameClass.endGame = true;
+        }
 
-        this.gameClass.gameSuspended = false;
-        this.gameClass.serve = true;
-        this.ballClass.ballBody.setAngvel({ x: 0.0, y: 0.0, z: 0.0 }, true);
-        this.playersData.playerCanPas = false;
       }, 1000)
     }
   }
@@ -493,7 +501,6 @@ export class Engine {
 
 
 
-
     this.playersData.players.forEach((value, index, array) => {
       value.playerModel.position.copy(new THREE.Vector3(value.player.position.x, value.player.position.y - 0.7, value.player.position.z));
       value.playerModel.userData.mixer.update(value.clock.getDelta());
@@ -672,8 +679,12 @@ export class Engine {
       //пас
       this.playerTouching(this.playersData.players[this.playersData.activePlayerNum]);
 
-      this.playersData.playerMistakeNow = mapRange(this.ballClass.ballSpeed, 3, 20, 3, 10) + mapRange(this.ballClass.ballSpin, 3, 20, 3, 20);
-
+      if (this.playersData.playersIter == 2) {
+        this.playersData.playerMistakeNow = mapRange(this.ballClass.ballSpeed, 3, 20, 1, 3) + mapRange(this.ballClass.ballSpin, 3, 20, 1, 3);
+      }
+      else {
+        this.playersData.playerMistakeNow = mapRange(this.ballClass.ballSpeed, 3, 20, 3, 10) + mapRange(this.ballClass.ballSpin, 3, 20, 3, 20);
+      }
 
 
       if (this.xx != 0 || this.zz != 0) {
@@ -682,7 +693,12 @@ export class Engine {
 
       let landingPoint;
       if (!this.playersData.players[this.playersData.activePlayerNum].playerNowPas) {
-        landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 90, 100) - this.playersData.playerMistakeNow);
+        if (this.playersData.playersIter == 2) {
+          landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 100, 100) - this.playersData.playerMistakeNow);
+        }
+        else {
+          landingPoint = randomVector(this.playersData.players[1 - this.playersData.activePlayerNum].player.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 90, 100) - this.playersData.playerMistakeNow);
+        }
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
         }
@@ -691,7 +707,12 @@ export class Engine {
         }
       }
       else {
-        landingPoint = randomVector(ballClass.ballMark.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 90, 100) - this.playersData.playerMistakeNow);
+        if (this.playersData.playersIter == 2) {
+          landingPoint = randomVector(ballClass.ballMark.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 100, 100) - this.playersData.playerMistakeNow);
+        }
+        else {
+          landingPoint = randomVector(ballClass.ballMark.position, mapRange(this.playersData.players[this.playersData.activePlayerNum].playerAccuracy, 50, 100, 90, 100) - this.playersData.playerMistakeNow);
+        }
         if (playersData.playerTop.position.y > this.playersData.players[this.playersData.activePlayerNum].playerHeight) {
           this.playersData.players[this.playersData.activePlayerNum].animActive('pass_hit', 1, 0.4);
         }
@@ -1315,5 +1336,7 @@ export class Engine {
   //   // Применение импульса
   //   ballClass.ballBody.applyImpulse(impulse, true);
   // }
+
+
 
 }

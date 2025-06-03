@@ -28,6 +28,7 @@ import { PlayersData } from './players-data';
 import { Engine } from './engine';
 import { EngineTraining } from './engine-training';
 import { GameClass } from './game';
+import { PlayersDB } from './players-db';
 
 console.clear();
 
@@ -95,6 +96,8 @@ let opponentTopBody;
 let enginePlayers;
 let enginePlayersTraining;
 
+let playersDBClass;
+
 
 
 let powerBlock = document.querySelector('.power_block');
@@ -106,61 +109,36 @@ async function initClases() {
   worldClass = new World(scene);
   playersData = new PlayersData();
   ballClass = new Ball(scene);
-  gameClass = new GameClass();
-
-
+  gameClass = new GameClass(scene, playersData);
+  playersDBClass = new PlayersDB();
 }
-
-const settingPlayers = [
-  {
-    speed: 90, //скорость
-    playerAccuracy: 100, //Меткость
-    shotSpeed: 90, //скорость удара (7-12)
-    agility: 100, //ловкость (пас при движении)
-    skill: 90, //до куда достает рукой
-    serve: 50, //подача
-    jump: 90, //высота прыжка
-    mind: 90, //интеллект
-    spin: 50, //вращение
-  },
+initClases();
 
 
-
-  {
-    speed: 80,
-    playerAccuracy: 80,
-    shotSpeed: 80,
-    agility: 80,
-    skill: 80,
-    serve: 95,
-    jump: 80,
-    mind: 80,
-    spin: 95,
-  }
-]
 
 
 async function initEntity() {
-  let opponent1 = new Opponent(scene, ballClass, worldClass, playersData, settingPlayers[1]); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше), подача
+  let opponent1 = new Opponent(scene, ballClass, worldClass, playersData, playersDBClass.playersDB[playersDBClass.opponent]); //speed, Меткость, скорость удара (7-12), ловкость (пас при движении), skill (дотягивается дальше), подача
   opponent1.opponent.position.x -= 2;
   opponent1.startPosition = opponent1.opponent.position.clone();
 
-  let opponent2 = new Opponent(scene, ballClass, worldClass, playersData, settingPlayers[1]);
+  let opponent2 = new Opponent(scene, ballClass, worldClass, playersData, playersDBClass.playersDB[playersDBClass.opponent]);
   opponent2.opponent.position.x = 2;
   opponent2.startPosition = opponent2.opponent.position.clone();
-
+  $('.score_block .team_opponent .score_block_name').text(playersDBClass.playersDB[playersDBClass.opponent].name);
 
   playersData.opponents.push(opponent1, opponent2)
 
-  let player1 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
+  let player1 = new Player(scene, ballClass, worldClass, playersData, playersDBClass.playersDB[playersDBClass.player])
   player1.player.position.x -= 2;
   player1.startPosition = player1.player.position.clone();
   player1.previousPosition.copy(player1.player.position);
 
-  let player2 = new Player(scene, ballClass, worldClass, playersData, settingPlayers[0])
+  let player2 = new Player(scene, ballClass, worldClass, playersData, playersDBClass.playersDB[playersDBClass.player])
   player2.player.position.x = 2;
   player2.startPosition = player2.player.position.clone();
   player2.previousPosition.copy(player2.player.position);
+  $('.score_block .team_player .score_block_name').text(playersDBClass.playersDB[playersDBClass.player].name);
 
   playersData.players.push(player1, player2)
 
@@ -351,7 +329,7 @@ async function loadPhysWorldTraining() {
 
 async function initMatch() {
   toggleLoader();
-  await initClases();
+
   await initEntity();
   await initScenes();
   await loadPhysWorld();
@@ -363,7 +341,7 @@ async function initMatch() {
 
 async function initTraining() {
   toggleLoader();
-  await initClases();
+
   await initEntityTraining();
   await initScenesTraining();
   await loadPhysWorldTraining();
@@ -381,6 +359,12 @@ function animate() {
 
 
   if (dataLoaded) {
+
+    if (gameClass.endGame) {
+      toggleScreenInGame('end_quicmatch_in_game_screen');
+      toggleScreensInGame('screens_in_game');
+      gameClass.endGame = false;
+    }
 
     if (gameClass.fullMatch) {
       enginePlayers.movePlayer();
@@ -517,6 +501,11 @@ document.querySelectorAll('.screens .game_btn').forEach((child, index) => {
 
     selectScreen($(`.${child.getAttribute('res')}`))
 
+    if (child.getAttribute('res') == 'quicmatch_screen') {
+      quickMatch_pre();
+    }
+
+
   });
 })
 
@@ -536,12 +525,13 @@ document.querySelector('.start_quicmatch_btn').addEventListener('click', () => {
   gameClass.fullMatch = true;
   toggleScreensInGame('screens_in_game');
   toggleScreenInGame('quicmatch_in_game_screen')
+  backScreen($(`.quicmatch_screen`))
 })
 document.querySelector('.quicmatch_btn_in_game').addEventListener('click', () => {
   toggleScreenInGame('quicmatch_in_game_screen');
+
   toggleScreensInGame('screens_in_game');
   gameClass.startGame = true;
-
 })
 
 /*****************************/
@@ -560,6 +550,15 @@ document.querySelector('.training_btn_in_game').addEventListener('click', () => 
 
 })
 
+
+document.querySelector('.end_quicmatch_btn_in_game').addEventListener('click', () => {
+  showScreens();
+  gameClass.resetAllData();
+  dataLoaded = false;
+  toggleScreensInGame('screens_in_game');
+  toggleScreenInGame('end_quicmatch_in_game_screen');
+})
+
 /*****************************/
 
 
@@ -568,10 +567,12 @@ function selectScreen(screen) {
 }
 function backScreen(screen) {
   screen.fadeOut(300)
-
 }
 function hideScreens() {
   $('.screens').fadeOut(300);
+}
+function showScreens() {
+  $('.screens').fadeIn(300);
 }
 
 function toggleLoader() {
@@ -583,4 +584,41 @@ function toggleScreensInGame(screen) {
 }
 function toggleScreenInGame(screen) {
   $(`.${screen}`).hasClass('hidden_screen_in_game') ? $(`.${screen}`).removeClass('hidden_screen_in_game') : $(`.${screen}`).addClass('hidden_screen_in_game');
+}
+
+
+
+
+function quickMatch_pre() {
+  document.querySelector('.quick_choose_players').innerHTML = '';
+  document.querySelector('.quick_choose_opponents').innerHTML = '';
+  playersDBClass.playersDB.forEach((child, index) => {
+    document.querySelector('.quick_choose_players').innerHTML += `<div>${child.name}</div>`
+    document.querySelector('.quick_choose_players>div:first-child').classList.add('quick_choose_players_active')
+
+    document.querySelector('.quick_choose_opponents').innerHTML += `<div>${child.name}</div>`
+    document.querySelector('.quick_choose_opponents>div:first-child').classList.add('quick_choose_players_active')
+  })
+
+
+  document.querySelectorAll('.quick_choose_players>div').forEach((child, index) => {
+
+    child.addEventListener('click', () => {
+      document.querySelectorAll('.quick_choose_players > div').forEach(el => {
+        el.classList.remove('quick_choose_players_active');
+      });
+      child.classList.add('quick_choose_players_active');
+      playersDBClass.player = index;
+    })
+  })
+
+  document.querySelectorAll('.quick_choose_opponents>div').forEach((child, index) => {
+    child.addEventListener('click', () => {
+      document.querySelectorAll('.quick_choose_opponents>div').forEach(el => {
+        el.classList.remove('quick_choose_players_active');
+      });
+      child.classList.add('quick_choose_players_active');
+      playersDBClass.opponent = index;
+    })
+  })
 }

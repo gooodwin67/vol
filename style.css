@@ -134,3 +134,32 @@ div .hidden_screen {
     height: 100%;
     background-color: red;
 }
+
+
+.quick_choose_players {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.quick_choose_players>div {
+    padding: 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.quick_choose_opponents {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.quick_choose_opponents>div {
+    padding: 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.quick_choose_players_active {
+    background-color: #555;
+}

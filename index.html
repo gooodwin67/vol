@@ -23,6 +23,14 @@
          <a class='game_btn_back'>back</a>
       </div>
       <div class='quicmatch_screen hidden_screen'>
+         <h4>Выбор игрока</h4>
+         <div class="quick_choose_players">
+
+         </div>
+         <h4>Выбор противника</h4>
+         <div class="quick_choose_opponents">
+
+         </div>
          <a class='game_btn start_quicmatch_btn'>Start Quicmatch</a>
          <a class='game_btn_back'>back</a>
       </div>
@@ -35,6 +43,9 @@
    <div class='screens_in_game hidden_screens_in_game'>
       <div class="quicmatch_in_game_screen screen_in_game hidden_screen_in_game">
          <a class='start_btn_in_game quicmatch_btn_in_game'>Start Game</a>
+      </div>
+      <div class="end_quicmatch_in_game_screen screen_in_game hidden_screen_in_game">
+         <a class='start_btn_in_game end_quicmatch_btn_in_game'>Exit Game</a>
       </div>
       <div class="training_in_game_screen screen_in_game hidden_screen_in_game">
          <a class='start_btn_in_game training_btn_in_game'>Start Game</a>
@@ -49,9 +60,14 @@
    </div> -->
 
    <div class='score_block'>
-      <span class='score_block_item score_block_player'>0</span>
-      <span class='score_block_item'> : </span>
-      <span class='score_block_item score_block_opponent'>0</span>
+      <div class="team team_player">
+         <span class="score_block_name"></span>
+         <span class='score_block_item score_block_player'>0</span>
+      </div>
+      <div class="team team_opponent">
+         <span class="score_block_name"></span>
+         <span class='score_block_item score_block_opponent'>0</span>
+      </div>
    </div>
 
 
