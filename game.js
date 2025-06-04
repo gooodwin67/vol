@@ -10,7 +10,7 @@ export class GameClass {
   this.gameSuspended = false;
 
   this.scoreUpdating = false;
-  this.endScore = 1;
+  this.endScore = 15;
 
   this.meScore = 0;
   this.oppScore = 0;
