@@ -586,7 +586,7 @@ function toggleScreenInGame(screen) {
   $(`.${screen}`).hasClass('hidden_screen_in_game') ? $(`.${screen}`).removeClass('hidden_screen_in_game') : $(`.${screen}`).addClass('hidden_screen_in_game');
 }
 
-
+/*******************************************************************************/
 
 
 function quickMatch_pre() {
@@ -622,3 +622,9 @@ function quickMatch_pre() {
     })
   })
 }
+
+/************************************************************/
+
+$('.pre_carier_screen_start').click(function () {
+  selectScreen($('.carier_screen_setup'));
+})
