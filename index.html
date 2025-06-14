@@ -14,14 +14,40 @@
 
    <div class='screens'>
       <div class='start_screen'>
-         <div>
-            <a class='game_btn training_game_btn' res="training_screen">Тренеровка</a>
+         <div class="start_screen_left">
+            <div class="start_screen_head">
+               <h1>Волейбол</h1>
+               <h2>Карьера мечты</h2>
+            </div>
+            <div class="start_screen_lngs_wrap">
+               <div>Язык:</div>
+               <div class="start_screen_lngs">
+                  <span>ru</span>
+                  <span>en</span>
+               </div>
+            </div>
          </div>
-         <div>
-            <a class='game_btn carier_game_btn' res="quicmatch_screen">Быстрый матч</a>
-         </div>
-         <div>
-            <a class='game_btn carier_game_btn' res="pre_carier_screen">Карьера</a>
+         <div class="start_screen_right">
+            <div class="start_screen_btns">
+               <div class='start_screen_btn_block start_screen_carier_btn_block' res="pre_carier_screen">
+                  <span class='game_btn carier_game_btn'>Режим карьеры</span>
+               </div>
+               <div class="start_screen_btn_flex ">
+                  <div class='start_screen_btn_block start_screen_quick_btn_block' res="quicmatch_screen">
+                     <span class='game_btn quick_game_btn'>Быстрый матч</span>
+                  </div>
+
+                  <div class='start_screen_btn_block start_screen_training_btn_block' res="training_screen">
+                     <span class='game_btn training_game_btn'>Тренеровки</span>
+                  </div>
+                  <div class='start_screen_btn_block start_screen_tutor_btn_block' res="tutor_screen">
+                     <span class='game_btn tutor_game_btn'>Обучение</span>
+                  </div>
+                  <div class='start_screen_btn_block start_screen_setting_btn_block' res="settings_screen">
+                     <span class='game_btn settings_game_btn'>Настройки</span>
+                  </div>
+               </div>
+            </div>
          </div>
       </div>
       <div class='training_screen hidden_screen'>

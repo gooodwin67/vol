@@ -496,7 +496,7 @@ function addPhysicsToObject(obj, body) {
 
 
 
-document.querySelectorAll('.screens .game_btn').forEach((child, index) => {
+document.querySelectorAll('.screens .start_screen_btn_block').forEach((child, index) => {
   child.addEventListener('click', () => {
 
     selectScreen($(`.${child.getAttribute('res')}`))

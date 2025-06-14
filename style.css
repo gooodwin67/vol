@@ -1,7 +1,41 @@
+/* tektur-regular - cyrillic_latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Tektur';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/tektur-v5-cyrillic_latin-regular.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* tektur-700 - cyrillic_latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Tektur';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/tektur-v5-cyrillic_latin-700.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* tektur-900 - cyrillic_latin */
+@font-face {
+    font-display: swap;
+    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Tektur';
+    font-style: normal;
+    font-weight: 900;
+    src: url('/fonts/tektur-v5-cyrillic_latin-900.woff2') format('woff2');
+    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
 body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
+    font-family: 'Tektur', Tahoma;
 }
 
 canvas {
@@ -47,6 +81,11 @@ canvas {
     z-index: 999;
     color: #fff;
     overflow-x: hidden;
+    max-width: 1920px;
+    max-height: 1080px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 
@@ -106,47 +145,123 @@ div .hidden_screen {
 body .start_screen {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    background: url('/images/back.jpg')no-repeat;
+    padding: 10px;
+    box-sizing: border-box;
+    padding: 20px 100px;
 }
 
-body .start_screen>div {
-    border: 1px solid #333;
-    height: 250px;
-    margin: 0 5px;
-    width: 100%;
-    max-width: 200px;
-    transform: skew(10deg, 0);
-    transition: 0.5s;
-    border: 3px solid #000;
-}
-
-body .start_screen>div:hover {
-    transform: skew(10deg, 0) scale(1.1);
-    z-index: 1;
-}
-
-body .start_screen>div:nth-child(1) a {
-    background-color: #ff3939;
-}
-
-body .start_screen>div:nth-child(2) a {
-    background-color: #3939ff;
-}
-
-body .start_screen>div:nth-child(3) a {
-    background-color: #3eb93e;
-}
-
-body .start_screen>div a {
-    display: inline-block;
-    background-color: red;
-    width: 100%;
-    height: 100%;
+.start_screen_left {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.start_screen h1 {
+    font-size: 130px;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: #f1f0ff;
+}
+
+.start_screen h2 {
+    font-size: 60px;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+    color: #f1f0ff;
+}
+
+.start_screen_right {
+    max-width: 700px;
+}
+
+.start_screen_btn_block {
+    border: 2px solid #6358FD;
+    background-color: rgba(24, 10, 71, 0.5);
+    border-radius: 9px;
+    width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start_screen_carier_btn_block {
+
+    background: url('/images/back-btn1.jpg');
+    background-size: 100%;
+    background-position-y: -50px;
+}
+
+.start_screen_training_btn_block {
+    background: url('/images/back-btn2.jpg');
+    background-size: 100%;
+    background-position-y: -50px;
+}
+
+.start_screen_tutor_btn_block {
+    background: url('/images/back-btn3.jpg');
+    background-size: 100%;
+    background-position-y: -50px;
+}
+
+.start_screen_quick_btn_block {
+    background: url('/images/back-btn4.jpg');
+    background-size: 100%;
+    background-position-y: -50px;
+}
+
+.start_screen_setting_btn_block {
+    background: url('/images/back-btn5.jpg');
+    background-size: 100%;
+    background-position-y: -50px;
+}
+
+.start_screen_btn_block:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    background-position-y: -100px;
+    background-position-x: -50px;
+    background-size: 120%;
 }
 
 
+.start_screen_btn_flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 700px;
+}
+
+.start_screen_btn_flex .start_screen_btn_block {
+    max-width: 48%;
+}
+
+.start_screen_btn_block span {
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+    font-size: 25px;
+    text-transform: uppercase;
+    color: #cac7ff;
+    transition: 0.3s;
+}
+
+.start_screen_btn_block:hover span {
+    transform: translate(20px, 0px);
+
+}
+
+.start_screen_btn_flex .start_screen_btn_block span {
+    bottom: auto;
+    top: 20px;
+}
 
 .loader {
     position: absolute;
