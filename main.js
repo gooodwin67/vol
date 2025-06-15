@@ -36,20 +36,36 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xc9e1f4);
 // scene.fog = new THREE.Fog(scene.background, 1, 60);
 
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
+// const camera = new THREE.PerspectiveCamera(
+//   75,
+//   window.innerWidth / window.innerHeight,
+//   0.1,
+//   1000
+// );
+const camera = new THREE.PerspectiveCamera(85, document.body.offsetWidth / document.body.offsetHeight, 0.1, 310);
 camera.position.set(0, 9, 11);
 
 let stats = new Stats();
 document.body.appendChild(stats.dom);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(document.body.offsetWidth, document.body.offsetHeight);
 document.body.appendChild(renderer.domElement);
+let isMobile = false;
+window.addEventListener('resize', onWindowResize, false);
+function onWindowResize() {
+  if (isMobile) {
+    camera.aspect = document.body.offsetWidth / document.body.offsetHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  }
+  else {
+    camera.aspect = document.body.offsetWidth / document.body.offsetHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(document.body.offsetWidth, document.body.offsetHeight);
+  }
+}
+
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
