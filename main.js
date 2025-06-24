@@ -29,6 +29,7 @@ import { Engine } from './engine';
 import { EngineTraining } from './engine-training';
 import { GameClass } from './game';
 import { PlayersDB } from './players-db';
+import { StorageClass } from './storage';
 
 console.clear();
 
@@ -113,6 +114,7 @@ let enginePlayers;
 let enginePlayersTraining;
 
 let playersDBClass;
+let storageClass;
 
 
 
@@ -127,6 +129,12 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass(scene, playersData);
   playersDBClass = new PlayersDB();
+  storageClass = new StorageClass();
+  localStorage.clear()
+
+
+
+
 }
 initClases();
 
@@ -642,5 +650,18 @@ function quickMatch_pre() {
 /************************************************************/
 
 $('.pre_carier_screen_start').click(function () {
-  selectScreen($('.carier_screen_setup'));
+  if (storageClass.data.career) {
+    selectScreen($('.carier_main_screen'));
+  }
+  else {
+    selectScreen($('.carier_screen_setup'));
+  }
+})
+
+$('.carier_screen_setup_save').click(function () {
+  storageClass.data.career = true;
+  storageClass.data.team.name = 'chel';
+  storageClass.setStorage()
+  selectScreen($('.carier_main_screen'));
+  console.log(storageClass.data)
 })
