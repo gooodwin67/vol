@@ -112,8 +112,9 @@ export class Engine {
 
     if (this.ballClass.ballTouch.material.opacity > 0) this.ballClass.ballTouch.material.opacity -= 0.003;
 
-    if (this.playersData.serveTap == true && this.playersData.servePowerLine < 100) {
 
+    if (this.playersData.serveTap == true && this.playersData.servePowerLine < 100) {
+      console.log(document.querySelectorAll('.serve_player_in').length)
       this.playersData.servePowerLine += 1;
       if (document.querySelectorAll('.serve_player_in').length > 1) {
         document.querySelectorAll('.serve_player_in')[this.playersData.activePlayerNum].style.width = this.playersData.servePowerLine + 'px';
@@ -282,6 +283,7 @@ export class Engine {
         else {
           this.gameClass.startGame = false;
           this.gameClass.endGame = true;
+
         }
 
       }, 1000)
@@ -384,6 +386,8 @@ export class Engine {
     this.playersData.opponentTapShoot = false;
     this.playersData.opponentJumping = false;
     this.playersData.opponentHiting = false;
+
+    this.playersData.servePowerLine = 0;
 
     let newPos1 = randomVector(this.playersData.opponents[0].startPosition, mapRange(this.playersData.opponents[0].opponentAccuracy, 50, 100, 90, 100))
     let newPos2 = randomVector(this.playersData.opponents[1].startPosition, mapRange(this.playersData.opponents[1].opponentAccuracy, 50, 100, 90, 100))

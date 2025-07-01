@@ -10,6 +10,8 @@ export class StorageClass {
    },
   }
 
+  this.storageLoaded = false;
+
   if (localStorage.getItem('data') !== null) this.readStorage();
 
  }

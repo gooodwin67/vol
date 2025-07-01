@@ -599,8 +599,9 @@ function showScreens() {
   $('.screens').fadeIn(300);
 }
 
-function toggleLoader() {
-  $('.loader').hasClass('hidden_loader') ? $('.loader').removeClass('hidden_loader') : $('.loader').addClass('hidden_loader');
+function toggleLoader(loader = false) {
+  if (loader == false) $('.loader').hasClass('hidden_loader') ? $('.loader').removeClass('hidden_loader') : $('.loader').addClass('hidden_loader');
+  else $('.loader').addClass('hidden_loader');
 }
 
 function toggleScreensInGame(screen) {
@@ -649,9 +650,15 @@ function quickMatch_pre() {
 
 /************************************************************/
 
-$('.pre_carier_screen_start').click(function () {
+$('.pre_carier_screen_start').click(async function () {
   if (storageClass.data.career) {
+    toggleLoader();
+    await careerScreenUpdate();
+
+
+
     selectScreen($('.carier_main_screen'));
+
   }
   else {
     selectScreen($('.carier_screen_setup'));
@@ -660,8 +667,18 @@ $('.pre_carier_screen_start').click(function () {
 
 $('.carier_screen_setup_save').click(function () {
   storageClass.data.career = true;
-  storageClass.data.team.name = 'chel';
-  storageClass.setStorage()
+  storageClass.data.team.name = $('.input_team_name').val();
+  storageClass.setStorage();
+  careerScreenUpdate();
   selectScreen($('.carier_main_screen'));
-  console.log(storageClass.data)
+
 })
+
+
+async function careerScreenUpdate() {
+  await $('.career_teamName').text(storageClass.data.team.name);
+
+
+  storageClass.storageLoaded = true;
+  toggleLoader(true);
+}

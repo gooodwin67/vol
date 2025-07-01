@@ -10,7 +10,7 @@ export class GameClass {
   this.gameSuspended = false;
 
   this.scoreUpdating = false;
-  this.endScore = 15;
+  this.endScore = 1;
 
   this.meScore = 0;
   this.oppScore = 0;
@@ -48,7 +48,12 @@ export class GameClass {
   }
 
 
+  this.playersData.players[0].playerDiv.innerHTML = '';
+  this.playersData.players[1].playerDiv.innerHTML = '';
+
   this.playersData.players = [];
+
+
 
   this.playersData.activePlayerNum = 0;
   this.playersData.playerBodies = [];
