@@ -661,6 +661,10 @@ $('.pre_carier_screen_start').click(async function () {
 
   }
   else {
+    $('.freeExp').text(storageClass.data.team.freeExp);
+    $('.input_team').map((index, value, array) => {
+      value.max = 60;
+    })
     selectScreen($('.carier_screen_setup'));
   }
 })
@@ -675,10 +679,47 @@ $('.carier_screen_setup_save').click(function () {
 })
 
 
+
+
+
+
+changePlayerData($('.input_team_speed_text'), $('.input_team_speed'), 'speed');
+changePlayerData($('.input_team_accuracy_text'), $('.input_team_accuracy'), 'accuracy');
+changePlayerData($('.input_team_shotSpeed_text'), $('.input_team_shotSpeed'), 'shotSpeed');
+
+
+function changePlayerData(data, range, char) {
+  data.text(range.val());
+  range.on('input', function () {
+    let freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
+    if (freeExpTemp > 0) {
+      data.text(range.val());
+      storageClass.updateChar(char, range.val());
+      storageClass.summingExp();
+      freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
+      if (freeExpTemp == 0) {
+        $('.input_team').map((index, value, array) => {
+          value.disabled = true;
+        })
+      }
+    }
+    else {
+      $('.input_team').map((index, value, array) => {
+        value.disabled = true;
+      })
+    }
+
+    //storageClass.data.team.freeExp -= storageClass.sumExp - storageClass.oldSumExp;
+
+
+    $('.freeExp').text(freeExpTemp);
+
+  });
+}
+
+
 async function careerScreenUpdate() {
   await $('.career_teamName').text(storageClass.data.team.name);
-
-
   storageClass.storageLoaded = true;
   toggleLoader(true);
 }
