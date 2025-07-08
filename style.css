@@ -151,6 +151,10 @@ canvas {
     justify-content: space-around;
 }
 
+.btn_disabled {
+    color: #888 !important;
+}
+
 a {
     cursor: pointer;
 }

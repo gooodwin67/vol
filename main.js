@@ -650,6 +650,21 @@ function quickMatch_pre() {
 
 /************************************************************/
 
+let carierSetupNameDone = false;
+let carierSetupCharacteristicsDone = false;
+
+console.log($('.input_team_name'))
+$('.input_team_name').change(function () {
+  if ($(this).val().length > 0) {
+    carierSetupNameDone = true;
+    checkToSaveCarierSetup();
+  }
+  else {
+    carierSetupNameDone = false;
+  }
+})
+
+
 $('.pre_carier_screen_start').click(async function () {
   if (storageClass.data.career) {
     toggleLoader();
@@ -670,13 +685,40 @@ $('.pre_carier_screen_start').click(async function () {
 })
 
 $('.carier_screen_setup_save').click(function () {
-  storageClass.data.career = true;
-  storageClass.data.team.name = $('.input_team_name').val();
-  storageClass.setStorage();
-  careerScreenUpdate();
-  selectScreen($('.carier_main_screen'));
+  if (carierSetupCharacteristicsDone && carierSetupNameDone) {
+    storageClass.data.career = true;
+    storageClass.data.team.name = $('.input_team_name').val();
+    storageClass.setStorage();
+    careerScreenUpdate();
+    selectScreen($('.carier_main_screen'));
+  }
 
 })
+
+$('.carier_screen_setup_reset').click(function () {
+  carierSetupCharacteristicsDone = false;
+  checkToSaveCarierSetup();
+
+  for (let el in storageClass.data.team.db) {
+    storageClass.data.team.db[el] = 50;
+  }
+
+  $('.input_team').map((index, value) => {
+    $('.input_team_text')[index].textContent = value.min;
+
+    value.disabled = false;
+    value.value = value.min;
+    storageClass.sumExp = storageClass.oldSumExp;
+    $('.freeExp').text(storageClass.data.team.freeExp);
+
+  })
+
+
+
+
+})
+
+
 
 
 
@@ -689,10 +731,15 @@ changePlayerData($('.input_team_shotSpeed_text'), $('.input_team_shotSpeed'), 's
 
 
 function changePlayerData(data, range, char) {
+
   data.text(range.val());
   range.on('input', function () {
+
     let freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
     if (freeExpTemp > 0) {
+      carierSetupCharacteristicsDone = false;
+      checkToSaveCarierSetup();
+
       data.text(range.val());
       storageClass.updateChar(char, range.val());
       storageClass.summingExp();
@@ -700,12 +747,16 @@ function changePlayerData(data, range, char) {
       if (freeExpTemp == 0) {
         $('.input_team').map((index, value, array) => {
           value.disabled = true;
+          carierSetupCharacteristicsDone = true;
+          checkToSaveCarierSetup();
         })
       }
     }
     else {
       $('.input_team').map((index, value, array) => {
         value.disabled = true;
+        carierSetupCharacteristicsDone = true;
+        checkToSaveCarierSetup();
       })
     }
 
@@ -717,6 +768,14 @@ function changePlayerData(data, range, char) {
   });
 }
 
+function checkToSaveCarierSetup() {
+  if (carierSetupCharacteristicsDone && carierSetupNameDone) {
+    $('.carier_screen_setup_save').removeClass('btn_disabled')
+  }
+  else {
+    $('.carier_screen_setup_save').addClass('btn_disabled')
+  }
+}
 
 async function careerScreenUpdate() {
   await $('.career_teamName').text(storageClass.data.team.name);
