@@ -852,35 +852,31 @@ function changePlayerData(data, range, char) {
   $('.freeExpReChar').text(storageClass.data.team.freeExp);
 
   data.text(range.val());
+
   range.on('input', function (e) {
-    console.log($(this)[0].value)
+    // Ваш код для расчета freeExpTemp
+
+    data.text(range.val());
+    storageClass.updateChar(char, range.val());
+    storageClass.summingExp();
     let freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
-    if (freeExpTemp > 0) {
-      data.text(range.val());
-      storageClass.updateChar(char, range.val());
-      storageClass.summingExp();
-      freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
-      $('.carier_screen_reChar_save').addClass('btn_disabled');
-      if (freeExpTemp == 0) {
-        $('.input_team_career').map((index, value, array) => {
-          value.disabled = true;
-        })
+    $('.carier_screen_reChar_save').addClass('btn_disabled');
 
 
-        $('.carier_screen_reChar_save').removeClass('btn_disabled');
-      }
-    }
-    else {
-      $('.input_team_career').map((index, value, array) => {
-        value.disabled = true;
-      })
-      freeExpTemp = 0;
-      console.log('>>')
+    // Обновление состояния кнопки и элементов ввода
+    if (freeExpTemp <= 0) {
+      $('.input_team_career').prop('disabled', true);
       $('.carier_screen_reChar_save').removeClass('btn_disabled');
+    } else {
+      $('.input_team_career').prop('disabled', false);
+      $('.carier_screen_reChar_save').addClass('btn_disabled');
     }
-    $('.freeExpReChar').text(freeExpTemp);
 
+    // Обновление текста свободного опыта
+    $('.freeExpReChar').text(freeExpTemp);
   });
+
+
 }
 
 $('.carier_screen_reChar_reset').click(function () {
