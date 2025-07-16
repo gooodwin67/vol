@@ -71,7 +71,6 @@
             <p>Добро пожаловать в режим карьеры</p>
             <div class='screen_btns'>
                <a class='game_btn pre_carier_screen_start'>Start Carier</a>
-               <a class='game_btn_back'>back</a>
             </div>
 
          </div>
@@ -90,18 +89,7 @@
                      Свободные очки: <span class="freeExp">0</span>
                   </div>
                   <br>
-                  <div class='careerSetup_char_block'>
-                     <label for="">Скорость</label>
-                     <input type="range" class="input_team input_team_speed" name="speed" min="50" max="100" value="50"><span class='input_team_text input_team_speed_text'></span>
-                  </div>
-                  <div class='careerSetup_char_block'>
-                     <label for="">Меткость</label>
-                     <input type="range" class="input_team input_team_accuracy" name="accuracy" min="50" max="100" value="50"><span class='input_team_text input_team_accuracy_text'></span>
-                  </div>
-                  <div class='careerSetup_char_block'>
-                     <label for="">Сила удара</label>
-                     <input type="range" class="input_team input_team_shotSpeed" name="shotSpeed" min="50" max="100" value="50"><span class='input_team_text input_team_shotSpeed_text'></span>
-                  </div>
+                  <div class="careerSetup_char_blocks"></div>
 
                </div>
                <br>
@@ -109,13 +97,60 @@
             <div class='screen_btns'>
                <a class='game_btn carier_screen_setup_save btn_disabled'>Save</a>
                <a class='carier_screen_setup_reset'>Reset</a>
-               <a class='game_btn_back'>back</a>
             </div>
          </div>
       </div>
 
-      <div class='carier_main_screen hidden_screen'>
+      <div class='carier_main_screen  hidden_screen'> <!-- hidden_screen -->
          <h2 class='career_teamName'>'Main Carier Screen'</h2>
+         <h4 class='carier_main_screen_date'></h4>
+         <div class="carier_main_screen_blocks_wrap">
+            <div class='carier_main_screen_left carier_main_screen_block'>
+               <h3>Характеристики команды</h3>
+               <div class='carier_main_screen_chars'></div>
+               <hr>
+               <p>Свободные очки: <span class='carier_main_screen_freeExp'></span></p>
+               <p><span class='carier_main_screen_reChar btn_disabled'>Распределить очки</span></p>
+            </div>
+            <div class='carier_main_screen_right carier_main_screen_block'>
+               <div class='carier_main_screen_games_wrap'>
+                  <div class='carier_main_screen_games_block carier_main_screen_btn_train'>
+                     Тренеровка
+                  </div>
+                  <div class='carier_main_screen_games_block carier_main_screen_btn_next'>
+                     Вперед
+                  </div>
+
+
+               </div>
+
+
+            </div>
+         </div>
+      </div>
+
+      <div class='carier_screen_calendarSimulateScreen hidden_screen'><!-- hidden_screen -->
+         <span class='carier_screen_calendarSimulateScreen_data'></span>
+         <span class='backFromCalendar'>back</span>
+      </div>
+
+      <div class='carier_screen_reChar hidden_screen'>
+         <div class='p_screen'>
+            <div>
+               <div>
+                  Свободные очки: <span class="freeExpReChar">0</span>
+               </div>
+               <br>
+               <div class="career_reChar_blocks"></div>
+
+            </div>
+            <br>
+
+            <div class='screen_btns'>
+               <a class='game_btn carier_screen_reChar_save btn_disabled'>Save</a>
+               <a class='carier_screen_reChar_reset'>Reset</a>
+            </div>
+         </div>
       </div>
 
    </div>

@@ -8,6 +8,11 @@ export class StorageClass {
    team: {
     name: '...',
     freeExp: 10,
+    nowDate: {
+     day: 0,
+     month: 0,
+     year: 2025,
+    },
     db: {
      speed: 50, //скорость
      accuracy: 50, //Меткость
@@ -19,6 +24,17 @@ export class StorageClass {
      mind: 50, //интеллект
      spin: 50, //вращение
     }
+   },
+   skillDB: {
+    speed: 'Скорость',
+    accuracy: 'Меткость',
+    shotSpeed: 'Сила удара',
+    agility: 'Ловкость',
+    skill: 'Навык',
+    serve: 'Подача',
+    jump: 'Прыжок',
+    mind: 'Интеллект',
+    spin: 'Вращение',
    },
   }
 

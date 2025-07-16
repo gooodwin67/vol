@@ -136,6 +136,7 @@ canvas {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    overflow: hidden;
 }
 
 .p_screen {
@@ -389,4 +390,27 @@ body .start_screen {
 
 .pre_carier_screen {
     background: url('/images/back.jpg')no-repeat;
+}
+
+.career_teamName {
+    margin-bottom: 0px;
+}
+
+.carier_main_screen_blocks_wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.carier_main_screen_block {
+    min-width: 300px;
+    border: 1px solid #555;
+    padding: 20px 20px;
+}
+
+.carier_main_screen_reChar {
+    cursor: pointer;
+}
+
+.carier_main_screen_reChar.btn_disabled {
+    cursor: auto;
 }

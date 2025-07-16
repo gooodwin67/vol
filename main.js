@@ -29,6 +29,7 @@ import { Engine } from './engine';
 import { EngineTraining } from './engine-training';
 import { GameClass } from './game';
 import { PlayersDB } from './players-db';
+import { CareerDB } from './career-db';
 import { StorageClass } from './storage';
 
 console.clear();
@@ -114,14 +115,17 @@ let enginePlayers;
 let enginePlayersTraining;
 
 let playersDBClass;
+let careerDBClass;
 let storageClass;
+
+let startCalendarSimulateToggle = 0;
 
 
 
 let powerBlock = document.querySelector('.power_block');
 let powerWrap = document.querySelector('.power_wrap');
 
-
+//localStorage.clear();
 
 async function initClases() {
   worldClass = new World(scene);
@@ -129,8 +133,10 @@ async function initClases() {
   ballClass = new Ball(scene);
   gameClass = new GameClass(scene, playersData);
   playersDBClass = new PlayersDB();
+  careerDBClass = new CareerDB();
   storageClass = new StorageClass();
-  localStorage.clear()
+
+
 
 
 
@@ -406,12 +412,18 @@ function animate() {
       dynamicBodies[i][0].quaternion.copy(dynamicBodies[i][1].rotation())
     }
 
-
     world.step(worldClass.eventQueue);
-    stats.update();
+
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
   }
+
+  if (startCalendarSimulateToggle) {
+    startCalendarSimulate();
+  }
+  renderer.render(scene, camera);
+  stats.update();
+
 }
 renderer.setAnimationLoop(animate);
 
@@ -653,7 +665,6 @@ function quickMatch_pre() {
 let carierSetupNameDone = false;
 let carierSetupCharacteristicsDone = false;
 
-console.log($('.input_team_name'))
 $('.input_team_name').change(function () {
   if ($(this).val().length > 0) {
     carierSetupNameDone = true;
@@ -661,11 +672,13 @@ $('.input_team_name').change(function () {
   }
   else {
     carierSetupNameDone = false;
+    checkToSaveCarierSetup();
   }
 })
 
 
 $('.pre_carier_screen_start').click(async function () {
+
   if (storageClass.data.career) {
     toggleLoader();
     await careerScreenUpdate();
@@ -688,11 +701,12 @@ $('.carier_screen_setup_save').click(function () {
   if (carierSetupCharacteristicsDone && carierSetupNameDone) {
     storageClass.data.career = true;
     storageClass.data.team.name = $('.input_team_name').val();
-    storageClass.setStorage();
     careerScreenUpdate();
+    storageClass.data.team.freeExp = 0;
     selectScreen($('.carier_main_screen'));
+    storageClass.sumExp = storageClass.oldSumExp;
+    storageClass.setStorage();
   }
-
 })
 
 $('.carier_screen_setup_reset').click(function () {
@@ -705,32 +719,16 @@ $('.carier_screen_setup_reset').click(function () {
 
   $('.input_team').map((index, value) => {
     $('.input_team_text')[index].textContent = value.min;
-
     value.disabled = false;
     value.value = value.min;
     storageClass.sumExp = storageClass.oldSumExp;
     $('.freeExp').text(storageClass.data.team.freeExp);
-
   })
-
-
-
-
 })
 
 
 
-
-
-
-
-
-changePlayerData($('.input_team_speed_text'), $('.input_team_speed'), 'speed');
-changePlayerData($('.input_team_accuracy_text'), $('.input_team_accuracy'), 'accuracy');
-changePlayerData($('.input_team_shotSpeed_text'), $('.input_team_shotSpeed'), 'shotSpeed');
-
-
-function changePlayerData(data, range, char) {
+function changePlayerDataSetup(data, range, char) {
 
   data.text(range.val());
   range.on('input', function () {
@@ -760,13 +758,26 @@ function changePlayerData(data, range, char) {
       })
     }
 
-    //storageClass.data.team.freeExp -= storageClass.sumExp - storageClass.oldSumExp;
-
-
     $('.freeExp').text(freeExpTemp);
 
   });
 }
+
+
+
+$.each(storageClass.data.team.db, (index, value) => {
+  $('.careerSetup_char_blocks').append(`
+    <div class='careerSetup_char_block'>
+        <label>${storageClass.data.skillDB[index]} <input type="range" class="input_team input_team_${index}" name="${index}" min="50" max="100" value="${value}"><span class='input_team_text input_team_${index}_text'>50</span></label>
+        
+    </div>
+  `)
+  changePlayerDataSetup($(`.input_team_${index}_text`), $(`.input_team_${index}`), `${index}`);
+})
+
+
+
+
 
 function checkToSaveCarierSetup() {
   if (carierSetupCharacteristicsDone && carierSetupNameDone) {
@@ -776,9 +787,188 @@ function checkToSaveCarierSetup() {
     $('.carier_screen_setup_save').addClass('btn_disabled')
   }
 }
-
+careerScreenUpdate()
 async function careerScreenUpdate() {
   await $('.career_teamName').text(storageClass.data.team.name);
+  let day = Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][1][storageClass.data.team.nowDate.day];
+  let month = Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][0];
+  await $('.carier_main_screen_date').text(`${day} ${month} ${storageClass.data.team.nowDate.year}`);
+  updateChars();
   storageClass.storageLoaded = true;
   toggleLoader(true);
+  storageClass.setStorage();
 }
+
+function updateChars() {
+  $('.carier_main_screen_chars').html('');
+  $.each(storageClass.data.team.db, (index, value) => {
+    $('.carier_main_screen_chars').append(`
+    <div class='careerSetup_char_block'>
+        <p>${storageClass.data.skillDB[index]} - ${value}</p>
+    </div>
+  `)
+  })
+
+  $('.carier_main_screen_freeExp').text(storageClass.data.team.freeExp);
+
+  if (storageClass.data.team.freeExp > 0) {
+    $('.carier_main_screen_reChar').removeClass('btn_disabled');
+  }
+  else {
+    $('.carier_main_screen_reChar').addClass('btn_disabled');
+  }
+}
+
+
+
+
+
+
+$('.carier_main_screen_reChar').click(function () {
+  if (storageClass.data.team.freeExp > 0) {
+    selectScreen($('.carier_screen_reChar'))
+    $('.freeExp').text(storageClass.data.team.freeExp);
+    $('.career_reChar_blocks').html('');
+    console.log($('.careerSetup_char_blocks').html(''))
+
+    $.each(storageClass.data.team.db, (index, value) => {
+      $('.career_reChar_blocks').append(`
+    <div class='careerSetup_char_block'>
+        <label>${storageClass.data.skillDB[index]} <input type="range" class="input_team_career input_team_${index}" name="${index}" min="50" max="100" value="${value}"><span class='input_team_text_career input_team_${index}_text'>50</span></label>
+    </div>
+  `)
+      changePlayerData($(`.input_team_${index}_text`), $(`.input_team_${index}`), `${index}`);
+    })
+  }
+  storageClass.oldSumExp = 0;
+  $.each(storageClass.data.team.db, (key, value) => {
+    storageClass.oldSumExp += value;
+  });
+})
+
+function changePlayerData(data, range, char) {
+
+  storageClass.sumExp = 0;
+  $('.freeExpReChar').text(storageClass.data.team.freeExp);
+
+  data.text(range.val());
+  range.on('input', function (e) {
+    console.log($(this)[0].value)
+    let freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
+    if (freeExpTemp > 0) {
+      data.text(range.val());
+      storageClass.updateChar(char, range.val());
+      storageClass.summingExp();
+      freeExpTemp = storageClass.data.team.freeExp - (storageClass.sumExp - storageClass.oldSumExp);
+      $('.carier_screen_reChar_save').addClass('btn_disabled');
+      if (freeExpTemp == 0) {
+        $('.input_team_career').map((index, value, array) => {
+          value.disabled = true;
+        })
+
+
+        $('.carier_screen_reChar_save').removeClass('btn_disabled');
+      }
+    }
+    else {
+      $('.input_team_career').map((index, value, array) => {
+        value.disabled = true;
+      })
+      freeExpTemp = 0;
+      console.log('>>')
+      $('.carier_screen_reChar_save').removeClass('btn_disabled');
+    }
+    $('.freeExpReChar').text(freeExpTemp);
+
+  });
+}
+
+$('.carier_screen_reChar_reset').click(function () {
+
+  storageClass.readStorage();
+  $('.carier_screen_reChar_save').addClass('btn_disabled');
+  $('.input_team_career').map((index, value) => {
+    $('.input_team_text_career')[index].textContent = Object.values(storageClass.data.team.db)[index];
+    value.disabled = false;
+    value.value = Object.values(storageClass.data.team.db)[index];
+    storageClass.sumExp = storageClass.oldSumExp;
+    $('.freeExpReChar').text(storageClass.data.team.freeExp);
+  })
+})
+$('.carier_screen_reChar_save').click(function () {
+  if (parseInt($('.freeExpReChar').text()) == 0) {
+    careerScreenUpdate();
+    storageClass.data.team.freeExp = 0;
+    backScreen($('.carier_screen_reChar'))
+    //selectScreen($('.carier_main_screen'));
+    storageClass.sumExp = storageClass.oldSumExp;
+    storageClass.setStorage();
+  }
+})
+
+
+
+
+
+
+
+
+
+$('.carier_main_screen_btn_next').click(function () {
+  selectScreen($('.carier_screen_calendarSimulateScreen'))
+  startCalendarSimulateToggle = 1;
+})
+
+$('.backFromCalendar').click(function () {
+  startCalendarSimulateToggle = 0;
+  careerScreenUpdate();
+  storageClass.setStorage();
+  console.log(Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][1][storageClass.data.team.nowDate.day])
+  backScreen($('.carier_screen_calendarSimulateScreen'));
+})
+
+
+
+function startCalendarSimulate() {
+  startCalendarSimulateToggle++;
+  if (startCalendarSimulateToggle > 40) {
+
+    let day = Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][1][storageClass.data.team.nowDate.day];
+    let month = Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][0];
+
+
+    if (storageClass.data.team.nowDate.day < Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][1].length - 1) {
+      storageClass.data.team.nowDate.day++
+    }
+    else {
+      if (storageClass.data.team.nowDate.month < Object.entries(careerDBClass.calendarData.calendar).length - 1) {
+        storageClass.data.team.nowDate.day = 0;
+        storageClass.data.team.nowDate.month++;
+      }
+      else {
+        storageClass.data.team.nowDate.day = 0;
+        storageClass.data.team.nowDate.month = 0;
+        storageClass.data.team.nowDate.year++;
+      }
+    }
+    $('.carier_screen_calendarSimulateScreen_data').text(`${Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][1][storageClass.data.team.nowDate.day]} ${Object.entries(careerDBClass.calendarData.calendar)[storageClass.data.team.nowDate.month][0]}`);
+
+    startCalendarSimulateToggle = 1;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/*///////////////////////////////////////////////////////////////////////////////////////*/
+$('.carier_main_screen_btn_train').click(function () {
+  storageClass.data.team.freeExp = 50;
+  storageClass.setStorage();
+  careerScreenUpdate();
+})
