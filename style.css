@@ -414,3 +414,28 @@ body .start_screen {
 .carier_main_screen_reChar.btn_disabled {
     cursor: auto;
 }
+
+
+
+
+
+.carier_screen_calendar_wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.carier_screen_calendar_head {
+    margin-bottom: 20px;
+}
+
+.carier_screen_calendar_day {
+    width: 13%;
+    border: 1px solid #444;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 70px;
+}
+
+.calendar_day_have_match {
+    background: rgba(70, 70, 70, 1);
+}

@@ -599,10 +599,10 @@ document.querySelector('.end_quicmatch_btn_in_game').addEventListener('click', (
 
 
 function selectScreen(screen) {
-  screen.css("display", "flex").hide().fadeIn(300);
+  screen.css("display", "flex").hide().fadeIn(300, () => { screen.removeClass('hidden_screen') });
 }
 function backScreen(screen) {
-  screen.fadeOut(300)
+  screen.fadeOut(300, () => { screen.addClass('hidden_screen') })
 }
 function hideScreens() {
   $('.screens').fadeOut(300);
@@ -915,7 +915,7 @@ $('.carier_main_screen_btn_next').click(function () {
   startCalendarSimulateToggle = 1;
 })
 
-$('.backFromCalendar').click(function () {
+$('.backFromSimulationScreen').click(function () {
   startCalendarSimulateToggle = 0;
   careerScreenUpdate();
   storageClass.setStorage();
@@ -955,8 +955,39 @@ function startCalendarSimulate() {
 
 
 
+$('.carier_main_screen_btn_calendar').click(function () {
+  selectScreen($('.carier_screen_calendarScreen'))
+})
+
+$('.backFromCalendarScreen').click(function () {
+
+  careerScreenUpdate();
+  storageClass.setStorage();
+  backScreen($('.carier_screen_calendarScreen'));
+
+})
 
 
+
+
+function createCalendar() {
+  Object.entries(careerDBClass.calendarData.calendar).forEach((el, index, arr) => {
+    if (index == 0) {
+      $('.carier_screen_calendar_head').html(el[0]);
+      el[1].forEach((value, index, array) => {
+        let match = value['data']['match'];
+        $('.carier_screen_calendar_wrap').append(
+          `<div class = 'carier_screen_calendar_day ${match ? 'calendar_day_have_match' : ''}'>
+            <div class = 'calendar_day_num'>${value['day']}</div>
+            <div class = 'calendar_day_match'>${value['data']['match'] ? value['data']['match'] : ''}</div>
+          </div>`
+        );
+      })
+
+    }
+  })
+}
+createCalendar();
 
 
 
