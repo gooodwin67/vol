@@ -4,7 +4,7 @@ export class CareerDB {
     this.calendarData =
     {
       calendar: {
-        'Январь': [{ day: 1, data: { match: 'Соперник' } }, { day: 2, data: { match: false } }, { day: 3, data: { match: false } }, { day: 4, data: { match: false } }, { day: 5, data: { match: false } }, { day: 6, data: { match: false } }, { day: 7, data: { match: false } }, { day: 8, data: { match: false } }, { day: 9, data: { match: false } }, { day: 10, data: { match: false } }, { day: 11, data: { match: false } }, { day: 12, data: { match: false } }, { day: 13, data: { match: false } }, { day: 14, data: { match: false } }, { day: 15, data: { match: false } }, { day: 16, data: { match: false } }, { day: 17, data: { match: false } }, { day: 18, data: { match: false } }, { day: 19, data: { match: false } }, { day: 20, data: { match: false } }, { day: 21, data: { match: false } }, { day: 22, data: { match: false } }, { day: 23, data: { match: false } }, { day: 24, data: { match: false } }, { day: 25, data: { match: false } }, { day: 26, data: { match: false } }, { day: 27, data: { match: false } }, { day: 28, data: { match: false } }, { day: 29, data: { match: false } }, { day: 30, data: { match: false } }, { day: 31, data: { match: false } }],
+        'Январь': [{ day: 1, data: { match: false } }, { day: 2, data: { match: false } }, { day: 3, data: { match: false } }, { day: 4, data: { match: false } }, { day: 5, data: { match: false } }, { day: 6, data: { match: false } }, { day: 7, data: { match: false } }, { day: 8, data: { match: false } }, { day: 9, data: { match: false } }, { day: 10, data: { match: false } }, { day: 11, data: { match: false } }, { day: 12, data: { match: false } }, { day: 13, data: { match: false } }, { day: 14, data: { match: false } }, { day: 15, data: { match: false } }, { day: 16, data: { match: false } }, { day: 17, data: { match: false } }, { day: 18, data: { match: false } }, { day: 19, data: { match: false } }, { day: 20, data: { match: false } }, { day: 21, data: { match: false } }, { day: 22, data: { match: false } }, { day: 23, data: { match: false } }, { day: 24, data: { match: false } }, { day: 25, data: { match: false } }, { day: 26, data: { match: false } }, { day: 27, data: { match: false } }, { day: 28, data: { match: false } }, { day: 29, data: { match: false } }, { day: 30, data: { match: false } }, { day: 31, data: { match: false } }],
         'Февраль': [{ day: 1, data: { match: false } }, { day: 2, data: { match: false } }, { day: 3, data: { match: false } }, { day: 4, data: { match: false } }, { day: 5, data: { match: false } }, { day: 6, data: { match: false } }, { day: 7, data: { match: false } }, { day: 8, data: { match: false } }, { day: 9, data: { match: false } }, { day: 10, data: { match: false } }, { day: 11, data: { match: false } }, { day: 12, data: { match: false } }, { day: 13, data: { match: false } }, { day: 14, data: { match: false } }, { day: 15, data: { match: false } }, { day: 16, data: { match: false } }, { day: 17, data: { match: false } }, { day: 18, data: { match: false } }, { day: 19, data: { match: false } }, { day: 20, data: { match: false } }, { day: 21, data: { match: false } }, { day: 22, data: { match: false } }, { day: 23, data: { match: false } }, { day: 24, data: { match: false } }, { day: 25, data: { match: false } }, { day: 26, data: { match: false } }, { day: 27, data: { match: false } }, { day: 28, data: { match: false } }],
         'Март': [{ day: 1, data: { match: false } }, { day: 2, data: { match: false } }, { day: 3, data: { match: false } }, { day: 4, data: { match: false } }, { day: 5, data: { match: false } }, { day: 6, data: { match: false } }, { day: 7, data: { match: false } }, { day: 8, data: { match: false } }, { day: 9, data: { match: false } }, { day: 10, data: { match: false } }, { day: 11, data: { match: false } }, { day: 12, data: { match: false } }, { day: 13, data: { match: false } }, { day: 14, data: { match: false } }, { day: 15, data: { match: false } }, { day: 16, data: { match: false } }, { day: 17, data: { match: false } }, { day: 18, data: { match: false } }, { day: 19, data: { match: false } }, { day: 20, data: { match: false } }, { day: 21, data: { match: false } }, { day: 22, data: { match: false } }, { day: 23, data: { match: false } }, { day: 24, data: { match: false } }, { day: 25, data: { match: false } }, { day: 26, data: { match: false } }, { day: 27, data: { match: false } }, { day: 28, data: { match: false } }, { day: 29, data: { match: false } }, { day: 30, data: { match: false } }, { day: 31, data: { match: false } }],
         'Апрель': [{ day: 1, data: { match: false } }, { day: 2, data: { match: false } }, { day: 3, data: { match: false } }, { day: 4, data: { match: false } }, { day: 5, data: { match: false } }, { day: 6, data: { match: false } }, { day: 7, data: { match: false } }, { day: 8, data: { match: false } }, { day: 9, data: { match: false } }, { day: 10, data: { match: false } }, { day: 11, data: { match: false } }, { day: 12, data: { match: false } }, { day: 13, data: { match: false } }, { day: 14, data: { match: false } }, { day: 15, data: { match: false } }, { day: 16, data: { match: false } }, { day: 17, data: { match: false } }, { day: 18, data: { match: false } }, { day: 19, data: { match: false } }, { day: 20, data: { match: false } }, { day: 21, data: { match: false } }, { day: 22, data: { match: false } }, { day: 23, data: { match: false } }, { day: 24, data: { match: false } }, { day: 25, data: { match: false } }, { day: 26, data: { match: false } }, { day: 27, data: { match: false } }, { day: 28, data: { match: false } }, { day: 29, data: { match: false } }, { day: 30, data: { match: false } }, { day: 30, data: { match: false } }],
@@ -20,53 +20,68 @@ export class CareerDB {
     }
     this.leagues = {
       'Russia': {
-        teams: {
-          'Зенит Казань': {
-            skill: 70
+        teams: [
+          {
+            name: 'Зенит Казань',
+            skill: 70,
           },
-          'Белогорье': {
-            skill: 69
+          {
+            name: 'Белогорье',
+            skill: 70,
           },
-          'Динамо': {
-            skill: 68
+          {
+            name: 'Динамо',
+            skill: 70,
           },
-          'Локомотив': {
-            skill: 67
+          {
+            name: 'Локомотив',
+            skill: 70,
           },
-          'Зенит СПб': {
-            skill: 66
+          {
+            name: 'Зенит СПб',
+            skill: 70,
           },
-          'Динамо-ЛО': {
-            skill: 66
+          {
+            name: 'Динамо-ЛО',
+            skill: 70,
           },
-          'Динамо-Урал': {
-            skill: 66
+          {
+            name: 'Динамо-Урал',
+            skill: 70,
           },
-          'Енисей': {
-            skill: 66
+          {
+            name: 'Енисей',
+            skill: 70,
           },
-          'Кузбасс': {
-            skill: 66
+          {
+            name: 'Кузбасс',
+            skill: 70,
           },
-          'Факел-Ямал': {
-            skill: 66
+          {
+            name: 'Факел-Ямал',
+            skill: 70,
           },
-          'Газпром-Югра': {
-            skill: 66
+          {
+            name: 'Газпром-Югра',
+            skill: 70,
           },
-          'АСК': {
-            skill: 66
+          {
+            name: 'АСК',
+            skill: 70,
           },
-          'Оренбуржье': {
-            skill: 66
+          {
+            name: 'Оренбуржье',
+            skill: 70,
           },
-          'Нова': {
-            skill: 66
+          {
+            name: 'Нова',
+            skill: 70,
           },
-          'МГТУ': {
-            skill: 66
-          }
-        }
+          {
+            name: 'МГТУ',
+            skill: 70,
+          },
+        ]
 
       }
     }

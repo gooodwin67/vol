@@ -226,11 +226,15 @@ body .start_screen {
 }
 
 .start_screen h1 {
-    font-size: 130px;
+    font-size: 120px;
     margin: 0;
     text-transform: uppercase;
     font-weight: 900;
     color: #f1f0ff;
+}
+
+.start_screen h1 span {
+    text-transform: lowercase;
 }
 
 .start_screen h2 {
@@ -437,5 +441,5 @@ body .start_screen {
 }
 
 .calendar_day_have_match {
-    background: rgba(70, 70, 70, 1);
+    background: rgba(0, 0, 53, 1);
 }

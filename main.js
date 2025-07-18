@@ -970,25 +970,65 @@ $('.backFromCalendarScreen').click(function () {
 
 
 
-function createCalendar() {
+function createCalendar(league = 'Russia') {
+  let numOfMatch = 0;
+  let teams = careerDBClass.leagues[league].teams;
   Object.entries(careerDBClass.calendarData.calendar).forEach((el, index, arr) => {
-    if (index == 0) {
-      $('.carier_screen_calendar_head').html(el[0]);
-      el[1].forEach((value, index, array) => {
-        let match = value['data']['match'];
-        $('.carier_screen_calendar_wrap').append(
-          `<div class = 'carier_screen_calendar_day ${match ? 'calendar_day_have_match' : ''}'>
-            <div class = 'calendar_day_num'>${value['day']}</div>
-            <div class = 'calendar_day_match'>${value['data']['match'] ? value['data']['match'] : ''}</div>
-          </div>`
-        );
-      })
+    $('.carier_screen_calendar_table').append(`
+      <div class = 'carier_screen_calendar_block ${index == 0 ? '' : 'hidden_screen'}'>
+      <div class = 'carier_screen_calendar_head'></div>
+      <div class = 'carier_screen_calendar_wrap'></div>
+      </div>
+    `)
 
-    }
+
+
+
+
+
+
+    $(`.carier_screen_calendar_head:nth(${index})`).html(`<div class = 'carier_screen_calendar_head_name'>${el[0]}</div><div class = 'carier_screen_calendar_head_btns'><span class = 'carier_screen_calendar_head_btns_left'><-- </span> <span class = 'carier_screen_calendar_head_btns_right'> --></span></div></div>`);
+
+    el[1].forEach((value, i, array) => {
+
+      if (value['day'] == 7 || value['day'] == 14 || value['day'] == 21) {
+
+        if (numOfMatch < teams.length * 2) value['data']['match'] = numOfMatch < teams.length ? teams[numOfMatch]['name'] : teams[numOfMatch - teams.length]['name'];
+        numOfMatch++
+      }
+
+      let match = value['data']['match'];
+
+
+      $(`.carier_screen_calendar_wrap:nth(${index})`).append(
+        `<div class = 'carier_screen_calendar_day ${match ? 'calendar_day_have_match' : ''}'>
+          <div class = 'calendar_day_num'>${value['day']}</div>
+          <div class = 'calendar_day_match'>${value['data']['match'] ? value['data']['match'] : ''}</div>
+        </div>`
+      );
+    })
+
+
   })
+
 }
 createCalendar();
-
+$('.carier_screen_calendar_head_btns_right').click(function () {
+  if ($(this).closest('.carier_screen_calendar_block').next().length == 1) {
+    $(this).closest('.carier_screen_calendar_block').fadeOut(10, () => {
+      $(this).closest('.carier_screen_calendar_block').addClass('hidden_screen');
+      $(this).closest('.carier_screen_calendar_block').next().fadeIn(10, () => { $(this).closest('.carier_screen_calendar_block').next().removeClass('hidden_screen'); })
+    })
+  }
+})
+$('.carier_screen_calendar_head_btns_left').click(function () {
+  if ($(this).closest('.carier_screen_calendar_block').prev().length == 1) {
+    $(this).closest('.carier_screen_calendar_block').fadeOut(10, () => {
+      $(this).closest('.carier_screen_calendar_block').addClass('hidden_screen');
+      $(this).closest('.carier_screen_calendar_block').prev().fadeIn(10, () => { $(this).closest('.carier_screen_calendar_block').prev().removeClass('hidden_screen'); })
+    })
+  }
+})
 
 
 
