@@ -22,62 +22,77 @@ export class CareerDB {
       'Russia': {
         teams: [
           {
+            idTeam: 'r1',
             name: 'Зенит Казань',
             skill: 70,
           },
           {
+            idTeam: 'r2',
             name: 'Белогорье',
             skill: 70,
           },
           {
+            idTeam: 'r3',
             name: 'Динамо',
             skill: 70,
           },
           {
+            idTeam: 'r4',
             name: 'Локомотив',
             skill: 70,
           },
           {
+            idTeam: 'r5',
             name: 'Зенит СПб',
             skill: 70,
           },
           {
+            idTeam: 'r6',
             name: 'Динамо-ЛО',
             skill: 70,
           },
           {
+            idTeam: 'r7',
             name: 'Динамо-Урал',
             skill: 70,
           },
           {
+            idTeam: 'r8',
             name: 'Енисей',
             skill: 70,
           },
           {
+            idTeam: 'r9',
             name: 'Кузбасс',
             skill: 70,
           },
           {
+            idTeam: 'r10',
             name: 'Факел-Ямал',
             skill: 70,
           },
           {
+            idTeam: 'r11',
             name: 'Газпром-Югра',
             skill: 70,
           },
           {
+            idTeam: 'r12',
             name: 'АСК',
             skill: 70,
           },
           {
+            idTeam: 'r13',
             name: 'Оренбуржье',
             skill: 70,
           },
           {
+            idTeam: 'r14',
             name: 'Нова',
             skill: 70,
           },
           {
+            idTeam: 'r15',
             name: 'МГТУ',
             skill: 70,
           },

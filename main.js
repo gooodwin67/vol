@@ -971,8 +971,59 @@ $('.backFromCalendarScreen').click(function () {
 
 
 function createCalendar(league = 'Russia') {
-  let numOfMatch = 0;
-  let teams = careerDBClass.leagues[league].teams;
+
+
+
+  let masOfAllTeams = Object.values(careerDBClass.leagues[league]['teams']);
+  masOfAllTeams.unshift({
+    idTeam: 'r0',
+    name: 'myTeam',
+    skill: 70,
+  });
+  //Надо перемешать массив
+
+  let masOfAllMatches = []
+
+  const generateSchedule = (teams) => {
+    const schedule = [];
+    const teamCount = teams.length;
+
+    // Генерация матчей для 3 дней
+    for (let day = 0; day < teamCount - 1; day++) {
+      const matches = [];
+      for (let i = 0; i < teamCount / 2; i++) {
+        const team1 = teams[i].idTeam;
+        const team2 = teams[teamCount - 1 - i].idTeam;
+        matches.push([team1, team2]);
+      }
+      schedule.push(matches);
+
+      // Поворот команд для следующего дня
+      teams.splice(1, 0, teams.pop());
+    }
+
+    masOfAllMatches = schedule;
+    //masOfAllMatches.push(masOfAllMatches);
+    schedule.forEach(element => {
+      let aa = [];
+      for (let i = 0; i < element.length; i++) {
+        aa.push([element[i][1], element[i][0]]);
+
+      }
+      masOfAllMatches.push(aa)
+    });
+  };
+
+  generateSchedule(masOfAllTeams);
+
+
+  console.log(masOfAllMatches);
+
+
+
+}
+
+function loadCalendar(league = 'Russia') {
   Object.entries(careerDBClass.calendarData.calendar).forEach((el, index, arr) => {
     $('.carier_screen_calendar_table').append(`
       <div class = 'carier_screen_calendar_block ${index == 0 ? '' : 'hidden_screen'}'>
@@ -981,38 +1032,49 @@ function createCalendar(league = 'Russia') {
       </div>
     `)
 
-
-
-
-
-
-
     $(`.carier_screen_calendar_head:nth(${index})`).html(`<div class = 'carier_screen_calendar_head_name'>${el[0]}</div><div class = 'carier_screen_calendar_head_btns'><span class = 'carier_screen_calendar_head_btns_left'><-- </span> <span class = 'carier_screen_calendar_head_btns_right'> --></span></div></div>`);
 
     el[1].forEach((value, i, array) => {
-
-      if (value['day'] == 7 || value['day'] == 14 || value['day'] == 21) {
-
-        if (numOfMatch < teams.length * 2) value['data']['match'] = numOfMatch < teams.length ? teams[numOfMatch]['name'] : teams[numOfMatch - teams.length]['name'];
-        numOfMatch++
-      }
-
-      let match = value['data']['match'];
-
-
       $(`.carier_screen_calendar_wrap:nth(${index})`).append(
-        `<div class = 'carier_screen_calendar_day ${match ? 'calendar_day_have_match' : ''}'>
+        `<div class = 'carier_screen_calendar_day'>
           <div class = 'calendar_day_num'>${value['day']}</div>
-          <div class = 'calendar_day_match'>${value['data']['match'] ? value['data']['match'] : ''}</div>
+          <div class = 'calendar_day_match'></div>
         </div>`
       );
     })
-
-
   })
 
+  // let numOfMatch = 0;
+  // let teams = careerDBClass.leagues[league].teams;
+  // Object.entries(careerDBClass.calendarData.calendar).forEach((el, index, arr) => {
+
+  //   el[1].forEach((value, i, array) => {
+
+  //     // if (value['day'] == 7 || value['day'] == 14 || value['day'] == 21) {
+
+  //     //   if (numOfMatch < teams.length * 2) value['data']['match'] = numOfMatch < teams.length ? teams[numOfMatch]['name'] : teams[numOfMatch - teams.length]['name'];
+  //     //   numOfMatch++
+  //     // }
+
+  //     // let match = value['data']['match'];
+
+
+  //     // $(`.carier_screen_calendar_wrap:nth(${index})`).append(
+  //     //   `<div class = 'carier_screen_calendar_day ${match ? 'calendar_day_have_match' : ''}'>
+  //     //     <div class = 'calendar_day_num'>${value['day']}</div>
+  //     //     <div class = 'calendar_day_match'>${value['data']['match'] ? value['data']['match'] : ''}</div>
+  //     //   </div>`
+  //     // );
+
+
+  //   })
+
+
+  // })
 }
+
 createCalendar();
+loadCalendar();
 $('.carier_screen_calendar_head_btns_right').click(function () {
   if ($(this).closest('.carier_screen_calendar_block').next().length == 1) {
     $(this).closest('.carier_screen_calendar_block').fadeOut(10, () => {
